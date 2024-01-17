@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Authors>TOYOTA INDUSTRIES CORPORATION</Authors>
+    <Company>TOYOTA INDUSTRIES CORPORATION</Company>
+    <Copyright>© TOYOTA INDUSTRIES CORPORATION. All rights reserved.</Copyright>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="M2MqttDotnetCore" Version="1.0.8" />
+    <PackageReference Include="Microsoft.Azure.Devices.Client" Version="1.42.0" />
+  </ItemGroup>
+
+</Project>
