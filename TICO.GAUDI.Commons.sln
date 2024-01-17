@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30114.105
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TICO.GAUDI.Commons", "src\TICO.GAUDI.Commons.csproj", "{93146AAB-3BFF-442F-8F34-38B8A2C59D4E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TICO.GAUDI.Commons.Test", "test\TICO.GAUDI.Commons.Test.csproj", "{0C89E421-6979-4D72-8A7D-052EF67157ED}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{93146AAB-3BFF-442F-8F34-38B8A2C59D4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93146AAB-3BFF-442F-8F34-38B8A2C59D4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93146AAB-3BFF-442F-8F34-38B8A2C59D4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93146AAB-3BFF-442F-8F34-38B8A2C59D4E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C89E421-6979-4D72-8A7D-052EF67157ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C89E421-6979-4D72-8A7D-052EF67157ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C89E421-6979-4D72-8A7D-052EF67157ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C89E421-6979-4D72-8A7D-052EF67157ED}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
