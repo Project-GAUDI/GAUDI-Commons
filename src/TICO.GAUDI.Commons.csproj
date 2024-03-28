@@ -10,7 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="M2MqttDotnetCore" Version="1.0.8" />
-    <PackageReference Include="Microsoft.Azure.Devices.Client" Version="1.42.0" />
+    <PackageReference Include="Microsoft.Azure.Devices.Client" Version="1.39.0" />
   </ItemGroup>
 
 </Project>
