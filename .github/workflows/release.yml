@@ -32,6 +32,4 @@ jobs:
     - name: Publish package
       run: |
         dotnet pack --no-build -c Release -o nupkg
-        dotnet nuget push "nupkg/*.nupkg" --source "https://nuget.pkg.github.com/Project-GAUDI/index.json" --skip-duplicate
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        dotnet nuget push "nupkg/*.nupkg" --api-key ${{secrets.GITHUB_TOKEN}} --source "https://nuget.pkg.github.com/Project-GAUDI/index.json" --skip-duplicate
