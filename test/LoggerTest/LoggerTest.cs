@@ -10,15 +10,14 @@ namespace TICO.GAUDI.Commons
 {
     public class LoggerTest
     {
-        const string ConnectionString = "HostName=IoTEdgeV2Test.azure-devices.net;DeviceId=IoTEdgeV2Test;ModuleId=client1;SharedAccessKey=lGO1TeARg0JzfXB3GiY54u6menVvdklubimLu47LTww=";
-
+        private readonly string ConnectionString;
         private string _consoleOutput;
         private readonly ITestOutputHelper _output;
-
 
         public LoggerTest(ITestOutputHelper output)
         {
             _output = output;
+            ConnectionString = Environment.GetEnvironmentVariable("TEST_CONNECTION_STRING");
         }
 
         ///ログ出力レベル設定のテスト
