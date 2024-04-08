@@ -1,0 +1,28 @@
+---
+name: バグ報告
+about: お気づきになったバグについて教えてください
+title: ''
+labels: bug
+assignees: ''
+
+---
+
+**バグの説明**
+どのようなバグかご記入ください。
+
+**再現手順**
+バグの再現方法をご記入ください。
+例: 〇〇というコマンドを実行
+
+**期待していた挙動**
+起こるはずだったと期待した挙動の説明をご記入ください。
+
+**スクリーンショット**
+可能であれば、問題を説明するのに役立つスクリーンショットを追加してください。
+
+**Desktop (please complete the following information):**
+ - OS: [e.g. ubuntu-20.04]
+ - モジュールのバージョン [e.g. 1.0.0]
+
+**Additional context**
+Add any other context about the problem here.
