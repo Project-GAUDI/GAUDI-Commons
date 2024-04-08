@@ -1,5 +1,5 @@
 ---
-name: 要望
+name: 機能追加・変更の要望
 about: プロジェクトに対する要望・提案を教えてください
 title: ''
 labels: enhancement
