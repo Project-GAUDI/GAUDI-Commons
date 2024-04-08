@@ -28,6 +28,8 @@ jobs:
     # テスト
     - name: Test
       run: dotnet test --no-build -c Release
+      env:
+        TEST_CONNECTION_STRING: ${{secrets.TEST_CONNECTION_STRING}}
 
     - name: Publish package
       run: |
