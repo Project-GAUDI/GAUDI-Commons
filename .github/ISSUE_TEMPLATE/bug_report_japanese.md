@@ -20,9 +20,10 @@ assignees: ''
 **スクリーンショット**
 可能であれば、問題を説明するのに役立つスクリーンショットを追加してください。
 
-**Desktop (please complete the following information):**
+**実行環境を詳しく教えてください:**
  - OS: [e.g. ubuntu-20.04]
  - モジュールのバージョン [e.g. 1.0.0]
+ など
 
 **Additional context**
 Add any other context about the problem here.
