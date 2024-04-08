@@ -1,21 +1,25 @@
 name: Publish NuGet Package
 
 on:
-  push:
-    tags:
-      - 'Release/*' 
+  workflow_dispatch:
+    inputs:
+      release-version:
+        description: 'Release Version'
+        required: true
 
 jobs:
   build-and-publish:
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
     # .NETのセットアップ
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '6.0.x' # .NETバージョンに応じて調整
+        dotnet-version: '6.0.x'
 
     # パッケージ復元
     - name: Restore dependencies
@@ -30,8 +34,16 @@ jobs:
       run: dotnet test --no-build -c Release
       env:
         TEST_CONNECTION_STRING: ${{secrets.TEST_CONNECTION_STRING}}
-
+    
+    # パッケージ公開
     - name: Publish package
       run: |
         dotnet pack --no-build -c Release -o nupkg
         dotnet nuget push "nupkg/*.nupkg" --api-key ${{secrets.GITHUB_TOKEN}} --source "https://nuget.pkg.github.com/Project-GAUDI/index.json" --skip-duplicate
+        
+    # タグ付け
+    - name: Create tag
+      run: |
+        git tag ${{ inputs.release-version }}
+        git push origin ${{ inputs.release-version }}
+        

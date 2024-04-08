@@ -1,13 +1,17 @@
 name: Build and Test
 
 on:
+  pull_request:
+    branches: 
+      - 'develop'
+      - main
   push:
     branches:
       - 'develop'
       - main
 
 jobs:
-  build-and-publish:
+  build-and-test:
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v4
