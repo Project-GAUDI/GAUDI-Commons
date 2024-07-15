@@ -46,4 +46,5 @@ jobs:
       run: |
         git tag ${{ inputs.release-version }}
         git push origin ${{ inputs.release-version }}
-        
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
