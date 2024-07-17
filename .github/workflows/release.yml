@@ -1,11 +1,8 @@
 name: Publish NuGet Package
 
 on:
-  workflow_dispatch:
-    inputs:
-      release-version:
-        description: 'Release Version'
-        required: true
+  release:
+    types: [published]
 
 jobs:
   build-and-publish:
@@ -40,9 +37,3 @@ jobs:
       run: |
         dotnet pack --no-build -c Release -o nupkg
         dotnet nuget push "nupkg/*.nupkg" --api-key ${{secrets.GITHUB_TOKEN}} --source "https://nuget.pkg.github.com/Project-GAUDI/index.json" --skip-duplicate
-        
-    # タグ付け
-    - name: Create tag
-      run: |
-        git tag ${{ inputs.release-version }}
-        git push origin ${{ inputs.release-version }}
