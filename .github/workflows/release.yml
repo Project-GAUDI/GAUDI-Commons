@@ -34,11 +34,11 @@ jobs:
       run: dotnet build ./src/TICO.GAUDI.Commons.csproj -c Release
 
     - name: Build Test project
-      run: dotnet build ./src/TICO.GAUDI.Commons.Test.csproj -c Release
+      run: dotnet build ./test/TICO.GAUDI.Commons.Test.csproj -c Release
 
     # テスト
     - name: Test Commons project
-      run: dotnet test ./src/TICO.GAUDI.Commons.Test.csproj --no-restore --filter "Phase!=Unit"
+      run: dotnet test ./test/TICO.GAUDI.Commons.Test.csproj --no-restore --filter "Phase!=Unit"
       env:
         NUGET_PLUGIN_HANDSHAKE_TIMEOUT_IN_SECONDS: 60
         NUGET_PLUGIN_REQUEST_TIMEOUT_IN_SECONDS: 60
