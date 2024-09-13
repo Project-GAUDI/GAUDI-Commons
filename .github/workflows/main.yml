@@ -16,7 +16,7 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4
 
@@ -24,7 +24,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '6.0.x' # .NETバージョンに応じて調整
+        dotnet-version: '8.0.x' # .NETバージョンに応じて調整
 
     # パッケージ復元
     - name: Restore dependencies
@@ -37,5 +37,3 @@ jobs:
     # テスト
     - name: Test
       run: dotnet test --no-build -c Release
-      env:
-        TEST_CONNECTION_STRING: ${{secrets.TEST_CONNECTION_STRING}}
