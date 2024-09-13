@@ -1,17 +1,17 @@
-# GAUDI-Commons
+---
+slug: "/iotedge-v2/iotedge-v2-Commons/6.0.4/spec"
+version: "6.0.4"
+---
+
+# Commons(6.0.4)
 
 ## 目次
-* [概要](#概要)
-* [Quick Start](#quick-start)
+
 * [Deployment 設定値](#deployment-設定値)
   * [環境変数](#環境変数)
-* [Feedback](#feedback)
-* [LICENSE](#license)
+* [利用可能クラス](#利用可能クラス)
+  * [class1](#class1)
 
-## 概要
-GAUDI-Commonsは、GAUDI-Projectで利用される共通処理をまとめたレポジトリです。
-
-## Quick Start
 
 ## Deployment 設定値
 
@@ -31,8 +31,11 @@ GAUDI-Commonsは、GAUDI-Projectで利用される共通処理をまとめたレ
 Edge→Fog間の拡張サイズメッセージの送信は可能。<br>
 ※2：edgeHubは、メッセージサイズ拡張対応が入っているGAUDIIotEdge-Hubを使用し、edgeHub・送信先モジュールにもMessageSizeLimitExpansion=trueが設定されている必要がある。<br>
 
-## Feedback
-お気づきの点があれば、ぜひIssueにてお知らせください。
+## 利用可能クラス
 
-## LICENSE
-GAUDI-Commons is licensed under the MIT License, see the [LICENSE](LICENSE) file for details.
+順次追加予定
+
+### class1
+
+* 機能概要
+  xxxx
