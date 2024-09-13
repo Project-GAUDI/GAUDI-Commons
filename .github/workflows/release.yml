@@ -54,7 +54,7 @@ jobs:
       env:
         VERSION: ${{ github.event.release.tag_name }}
       run: |
-        dotnet pack ./src/TICO.GAUDI.Commons.Test.csproj -c Release -o ./test -p:PackageVersion=${{ env.VERSION }}
+        dotnet pack ./test/TICO.GAUDI.Commons.Test.csproj -c Release -o ./test -p:PackageVersion=${{ env.VERSION }}
 
     # プロジェクトのパッケージをGitHub Packagesにプッシュ
     - name: Publish Commons package

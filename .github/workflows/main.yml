@@ -44,7 +44,7 @@ jobs:
       run: dotnet build ./src/TICO.GAUDI.Commons.csproj -c Release
 
     - name: Build Test project
-      run: dotnet build ./src/TICO.GAUDI.Commons.Test.csproj -c Release
+      run: dotnet build ./test/TICO.GAUDI.Commons.Test.csproj -c Release
 
     # テスト
     - name: Test Commons project
