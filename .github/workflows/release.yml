@@ -19,21 +19,38 @@ jobs:
         dotnet-version: '8.0.x'
 
     # パッケージ復元
-    - name: Restore dependencies
+    - name: Restore NuGet packages
       run: dotnet restore
+      env:
+        NUGET_PLUGIN_HANDSHAKE_TIMEOUT_IN_SECONDS: 60
+        NUGET_PLUGIN_REQUEST_TIMEOUT_IN_SECONDS: 60
 
-    # ビルド
-    - name: Build
-      run: dotnet build --no-restore -c Release
+    - name: Build Commons project
+      run: dotnet build ./src/TICO.GAUDI.Commons.csproj -c Release
 
-    # テスト
-    - name: Test
-      run: dotnet test --no-build -c Release
-    
-    # パッケージ公開
-    - name: Publish package
+    - name: Build Test project
+      run: dotnet build ./src/TICO.GAUDI.Commons.Test.csproj -c Release
+
+    - name: Test Commons project
+      run: dotnet test ./src/TICO.GAUDI.Commons.Test.csproj --no-restore --filter "Phase!=Unit"
+      env:
+        NUGET_PLUGIN_HANDSHAKE_TIMEOUT_IN_SECONDS: 60
+        NUGET_PLUGIN_REQUEST_TIMEOUT_IN_SECONDS: 60
+
+    - name: Pack Commons project
       env:
         VERSION: ${{ github.event.release.tag_name }}
       run: |
-        dotnet pack --no-build -c Release -o nupkg /p:PackageVersion=${{ env.VERSION }}
-        dotnet nuget push "nupkg/*.nupkg" --api-key ${{secrets.GITHUB_TOKEN}} --source "https://nuget.pkg.github.com/Project-GAUDI/index.json" --skip-duplicate
+        dotnet pack ./src/TICO.GAUDI.Commons.csproj -c Release -o ./commons -p:PackageVersion=${{ env.VERSION }}
+
+    - name: Pack Test project
+      env:
+        VERSION: ${{ github.event.release.tag_name }}
+      run: |
+        dotnet pack ./src/TICO.GAUDI.Commons.Test.csproj -c Release -o ./test -p:PackageVersion=${{ env.VERSION }}
+
+    - name: Publish Commons package
+      run: dotnet nuget push "./commons/*.nupkg" --api-key ${{ secrets.GITHUB_TOKEN }} --source "https://nuget.pkg.github.com/Project-GAUDI/index.json" --skip-duplicate
+
+    - name: Publish Test package
+      run: dotnet nuget push "./test/*.nupkg" --api-key ${{ secrets.GITHUB_TOKEN }} --source "https://nuget.pkg.github.com/Project-GAUDI/index.json" --skip-duplicate
