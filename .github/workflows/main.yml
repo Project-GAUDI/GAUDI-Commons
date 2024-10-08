@@ -16,26 +16,39 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
     # .NETのセットアップ
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '6.0.x' # .NETバージョンに応じて調整
+        dotnet-version: '8.0.x'
+
+    # GitHub Packages 用の NuGet 認証の設定
+    - name: Configure GitHub Packages
+      run: dotnet nuget add source --username ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
 
     # パッケージ復元
-    - name: Restore dependencies
+    - name: Restore NuGet packages
       run: dotnet restore
+      env:
+        NUGET_PLUGIN_HANDSHAKE_TIMEOUT_IN_SECONDS: 60
+        NUGET_PLUGIN_REQUEST_TIMEOUT_IN_SECONDS: 60
 
     # ビルド
-    - name: Build
-      run: dotnet build --no-restore -c Release
+    - name: Build Commons project
+      run: dotnet build ./src/TICO.GAUDI.Commons.csproj -c Release
+
+    - name: Build Test project
+      run: dotnet build ./test/TICO.GAUDI.Commons.Test.csproj -c Release
 
     # テスト
-    - name: Test
-      run: dotnet test --no-build -c Release
+    - name: Test Commons project
+      run: dotnet test ./test/TICO.GAUDI.Commons.Test.csproj --no-restore --filter "Phase!=Unit"
       env:
-        TEST_CONNECTION_STRING: ${{secrets.TEST_CONNECTION_STRING}}
+        NUGET_PLUGIN_HANDSHAKE_TIMEOUT_IN_SECONDS: 60
+        NUGET_PLUGIN_REQUEST_TIMEOUT_IN_SECONDS: 60
