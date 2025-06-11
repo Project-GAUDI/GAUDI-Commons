@@ -66,7 +66,7 @@ namespace TICO.GAUDI.Commons
 
             try
             {
-                status = await Init();
+                status = await Init().ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -79,7 +79,7 @@ namespace TICO.GAUDI.Commons
             {
                 try
                 {
-                    status = await Ready();
+                    status = await Ready().ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
@@ -95,9 +95,9 @@ namespace TICO.GAUDI.Commons
                 engineCanceller = new CancellationTokenSource();
                 AssemblyLoadContext.Default.Unloading += (ctx) => engineCanceller.Cancel();
                 Console.CancelKeyPress += (sender, cpe) => engineCanceller.Cancel();
-                GetCancelWaitTask(engineCanceller.Token).Wait();
+                await GetCancelWaitTask(engineCanceller.Token).ConfigureAwait(false);
 
-                await Terminate(true);
+                await Terminate(true).ConfigureAwait(false);
             }
 
             MyLogger.WriteLog(ILogger.LogLevel.TRACE, $"End Method: RunAsync");
