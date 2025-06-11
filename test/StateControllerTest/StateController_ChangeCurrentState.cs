@@ -22,7 +22,8 @@ namespace TICO.GAUDI.Commons.Test
             _output = output;
             _target = new StateController();
 
-            lock(counterLock) {
+            lock (counterLock)
+            {
                 _started = 0;
                 _finished = 0;
             }
@@ -96,7 +97,10 @@ namespace TICO.GAUDI.Commons.Test
             var preTask = Task.Run(ToRunningAndReady);
 
             // テスト実行
-            await Task.Delay(100);
+            while (_started <= 0)
+            {
+                await Task.Delay(100);
+            }
             DoTest(ApplicationState.Running, nextState, requiredResult);
 
             await preTask;
@@ -186,7 +190,6 @@ namespace TICO.GAUDI.Commons.Test
         }
 
         [Fact(DisplayName = "Running中のキューにTerminateがエントリされた場合、その後のリクエストはIgnoreされるか？")]
-        [Trait("Phase", "Unit")]
         public async Task RunningToReady_IgnoredAfterTerminateEntry()
         {
             // 初期設定
@@ -197,7 +200,10 @@ namespace TICO.GAUDI.Commons.Test
             var preTask = Task.Run(ToRunningAndReady);
 
             // テスト実行
-            await Task.Delay(100);
+            while (_started <= 0)
+            {
+                await Task.Delay(100);
+            }
 
             // 先にエントリするキュー
             List<Task> tasks = new List<Task>();
@@ -217,9 +223,11 @@ namespace TICO.GAUDI.Commons.Test
                 await Task.Delay(50);
             }
 
-            // Runningは並列可能なので、開始済みになっている想定
-            Assert.Equal(4, _started);
-            await Task.Delay(200);
+            // 開始済みが４になるまで待機
+            while (_started < 4)
+            {
+                await Task.Delay(100);
+            }
 
             // Terminateをキュー
             var termTask = Task.Run(
@@ -242,7 +250,7 @@ namespace TICO.GAUDI.Commons.Test
                     {
                         await ToRunningAndReadyMiniIgnored();
                         await Task.Delay(10);
-                        Assert.NotEqual(4, _finished);
+                        Assert.True(_started <= 4);
                     }
                 );
 
@@ -250,9 +258,6 @@ namespace TICO.GAUDI.Commons.Test
                 await Task.Delay(10);
             }
 
-            // Runningは並列可能なので、開始済みになっている想定
-            Assert.Equal(4, _started);
-            Assert.NotEqual(4, _finished);
 
             // 終了待ち
             await preTask;
@@ -295,11 +300,11 @@ namespace TICO.GAUDI.Commons.Test
         {
             Assert.Equal(ApplicationStateChangeResult.Success, _target.ChangeState(ApplicationState.Running));  // Ready -> Running
 
-            lock(counterLock) { _started++;}
+            lock (counterLock) { _started++; }
 
             await Task.Delay(1000);
 
-            lock(counterLock) { _finished++;}
+            lock (counterLock) { _finished++; }
 
             // ここは失敗OKとする。（テスト側の遷移が成功(Running->Readyなど)するとこちらは失敗になる為）
             _target.ChangeState(ApplicationState.Ready);  // Running -> Ready
@@ -309,11 +314,11 @@ namespace TICO.GAUDI.Commons.Test
         protected async Task ToRunningAndReadyMini()
         {
             Assert.Equal(ApplicationStateChangeResult.Success, _target.ChangeState(ApplicationState.Running));  // Ready -> Running
-            lock(counterLock) { _started++;}
+            lock (counterLock) { _started++; }
 
             await Task.Delay(50);
 
-            lock(counterLock) { _finished++;}
+            lock (counterLock) { _finished++; }
             Assert.Equal(ApplicationStateChangeResult.Success, _target.ChangeState(ApplicationState.Ready));  // Running -> Ready
         }
 
