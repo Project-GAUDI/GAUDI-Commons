@@ -14,11 +14,13 @@ namespace TICO.GAUDI.Commons.Test
     {
         static ILogger MyLogger { get; } = StubLoggerFactory.GetLogger(typeof(StubApplicationMain));
 
-        public void Dispose()
+        public async ValueTask DisposeAsync()
         {
-            MyLogger.WriteLog(ILogger.LogLevel.TRACE, $"Start Method: Dispose");
+            MyLogger.WriteLog(ILogger.LogLevel.TRACE, $"Start Method: DisposeAsync");
 
-            MyLogger.WriteLog(ILogger.LogLevel.TRACE, $"End Method: Dispose");
+            await Task.CompletedTask; // 非同期リソース解放処理をここに記述
+
+            MyLogger.WriteLog(ILogger.LogLevel.TRACE, $"End Method: DisposeAsync");
         }
 
         /// <summary>
@@ -95,7 +97,7 @@ namespace TICO.GAUDI.Commons.Test
 
 
         /// <summary>
-        /// DesiredPropertis更新コールバック。					
+        /// DesiredProperties更新コールバック
         /// </summary>
         /// <param name="desiredProperties">DesiredPropertiesデータ。JSONのルートオブジェクトに相当。</param>
         /// <returns></returns>

@@ -7,7 +7,7 @@ namespace TICO.GAUDI.Commons
 {
 
     /// <summary>
-    /// Application Engine Interface class
+    /// Application Engine Internal class
     /// </summary>
     public interface IApplicationEngineInternal : IApplicationEngine
     {
@@ -26,9 +26,9 @@ namespace TICO.GAUDI.Commons
         /// エンジンの開放(internal)
         /// </summary>
         /// <param name="forced">
-        /// 強制終了フラグ
-        /// true：ステート遷移成否によらず、実行。
-        /// end：ステート遷移失敗時はエラー。
+        /// 強制終了フラグ（デフォルト：false）
+        /// true：ステート遷移成否によらず、実行
+        /// false：ステート遷移失敗時はエラー
         /// </param>
         public Task<bool> Term(bool forced=false);
 
@@ -36,9 +36,9 @@ namespace TICO.GAUDI.Commons
         /// エンジンの停止(internal)
         /// </summary>
         /// <param name="forced">
-        /// 強制終了フラグ
-        /// true：ステート遷移成否によらず、実行。
-        /// end：ステート遷移失敗時はエラー。
+        /// 強制終了フラグ（デフォルト：false）
+        /// true：ステート遷移成否によらず、実行
+        /// false：ステート遷移失敗時はエラー
         /// </param>
         public Task<bool> End(bool forced=false);
 
@@ -51,9 +51,9 @@ namespace TICO.GAUDI.Commons
         /// エンジンの終了(internal)
         /// </summary>
         /// <param name="forced">
-        /// 強制終了フラグ
-        /// true：ステート遷移成否によらず、実行。
-        /// end：ステート遷移失敗時はエラー。
+        /// 強制終了フラグ（デフォルト：false）
+        /// true：ステート遷移成否によらず、実行
+        /// false：ステート遷移失敗時はエラー
         /// </param>
         public Task<bool> Terminate(bool forced=false);
 

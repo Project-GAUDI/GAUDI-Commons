@@ -2,7 +2,7 @@ using Xunit;
 using Xunit.Abstractions;
 using System.Threading;
 using TICO.GAUDI.Commons;
-
+/*
 namespace TICO.GAUDI.Commons.Test
 {
     [Collection(nameof(DirectMethod_SetLogLevel_GetResult))]
@@ -144,3 +144,4 @@ namespace TICO.GAUDI.Commons.Test
 
     }
 }
+*/

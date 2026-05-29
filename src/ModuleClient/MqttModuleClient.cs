@@ -34,9 +34,18 @@ namespace TICO.GAUDI.Commons
 
     }
 
+    /// <summary>
+    /// Azure IoT Edge モジュール用の IModuleClient インターフェースの MQTT ベース実装を提供
+    /// </summary>
     public class MqttModuleClient : IModuleClient
     {
+        /// <summary>
+        /// MQTTクライアントインスタンス
+        /// </summary>
         public MqttClient MyMqttClient { get; internal set; } = null;
+        /// <summary>
+        /// IoT接続状態
+        /// </summary>
         public IotConnectionStatus ConnectionStatus{get;set;} = IotConnectionStatus.Disconnected;
 
         private TransportTopic defaultSendTopic;
@@ -82,6 +91,14 @@ namespace TICO.GAUDI.Commons
         // ツイン取得タイムアウト
         private readonly TimeSpan twinTimeout = TimeSpan.FromSeconds(60);
 
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
+        /// <param name="sas">SASトークン</param>
+        /// <param name="hostName">ホスト名</param>
+        /// <param name="device">デバイスID</param>
+        /// <param name="defaultSendTopic">デフォルト送信トピック</param>
+        /// <param name="defaultReceiveTopic">デフォルト受信トピック</param>
         public MqttModuleClient(string sas, string hostName = null, string device = null, TransportTopic defaultSendTopic = TransportTopic.Iothub, TransportTopic defaultReceiveTopic = TransportTopic.Iothub)
         {
             hubHostName = Environment.GetEnvironmentVariable("IOTEDGE_IOTHUBHOSTNAME");
@@ -139,6 +156,10 @@ namespace TICO.GAUDI.Commons
             MyMqttClient.MqttMsgPublishReceived += Client_MqttMsgPublishReceived;
         }
 
+        /// <summary>
+        /// MQTTクライアント切断処理
+        /// </summary>
+        /// <returns>非同期タスク</returns>
         public async Task CloseAsync()
         {
             await Task.CompletedTask;
@@ -146,11 +167,18 @@ namespace TICO.GAUDI.Commons
             MyMqttClient.Disconnect();
         }
 
+        /// <summary>
+        /// リソース解放処理
+        /// </summary>
         public void Dispose()
         {
             inputNames.Clear();
         }
 
+        /// <summary>
+        /// MQTTクライアント接続処理
+        /// </summary>
+        /// <returns>非同期タスク</returns>
         public async Task OpenAsync()
         {
             await Task.CompletedTask;
@@ -177,6 +205,10 @@ namespace TICO.GAUDI.Commons
             }
         }
 
+        /// <summary>
+        /// ツイン情報取得処理
+        /// </summary>
+        /// <returns>ツイン情報</returns>
         public async Task<Twin> GetTwinAsync()
         {
             using (var responseReceived = new SemaphoreSlim(0))
@@ -237,11 +269,24 @@ namespace TICO.GAUDI.Commons
             }
         }
 
+        /// <summary>
+        /// イベント送信処理
+        /// </summary>
+        /// <param name="outputName">出力名</param>
+        /// <param name="message">送信メッセージ</param>
+        /// <returns>非同期タスク</returns>
         public async Task SendEventAsync(string outputName, IotMessage message)
         {
             await SendEventAsync(outputName, message, defaultSendTopic).ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// イベント送信処理（トピック指定）
+        /// </summary>
+        /// <param name="outputName">出力名</param>
+        /// <param name="message">送信メッセージ</param>
+        /// <param name="transportTopic">送信トピック</param>
+        /// <returns>非同期タスク</returns>
         public async Task SendEventAsync(string outputName, IotMessage message, TransportTopic transportTopic = TransportTopic.Iothub)
         {
             await Task.CompletedTask;
@@ -267,11 +312,24 @@ namespace TICO.GAUDI.Commons
             MyMqttClient.Publish(prefix, message.GetBytes());
         }
 
+        /// <summary>
+        /// ツインプロパティ更新コールバック設定処理
+        /// </summary>
+        /// <param name="callback">コールバック</param>
+        /// <param name="userContext">ユーザーコンテキスト</param>
+        /// <returns>非同期タスク</returns>
         public async Task SetDesiredPropertyUpdateCallbackAsync(DesiredPropertyUpdateCallback callback, object userContext)
         {
             await SetDesiredPropertyUpdateCallbackAsync(callback, userContext, defaultReceiveTopic).ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// ツインプロパティ更新コールバック設定処理（トピック指定）
+        /// </summary>
+        /// <param name="callback">コールバック</param>
+        /// <param name="userContext">ユーザーコンテキスト</param>
+        /// <param name="transportTopic">受信トピック</param>
+        /// <returns>非同期タスク</returns>
         public async Task SetDesiredPropertyUpdateCallbackAsync(DesiredPropertyUpdateCallback callback, object userContext, TransportTopic transportTopic)
         {
             await Task.CompletedTask;
@@ -280,11 +338,26 @@ namespace TICO.GAUDI.Commons
             patchUserContext = userContext;
         }
 
+        /// <summary>
+        /// 入力メッセージハンドラ設定処理
+        /// </summary>
+        /// <param name="inputName">入力名</param>
+        /// <param name="iotHandler">ハンドラ</param>
+        /// <param name="userContext">ユーザーコンテキスト</param>
+        /// <returns>非同期タスク</returns>
         public async Task SetInputMessageHandlerAsync(string inputName, IotMessageHandler iotHandler, object userContext)
         {
             await SetInputMessageHandlerAsync(inputName, iotHandler, userContext, defaultReceiveTopic).ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// 入力メッセージハンドラ設定処理（トピック指定）
+        /// </summary>
+        /// <param name="inputName">入力名</param>
+        /// <param name="iotHandler">ハンドラ</param>
+        /// <param name="userContext">ユーザーコンテキスト</param>
+        /// <param name="transportTopic">受信トピック</param>
+        /// <returns>非同期タスク</returns>
         public async Task SetInputMessageHandlerAsync(string inputName, IotMessageHandler iotHandler, object userContext, TransportTopic transportTopic = TransportTopic.Iothub)
         {
             await Task.CompletedTask;
@@ -318,11 +391,26 @@ namespace TICO.GAUDI.Commons
             }
         }
 
+        /// <summary>
+        /// メソッドハンドラ設定処理
+        /// </summary>
+        /// <param name="methodName">メソッド名</param>
+        /// <param name="methodHandler">ハンドラ</param>
+        /// <param name="userContext">ユーザーコンテキスト</param>
+        /// <returns>非同期タスク</returns>
         public async Task SetMethodHandlerAsync(string methodName, MethodCallback methodHandler, object userContext)
         {
             await SetMethodHandlerAsync(methodName, methodHandler, userContext, defaultReceiveTopic).ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// メソッドハンドラ設定処理（トピック指定）
+        /// </summary>
+        /// <param name="methodName">メソッド名</param>
+        /// <param name="methodHandler">ハンドラ</param>
+        /// <param name="userContext">ユーザーコンテキスト</param>
+        /// <param name="transportTopic">受信トピック</param>
+        /// <returns>非同期タスク</returns>
         public async Task SetMethodHandlerAsync(string methodName, MethodCallback methodHandler, object userContext, TransportTopic transportTopic)
         {
             await Task.Run(() =>
@@ -331,11 +419,22 @@ namespace TICO.GAUDI.Commons
             });
         }
 
+        /// <summary>
+        /// レポートプロパティ更新処理
+        /// </summary>
+        /// <param name="reportedProperties">レポートプロパティ</param>
+        /// <returns>非同期タスク</returns>
         public async Task UpdateReportedPropertiesAsync(TwinCollection reportedProperties)
         {
             await UpdateReportedPropertiesAsync(reportedProperties, defaultSendTopic).ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// レポートプロパティ更新処理（トピック指定）
+        /// </summary>
+        /// <param name="reportedProperties">レポートプロパティ</param>
+        /// <param name="transportTopic">送信トピック</param>
+        /// <returns>非同期タスク</returns>
         public async Task UpdateReportedPropertiesAsync(TwinCollection reportedProperties, TransportTopic transportTopic)
         {
             await Task.Run(() =>
@@ -344,7 +443,11 @@ namespace TICO.GAUDI.Commons
             });
         }
 
-        //LoggerFactory関連のコンパイルを通すためにダミー実装
+        /// <summary>
+        /// 接続状態変更ハンドラ設定処理
+        /// </summary>
+        /// <param name="statusChangeHandler">状態変更ハンドラ</param>
+        /// <returns>非同期タスク</returns>
         public async Task SetConnectionStatusChangedHandlerAsync(IotConnectionStatusChangeHandler statusChangeHandler)
         {
             // 使用しないため、空実装

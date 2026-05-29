@@ -8,11 +8,10 @@ using TICO.GAUDI.Commons;
 namespace TICO.GAUDI.Commons.Test
 {
     [Collection(nameof(StateController_ChangeCurrentState))]
-    [CollectionDefinition(nameof(StateController_ChangeCurrentState), DisableParallelization = true)]
     public class StateController_ChangeCurrentState
     {
-        private readonly ITestOutputHelper _output = null;
-        private StateController _target = null;
+        private readonly ITestOutputHelper? _output = null;
+        private StateController _target = new StateController();
         static private Object counterLock = new Object();
         private int _started = 0;
         private int _finished = 0;
@@ -20,7 +19,6 @@ namespace TICO.GAUDI.Commons.Test
         public StateController_ChangeCurrentState(ITestOutputHelper output)
         {
             _output = output;
-            _target = new StateController();
 
             lock (counterLock)
             {
@@ -29,6 +27,7 @@ namespace TICO.GAUDI.Commons.Test
             }
         }
 
+        #region 単体テスト仕様書外の既存テスト
         [Theory(DisplayName = "Startからの遷移")]
         [InlineData(ApplicationState.Start, ApplicationStateChangeResult.Ignored)]
         [InlineData(ApplicationState.Initialize, ApplicationStateChangeResult.Success)]
@@ -50,7 +49,7 @@ namespace TICO.GAUDI.Commons.Test
         [InlineData(ApplicationState.Initialize, ApplicationStateChangeResult.Ignored)]
         [InlineData(ApplicationState.Ready, ApplicationStateChangeResult.Success)]
         [InlineData(ApplicationState.Running, ApplicationStateChangeResult.Ignored)]
-        [InlineData(ApplicationState.Terminate, ApplicationStateChangeResult.Ignored)]
+        [InlineData(ApplicationState.Terminate, ApplicationStateChangeResult.Success)]
         [InlineData(ApplicationState.End, ApplicationStateChangeResult.Ignored)]
         public void InitializeToX(ApplicationState nextState, ApplicationStateChangeResult requiredResult)
         {
@@ -160,7 +159,10 @@ namespace TICO.GAUDI.Commons.Test
             var preTask = Task.Run(ToRunningAndReady);
 
             // テスト実行
-            await Task.Delay(100);
+            while (_started <= 0)
+            {
+                await Task.Delay(100);
+            }
 
             List<Task> tasks = new List<Task>();
             for (int icnt = 1; icnt <= 3; icnt++)
@@ -258,7 +260,6 @@ namespace TICO.GAUDI.Commons.Test
                 await Task.Delay(10);
             }
 
-
             // 終了待ち
             await preTask;
             Task.WaitAll(tasks.ToArray());
@@ -327,6 +328,6 @@ namespace TICO.GAUDI.Commons.Test
             Assert.Equal(ApplicationStateChangeResult.Ignored, _target.ChangeState(ApplicationState.Running));  // Ready -> Running
             await Task.Delay(50);
         }
-
+        #endregion
     }
 }

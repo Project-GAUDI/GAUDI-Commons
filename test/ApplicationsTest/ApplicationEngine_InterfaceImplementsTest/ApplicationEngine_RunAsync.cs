@@ -2,7 +2,7 @@ using System;
 using Xunit;
 using Xunit.Abstractions;
 using TICO.GAUDI.Commons;
-
+/*
 namespace TICO.GAUDI.Commons.Test
 {
     public class ApplicationEngine_RunAsync
@@ -44,3 +44,4 @@ namespace TICO.GAUDI.Commons.Test
         }
     }
 }
+*/

@@ -5,6 +5,7 @@
     <Authors>TOYOTA INDUSTRIES CORPORATION</Authors>
     <Company>TOYOTA INDUSTRIES CORPORATION</Company>
     <Copyright>© TOYOTA INDUSTRIES CORPORATION. All rights reserved.</Copyright>
+    <DocumentationFile>TICO.GAUDI.Commons.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

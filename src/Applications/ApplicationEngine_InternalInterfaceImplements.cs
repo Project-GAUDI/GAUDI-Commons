@@ -69,19 +69,6 @@ namespace TICO.GAUDI.Commons
             {
                 // Loggerへモジュールクライアントを設定
                 MyLogger.SetModuleClient(MyModuleClient);
-
-                // 環境変数からログレベルを設定
-                string logEnv = Environment.GetEnvironmentVariable("LogLevel");
-                try
-                {
-                    if (logEnv != null) MyLogger.SetOutputLogLevel(logEnv);
-                    MyLogger.WriteLog(ILogger.LogLevel.INFO, $"Output log level is: {MyLogger.OutputLogLevel.ToString()}");
-                }
-                catch (ArgumentException)
-                {
-                    MyLogger.WriteLog(ILogger.LogLevel.WARN, $"Environment LogLevel does not expected string. Default value ({MyLogger.OutputLogLevel.ToString()}) assigned.");
-                    status = false;
-                }
             }
             MyLogger.WriteLog(ILogger.LogLevel.INFO, $"Logger initialized.");
 
@@ -182,8 +169,8 @@ namespace TICO.GAUDI.Commons
         /// </summary>
         /// <param name="forced">
         /// 強制終了フラグ
-        /// true：ステート遷移成否によらず、実行。
-        /// end：ステート遷移失敗時はエラー。
+        /// true：ステート遷移成否によらず、実行
+        /// false：ステート遷移失敗時はエラー
         /// </param>
         public async Task<bool> End(bool forced = false)
         {
@@ -220,8 +207,8 @@ namespace TICO.GAUDI.Commons
         /// </summary>
         /// <param name="forced">
         /// 強制終了フラグ
-        /// true：ステート遷移成否によらず、実行。
-        /// end：ステート遷移失敗時はエラー。
+        /// true：ステート遷移成否によらず、実行
+        /// false：ステート遷移失敗時はエラー
         /// </param>
         public async Task<bool> Term(bool forced = false)
         {
@@ -246,6 +233,10 @@ namespace TICO.GAUDI.Commons
             // 取得済みのModuleClientを解放する
             if (MyModuleClient != null)
             {
+                // Logger設定をクリア（アップロード無効化）
+                MyLogger.SetModuleClient(null);
+                MyLogger.WriteLog(ILogger.LogLevel.INFO, $"ModuleClient Logger cleared.");
+                
                 messageInputEventData.Keys.Select(async (key) =>
                 {
                     await MyModuleClient.SetInputMessageHandlerAsync(key, null, null);
@@ -462,7 +453,7 @@ namespace TICO.GAUDI.Commons
         /// <summary>
         /// Twin受信時コールバック(internal)
         /// </summary>
-        /// <param name="twin">受信Twin</param>
+        /// <param name="desiredProperties">受信Twin</param>
         /// <param name="userContext">拡張データ</param>
         public async Task ReceiveTwinAsync(TwinCollection desiredProperties,
                                             object userContext)

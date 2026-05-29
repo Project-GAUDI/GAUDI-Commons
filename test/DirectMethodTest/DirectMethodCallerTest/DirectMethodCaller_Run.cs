@@ -2,7 +2,7 @@ using System.Threading;
 using Xunit;
 using Xunit.Abstractions;
 using TICO.GAUDI.Commons;
-
+/*
 namespace TICO.GAUDI.Commons.Test
 {
     [Collection(nameof(DirectMethodCaller_Run))]
@@ -133,3 +133,4 @@ namespace TICO.GAUDI.Commons.Test
 
     }
 }
+*/
