@@ -125,7 +125,7 @@ namespace TICO.GAUDI.Commons
             {
                 // 遷移可能
                 // カレントの切り替え
-                var status = SetCurrentState(nextState);
+                SetCurrentState(nextState);
                 result = ApplicationStateChangeResult.Success;
 
                 entrySemaphor.Release();
@@ -171,7 +171,7 @@ namespace TICO.GAUDI.Commons
                     entrySemaphor.Wait();
 
                     // カレントの切り替え
-                    var status = SetCurrentState(nextState);
+                    SetCurrentState(nextState);
 
                     // キューイング中の個別処理を実施
                     switch (nextState)
@@ -196,10 +196,8 @@ namespace TICO.GAUDI.Commons
             return result;
         }
 
-        protected bool SetCurrentState(ApplicationState newCurrentState)
+        protected void SetCurrentState(ApplicationState newCurrentState)
         {
-            bool result = false;
-
             if ( currentState == newCurrentState ) {
                 // カレントおよび遷移先が同一の場合、タスク数をインクリメントする
                 tasksInCurrentState ++;
@@ -235,8 +233,6 @@ namespace TICO.GAUDI.Commons
                 default:
                     break;
             }
-
-            return result;
         }
 
         protected StateTransitable GetTransitable(ApplicationState nextState)
@@ -272,7 +268,7 @@ namespace TICO.GAUDI.Commons
             retTransiTable.Add(new TransitableInfo( ApplicationState.Initialize, ApplicationState.Initialize, StateTransitable.Undefined) );
             retTransiTable.Add(new TransitableInfo( ApplicationState.Initialize, ApplicationState.Ready, StateTransitable.Transitable) );
             retTransiTable.Add(new TransitableInfo( ApplicationState.Initialize, ApplicationState.Running, StateTransitable.Untransitable) );
-            retTransiTable.Add(new TransitableInfo( ApplicationState.Initialize, ApplicationState.Terminate, StateTransitable.Untransitable) );
+            retTransiTable.Add(new TransitableInfo( ApplicationState.Initialize, ApplicationState.Terminate, StateTransitable.Transitable, true) );
             retTransiTable.Add(new TransitableInfo( ApplicationState.Initialize, ApplicationState.End, StateTransitable.Untransitable) );
 
             // ApplicationState.Ready

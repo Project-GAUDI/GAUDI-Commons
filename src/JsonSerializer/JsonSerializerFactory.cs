@@ -2,18 +2,49 @@
 
 namespace TICO.GAUDI.Commons
 {
+    /// <summary>
+    /// シリアライザタイプ
+    /// </summary>
     public enum SerializerType {
+        /// <summary>
+        /// デフォルトのシリアライザタイプ
+        /// </summary>
         Default,
+        /// <summary>
+        /// System.Runtime を使用するシリアライザタイプ
+        /// </summary>
         SysRuntimeSerialization,
+        /// <summary>
+        /// Newtonsoft.Json を使用するシリアライザタイプ
+        /// </summary>
         NewtonsoftJson
     }
 
+    /// <summary>
+    /// Jsonシリアライザファクトリークラス
+    /// </summary>
     public class JsonSerializerFactory 
     {
+        /// <summary>
+        /// デフォルトシリアライザ環境変数名
+        /// </summary>
         protected const string ENVNAME_DEFAULT_SERIALIZER = "IOTEDGE_COMMON_DEFAULT_JSONSERIALIZER";
+        /// <summary>
+        /// システムランタイムシリアライザ環境変数値
+        /// </summary>
         protected const string ENVVALUE_SERIALIZER_SYSRUNTIME = "SYSRUNTIMESERIALIZATION";
+        /// <summary>
+        /// NNewtonsoft.Json シリアライザ環境変数値
+        /// </summary>
         protected const string ENVVALUE_SERIALIZER_NEWTONSOFT = "NEWTONSOFTJSON";
 
+        /// <summary>
+        /// 指定したシリアライザタイプに対応した IJsonSerializer クラスのインスタンスを取得する。
+        /// シリアライザタイプが Default の場合、ENV:IOTEDGE_COMMON_DEFAULT_JSONSERIALIZER が指定されていれば、それを使用する。
+        /// ENV:IOTEDGE_COMMON_DEFAULT_JSONSERIALIZER が指定されていなければ、"NEWTONSOFTJSON" を使用する。
+        /// </summary>
+        /// <param name="serializerType">シリアライザタイプ（デフォルト：Default）</param>
+        /// <returns>IJsonSerializerインスタンス</returns>
         public static IJsonSerializer GetJsonSerializer(SerializerType serializerType = SerializerType.Default)
         {
             IJsonSerializer retSerializer = null;

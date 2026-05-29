@@ -1,0 +1,1958 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>TICO.GAUDI.Commons</name>
+    </assembly>
+    <members>
+        <member name="T:TICO.GAUDI.Commons.MyExtensions">
+            <summary>
+            内部使用用途の拡張メソッド実装クラス
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.MyExtensions.ToMessageResponse(System.Boolean)">
+            <summary>
+            MessageResponse -> bool結果置換
+            </summary>
+            <param name="thisResult"></param>
+            <returns>DirectMethodRequestインスタンス</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.MyExtensions.ToDirectMethodRequest(Microsoft.Azure.Devices.Client.MethodRequest)">
+            <summary>
+            MethodRequest -> DirectMethodRequest 変換
+            </summary>
+            <param name="thisMethodRequest"></param>
+            <returns>DirectMethodRequestインスタンス</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.MyExtensions.ToBytes(System.String)">
+            <summary>
+            string -> Byte[] 変換
+            </summary>
+            <param name="thisString"></param>
+            <returns></returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.MyExtensions.ToMethodResponse(TICO.GAUDI.Commons.DirectMethodResponse)">
+            <summary>
+            DirectMethodResponse -> MethodResponse 変換
+            </summary>
+            <param name="thisMethodResponse"></param>
+            <returns>MethodResponseインスタンス</returns>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.ApplicationEngine">
+            <summary>
+            Application Engine Implementation class
+            </summary>
+            <summary>
+            Application Engine IApplicationEngine Implementation class
+            </summary>
+            <summary>
+            Application Engine IApplicationEngineInternal Implementation class
+            </summary>
+        </member>
+        <member name="P:TICO.GAUDI.Commons.ApplicationEngine.MyLogger">
+            <summary>
+            ログ出力用クラス。					
+            初期化時に通信クラスを設定する。					
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.ApplicationEngine.applicationMain">
+            <summary>
+            アプリケーションメインインスタンス
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.ApplicationEngine.messageInputEventData">
+            <summary>
+            メッセージ受信時のイベントデータ					
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.ApplicationEngine.methodRequestEventData">
+            <summary>
+            ダイレクトメソッド受信時のイベントデータ
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.ApplicationEngine.MyModuleClient">
+            <summary>
+            モジュールクライアント
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.ApplicationEngine.stateController">
+            <summary>
+            ステート管理クラス
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.ApplicationEngine.engineCanceller">
+            <summary>
+            エンジンキャンセル用トークン
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.ApplicationEngine.GetCancelWaitTask(System.Threading.CancellationToken)">
+            <summary>
+            Handles cleanup operations when app is cancelled or unloads
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.ApplicationEngine.DesiredPropertiesUpdate(Microsoft.Azure.Devices.Shared.TwinCollection,System.Object)">
+            <summary>
+            プロパティ更新処理
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.ApplicationEngine.DisposeAsync">
+            <summary>
+            リソース解放
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.ApplicationEngine.SetApplication(TICO.GAUDI.Commons.IApplicationMain)">
+            <summary>
+            アプリケーションインスタンスを注入
+            </summary>
+            <param name="applicationMain">アプリケーションメインインスタンス</param>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.ApplicationEngine.RunAsync">
+            <summary>
+            アプリケーションエンジン起動
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.ApplicationEngine.SetApplicationRunningAsync">
+            <summary>
+            アプリケーション実行権獲得
+            </summary>
+            <returns>状態遷移結果</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.ApplicationEngine.UnsetApplicationRunningAsync">
+            <summary>
+            アプリケーション実行権解放
+            </summary>
+            <returns>状態遷移結果</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.ApplicationEngine.SetApplicationRestartAsync">
+            <summary>
+            アプリケーション再起動（致命的障害時用）
+            </summary>
+            <returns>状態遷移結果</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.ApplicationEngine.IsTerminating">
+            <summary>
+            終了中
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.ApplicationEngine.AddMessageInputHandlerAsync(System.String,TICO.GAUDI.Commons.MessageEventHandler,System.Object)">
+            <summary>
+            メッセージ入力時のイベント処理追加
+            </summary>
+            <param name="inputName">入力名</param>
+            <param name="msgHandler">イベントコールバック</param>
+            <param name="userContext">拡張データ(省略可能)</param>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.ApplicationEngine.SendMessageAsync(System.String,TICO.GAUDI.Commons.IotMessage)">
+            <summary>
+            メッセージ送信
+            </summary>
+            <param name="outputName">出力名</param>
+            <param name="sendingMsg">送信メッセージ</param>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.ApplicationEngine.AddDirectMethodHandlerAsync(System.String,TICO.GAUDI.Commons.DirectMethodHandler,System.Object)">
+            <summary>
+            ダイレクトメソッド受信時のイベントコールバック追加
+            </summary>
+            <param name="methodName">呼び出しダイレクトメソッド名</param>
+            <param name="methodHandler">イベントコールバック</param>
+            <param name="userContext">拡張データ</param>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.ApplicationEngine.Init">
+            <summary>
+            エンジンの初期化(internal)
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.ApplicationEngine.Ready">
+            <summary>
+            エンジンの待機(internal)
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.ApplicationEngine.End(System.Boolean)">
+            <summary>
+            エンジンの停止(internal)
+            </summary>
+            <param name="forced">
+            強制終了フラグ
+            true：ステート遷移成否によらず、実行
+            false：ステート遷移失敗時はエラー
+            </param>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.ApplicationEngine.Term(System.Boolean)">
+            <summary>
+            エンジンの開放処理(internal)
+            </summary>
+            <param name="forced">
+            強制終了フラグ
+            true：ステート遷移成否によらず、実行
+            false：ステート遷移失敗時はエラー
+            </param>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.ApplicationEngine.Restart">
+            <summary>
+            エンジンの再起動(internal)
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.ApplicationEngine.Terminate(System.Boolean)">
+            <summary>
+            エンジンの終了(internal)
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.ApplicationEngine.Enqueue(TICO.GAUDI.Commons.ApplicationState)">
+            <summary>
+            指定状態への遷移キューイング(internal)
+            </summary>
+            <param name="appState">遷移先状態</param>
+            <returns>状態遷移結果</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.ApplicationEngine.Dequeue">
+            <summary>
+            指定状態への遷移キュー解放(internal)
+            </summary>
+            <returns>状態遷移結果</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.ApplicationEngine.ReceiveMessageAsync(TICO.GAUDI.Commons.IotMessage,System.Object)">
+            <summary>
+            メッセージ受信時コールバック(internal)
+            </summary>
+            <param name="message">受信メッセージ</param>
+            <param name="userContext">拡張データ</param>
+            <returns>メッセージ処理結果</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.ApplicationEngine.ReceiveTwinAsync(Microsoft.Azure.Devices.Shared.TwinCollection,System.Object)">
+            <summary>
+            Twin受信時コールバック(internal)
+            </summary>
+            <param name="desiredProperties">受信Twin</param>
+            <param name="userContext">拡張データ</param>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.ApplicationEngine.ReceiveMethodAsync(Microsoft.Azure.Devices.Client.MethodRequest,System.Object)">
+            <summary>
+            ダイレクトメソッド受信時コールバック(internal)
+            </summary>
+            <param name="request">ダイレクトメソッドリクエストデータ</param>
+            <param name="userContext">拡張データ</param>
+            <returns>ダイレクトメソッド応答</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.ApplicationEngine.OnConnectionStatusChangedAsync(TICO.GAUDI.Commons.IotConnectionStatus,TICO.GAUDI.Commons.IotConnectionStatusChangeReason)">
+            <summary>
+            通信ステータス更新時のコールバック(internal)
+            </summary>
+            <param name="status">ステータス</param>
+            <param name="reason">更新理由</param>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.ApplicationEngineFactory">
+            <summary>
+            Application Engine Factory class
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.ApplicationEngineFactory.applicationEngine">
+            <summary>
+            エンジンインスタンス(Singleton)					
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.ApplicationEngineFactory.GetEngine">
+            <summary>
+            IApplicationEngine クラスのインスタンスを取得する。
+            </summary>
+            <returns>インスタンス</returns>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.ApplicationState">
+            <summary>
+            アプリケーション状態
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.ApplicationState.Start">
+            <summary>
+            開始状態
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.ApplicationState.Initialize">
+            <summary>
+            初期化状態
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.ApplicationState.Ready">
+            <summary>
+            待機状態
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.ApplicationState.Running">
+            <summary>
+            実行中状態
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.ApplicationState.Terminate">
+            <summary>
+            終了処理状態
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.ApplicationState.End">
+            <summary>
+            終了状態
+            </summary>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.ApplicationStateChangeResult">
+            <summary>
+            アプリケーション状態変更結果
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.ApplicationStateChangeResult.Success">
+            <summary>
+            成功
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.ApplicationStateChangeResult.Ignored">
+            <summary>
+            無視
+            </summary>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.MessageEventHandler">
+            <summary>
+            メッセージ受信イベントハンドラー
+            </summary>
+            <param name="inputName">インプット名</param>
+            <param name="message">イベントコールバック</param>
+            <param name="userContext">拡張データ</param>
+            <returns>処理成功(true)、処理失敗(false)</returns>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.DirectMethodHandler">
+            <summary>
+            ダイレクトメソッド受信イベントハンドラー
+            </summary>
+            <param name="methodName">メソッド名</param>
+            <param name="methodRequest">リクエストデータ</param>
+            <param name="userContext">拡張データ</param>
+            <returns>実行結果</returns>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.IApplicationEngine">
+            <summary>
+            Application Engine Interface class
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IApplicationEngine.SetApplication(TICO.GAUDI.Commons.IApplicationMain)">
+            <summary>
+            引数で受け取った IApplicationMain インスタンスを内部に保持する。
+            </summary>
+            <param name="applicationMain">アプリケーションメインインスタンス</param>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IApplicationEngine.RunAsync">
+            <summary>
+            アプリケーションエンジンを起動する。
+            </summary>
+            <returns>タスク</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IApplicationEngine.SetApplicationRunningAsync">
+            <summary>
+            アプリケーション実行権を獲得する。
+            </summary>
+            <returns>アプリケーション状態変更結果</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IApplicationEngine.UnsetApplicationRunningAsync">
+            <summary>
+            アプリケーション実行権を解放する。
+            </summary>
+            <returns>アプリケーション状態変更結果</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IApplicationEngine.SetApplicationRestartAsync">
+            <summary>
+            アプリケーションを再起動する（致命的障害時用）。
+            </summary>
+            <returns>アプリケーション状態変更結果</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IApplicationEngine.IsTerminating">
+            <summary>
+            アプリケーションが終了中かどうか判定する。
+            </summary>
+            <returns>終了中(true)、未起動・通常状態(false)</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IApplicationEngine.AddMessageInputHandlerAsync(System.String,TICO.GAUDI.Commons.MessageEventHandler,System.Object)">
+            <summary>
+            メッセージ受信時のイベントハンドラを追加する。
+            </summary>
+            <param name="inputName">インプット名</param>
+            <param name="msgHandler">イベントコールバック</param>
+            <param name="userContext">拡張データ（デフォルト：null）</param>
+            <returns>タスク</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IApplicationEngine.SendMessageAsync(System.String,TICO.GAUDI.Commons.IotMessage)">
+            <summary>
+            指定したアウトプット名でメッセージを送信する。
+            </summary>
+            <param name="outputName">アウトプット名</param>
+            <param name="sendingMsg">送信メッセージ</param>
+            <returns>タスク</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IApplicationEngine.AddDirectMethodHandlerAsync(System.String,TICO.GAUDI.Commons.DirectMethodHandler,System.Object)">
+            <summary>
+            ダイレクトメソッド受信時のイベントハンドラを追加する。
+            </summary>
+            <param name="methodName">メソッド名</param>
+            <param name="methodHandler">イベントコールバック</param>
+            <param name="userContext">拡張データ（デフォルト：null）</param>
+            <returns>タスク</returns>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.IApplicationEngineInternal">
+            <summary>
+            Application Engine Internal class
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IApplicationEngineInternal.Init">
+            <summary>
+            エンジンの初期化(internal)
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IApplicationEngineInternal.Ready">
+            <summary>
+            エンジンの待機(internal)
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IApplicationEngineInternal.Term(System.Boolean)">
+            <summary>
+            エンジンの開放(internal)
+            </summary>
+            <param name="forced">
+            強制終了フラグ（デフォルト：false）
+            true：ステート遷移成否によらず、実行
+            false：ステート遷移失敗時はエラー
+            </param>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IApplicationEngineInternal.End(System.Boolean)">
+            <summary>
+            エンジンの停止(internal)
+            </summary>
+            <param name="forced">
+            強制終了フラグ（デフォルト：false）
+            true：ステート遷移成否によらず、実行
+            false：ステート遷移失敗時はエラー
+            </param>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IApplicationEngineInternal.Restart">
+            <summary>
+            エンジンの再起動(internal)
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IApplicationEngineInternal.Terminate(System.Boolean)">
+            <summary>
+            エンジンの終了(internal)
+            </summary>
+            <param name="forced">
+            強制終了フラグ（デフォルト：false）
+            true：ステート遷移成否によらず、実行
+            false：ステート遷移失敗時はエラー
+            </param>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IApplicationEngineInternal.Enqueue(TICO.GAUDI.Commons.ApplicationState)">
+            <summary>
+            指定状態への遷移キューイング(internal)
+            </summary>
+            <param name="appState">遷移先状態</param>
+            <returns>状態遷移結果</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IApplicationEngineInternal.Dequeue">
+            <summary>
+            指定状態への遷移キュー解放(internal)
+            </summary>
+            <returns>状態遷移結果</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IApplicationEngineInternal.ReceiveMessageAsync(TICO.GAUDI.Commons.IotMessage,System.Object)">
+            <summary>
+            メッセージ受信時コールバック(internal)
+            </summary>
+            <param name="message">受信メッセージ</param>
+            <param name="userContext">拡張データ</param>
+            <returns>メッセージ処理結果</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IApplicationEngineInternal.ReceiveTwinAsync(Microsoft.Azure.Devices.Shared.TwinCollection,System.Object)">
+            <summary>
+            Twin受信時コールバック(internal)
+            </summary>
+            <param name="twin">受信Twin</param>
+            <param name="userContext">拡張データ</param>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IApplicationEngineInternal.ReceiveMethodAsync(Microsoft.Azure.Devices.Client.MethodRequest,System.Object)">
+            <summary>
+            ダイレクトメソッド受信時コールバック(internal)
+            </summary>
+            <param name="request">ダイレクトメソッドリクエストデータ</param>
+            <param name="userContext">拡張データ</param>
+            <returns>ダイレクトメソッド応答</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IApplicationEngineInternal.OnConnectionStatusChangedAsync(TICO.GAUDI.Commons.IotConnectionStatus,TICO.GAUDI.Commons.IotConnectionStatusChangeReason)">
+            <summary>
+            通信ステータス更新時のコールバック(internal)
+            </summary>
+            <param name="status">ステータス</param>
+            <param name="reason">更新理由</param>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.IApplicationMain">
+            <summary>
+            Application Main Interface class
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IApplicationMain.InitializeAsync">
+            <summary>
+            アプリケーション初期化処理
+            システム初期化前に呼び出される
+            </summary>
+            <returns>処理成功(true)、処理失敗(false)</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IApplicationMain.StartAsync">
+            <summary>
+            アプリケーション起動処理
+            システム初期化完了後に呼び出される
+            </summary>
+            <returns>処理成功(true)、処理失敗(false)</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IApplicationMain.TerminateAsync">
+            <summary>
+            アプリケーション解放処理
+            システム終了要求、または、再起動要求があった際に呼び出される
+            </summary>
+            <returns>処理成功(true)、処理失敗(false)</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IApplicationMain.OnDesiredPropertiesReceivedAsync(Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            DesiredProperties 更新コールバック処理
+            システム初期化完了後（StartAsync より前）と、DesiredProperties 更新通知受信時に呼び出される
+            </summary>
+            <param name="desiredProperties">Desired Properties</param>
+            <returns>処理成功(true)、処理失敗(false)</returns>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.DirectMethodCaller">
+            <summary>
+            Direct Method Caller class
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.DirectMethodCaller.Run(TICO.GAUDI.Commons.DirectMethodRequest)">
+            <summary>
+            指定したリクエスト情報をもとに、IDirectMethodRunner インターフェースの ParseRequest / Run / GetResult を呼び出し、実行結果を返す。
+            </summary>
+            <param name="methodRequest">実行結果</param>
+            <returns>リクエスト情報</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.DirectMethodCaller.GetRunner(System.String)">
+            <summary>
+            メソッド名からIDirectMethodRunnerインスタンス取得処理
+            </summary>
+            <param name="methodName">DirectMethod名</param>
+            <returns>IDirectMethodRunnerインスタンス</returns>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.DirectMethodRequest">
+            <summary>
+            Direct Method Request class
+            </summary>
+        </member>
+        <member name="P:TICO.GAUDI.Commons.DirectMethodRequest.MethodName">
+            <summary>
+            メソッド名
+            </summary>
+        </member>
+        <member name="P:TICO.GAUDI.Commons.DirectMethodRequest.RequestJson">
+            <summary>
+            リクエストJSON文字列
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.DirectMethodRequest.#ctor">
+            <summary>
+            デフォルトコンストラクタ
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.DirectMethodRequest.#ctor(System.String,System.String)">
+            <summary>
+            パラメータ指定コンストラクタ
+            </summary>
+            <param name="methodName">メソッド名</param>
+            <param name="requestJson">リクエストJSON文字列</param>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.DirectMethodResponse">
+            <summary>
+            Direct Method Response class
+            </summary>
+        </member>
+        <member name="P:TICO.GAUDI.Commons.DirectMethodResponse.Status">
+            <summary>
+            ステータスコード
+            </summary>
+        </member>
+        <member name="P:TICO.GAUDI.Commons.DirectMethodResponse.Results">
+            <summary>
+            実行結果ディクショナリ
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.DirectMethodResponse.#ctor(System.Int32,System.String,System.Object)">
+            <summary>
+            コンストラクタ
+            </summary>
+            <param name="status">ステータスコード（デフォルト：0）</param>
+            <param name="resultKey">結果キー（デフォルト：null）</param>
+            <param name="resultValue">結果値（デフォルト：null）</param>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.DirectMethod_GetLogLevel">
+            <summary>
+            Direct Method GetLogLevel class
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.DirectMethod_GetLogLevel.ParseRequest(System.String)">
+            <summary>
+            リクエスト(JSON形式)の解析
+            </summary>
+            <param name="requestJSON">リクエスト文字列(JSON形式)</param>
+            <returns>処理結果：true=成功、false=失敗</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.DirectMethod_GetLogLevel.Run">
+            <summary>
+            ダイレクトメソッドの実行 
+            </summary>
+            <returns></returns>        
+        </member>
+        <member name="M:TICO.GAUDI.Commons.DirectMethod_GetLogLevel.GetResult">
+             <summary>
+            ダイレクトメソッドの実行結果の取得
+             </summary>
+             <returns>実行結果</returns>        
+        </member>
+        <member name="T:TICO.GAUDI.Commons.DirectMethod_SetLogLevel">
+            <summary>
+            Direct Method SetLogLevel class
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.DirectMethod_SetLogLevel.ParseRequest(System.String)">
+            <summary>
+            リクエスト(JSON形式)の解析
+            </summary>
+            <param name="requestJSON">リクエスト文字列(JSON形式)</param>
+            <returns>処理結果：true=成功、false=失敗</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.DirectMethod_SetLogLevel.Run">
+            <summary>
+            ダイレクトメソッドの実行 
+            </summary>
+            <returns></returns>        
+        </member>
+        <member name="M:TICO.GAUDI.Commons.DirectMethod_SetLogLevel.GetResult">
+            <summary>
+            ダイレクトメソッドの実行結果の取得
+            </summary>
+            <returns>実行結果</returns>        
+        </member>
+        <member name="T:TICO.GAUDI.Commons.IDirectMethodRunner">
+            <summary>
+            Direct Method Runner class
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IDirectMethodRunner.ParseRequest(System.String)">
+            <summary>
+            リクエスト文字列（JSON 形式）を解析して、処理結果を返す。
+            </summary>
+            <param name="requestJSON">リクエスト文字列（JSON形式）</param>
+            <returns>処理成功(true)、処理失敗(false)</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IDirectMethodRunner.Run">
+            <summary>
+            ダイレクトメソッドを実行する。 
+            </summary>
+            <returns>処理成功(true)、処理失敗(false)</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IDirectMethodRunner.GetResult">
+            <summary>
+            ダイレクトメソッドの実行結果を取得する。
+            </summary>
+            <returns>実行結果</returns>        
+        </member>
+        <member name="T:TICO.GAUDI.Commons.IJsonSerializer">
+            <summary>
+            JSONシリアライザインターフェース
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IJsonSerializer.Serialize``1(``0)">
+            <summary>
+            オブジェクトを JSON 文字列にシリアライズする。
+            </summary>
+            <param name="target">対象オブジェクト</param>
+            <typeparam name="TargetType">対象オブジェクトタイプ</typeparam>
+            <returns>シリアライズされた文字列</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IJsonSerializer.SerializeBytes``1(``0)">
+            <summary>
+            オブジェクトを JSON バイト配列にシリアライズする。
+            </summary>
+            <param name="target">対象オブジェクト</param>
+            <typeparam name="TargetType">対象オブジェクトタイプ</typeparam>
+            <returns>シリアライズされたバイト配列</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IJsonSerializer.Deserialize``1(System.String)">
+            <summary>
+            JSON 文字列をオブジェクトにデシリアライズする。
+            </summary>
+            <param name="jsonString">対象JSON文字列</param>
+            <typeparam name="TargetType">デシリアライズ後オブジェクトタイプ</typeparam>
+            <returns>デシリアライズされたオブジェクト</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IJsonSerializer.Deserialize``1(System.Byte[])">
+            <summary>
+            JSON バイト配列をオブジェクトにデシリアライズする。
+            </summary>
+            <param name="jsonBytes">対象JSONバイト配列</param>
+            <typeparam name="TargetType">デシリアライズ後オブジェクトタイプ</typeparam>
+            <returns>デシリアライズされたオブジェクト</returns>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.SerializerType">
+            <summary>
+            シリアライザタイプ
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.SerializerType.Default">
+            <summary>
+            デフォルトのシリアライザタイプ
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.SerializerType.SysRuntimeSerialization">
+            <summary>
+            System.Runtime を使用するシリアライザタイプ
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.SerializerType.NewtonsoftJson">
+            <summary>
+            Newtonsoft.Json を使用するシリアライザタイプ
+            </summary>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.JsonSerializerFactory">
+            <summary>
+            Jsonシリアライザファクトリークラス
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.JsonSerializerFactory.ENVNAME_DEFAULT_SERIALIZER">
+            <summary>
+            デフォルトシリアライザ環境変数名
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.JsonSerializerFactory.ENVVALUE_SERIALIZER_SYSRUNTIME">
+            <summary>
+            システムランタイムシリアライザ環境変数値
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.JsonSerializerFactory.ENVVALUE_SERIALIZER_NEWTONSOFT">
+            <summary>
+            NNewtonsoft.Json シリアライザ環境変数値
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.JsonSerializerFactory.GetJsonSerializer(TICO.GAUDI.Commons.SerializerType)">
+            <summary>
+            指定したシリアライザタイプに対応した IJsonSerializer クラスのインスタンスを取得する。
+            シリアライザタイプが Default の場合、ENV:IOTEDGE_COMMON_DEFAULT_JSONSERIALIZER が指定されていれば、それを使用する。
+            ENV:IOTEDGE_COMMON_DEFAULT_JSONSERIALIZER が指定されていなければ、"NEWTONSOFTJSON" を使用する。
+            </summary>
+            <param name="serializerType">シリアライザタイプ（デフォルト：Default）</param>
+            <returns>IJsonSerializerインスタンス</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.JsonSerializerFactory.GetDefaultSerializerType">
+            <summary>
+            デフォルトシリアライザタイプ取得
+            </summary>
+            <remarks>
+            通常は、NewtonsoftJsonタイプを返す。
+            環境変数（”IOTEDGE_COMMON_DEFAULT_JSONSERIALIZER”）で、切り替え可能。
+            </remarks>
+            <returns>デフォルトシリアライザタイプ</returns>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.NewtonsoftJsonSerializer">
+            <summary>
+            Newtonsoft.Json のシリアライザのラッパークラス
+            </summary>
+            <remarks>
+            シリアライズ時”（ダブルクウォート）、\（バックスラッシュ）は、"\"エスケープされる。
+            /（スラッシュ）は、エスケープされないので、System.Runtimeのシリアライザからの置き換え対象としている。
+            </remarks>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.NewtonsoftJsonSerializer.Serialize``1(``0)">
+            <summary>
+            シリアライズ
+            </summary>
+            <param name="target">対象オブジェクト</param>
+            <typeparam name="TargetType">対象オブジェクトタイプ</typeparam>
+            <returns>シリアライズされた文字列</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.NewtonsoftJsonSerializer.SerializeBytes``1(``0)">
+            <summary>
+            バイト列シリアライズ
+            </summary>
+            <param name="target">対象オブジェクト</param>
+            <typeparam name="TargetType">対象オブジェクトタイプ</typeparam>
+            <returns>シリアライズされた文字列</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.NewtonsoftJsonSerializer.Deserialize``1(System.String)">
+            <summary>
+            デシリアライズ
+            </summary>
+            <param name="jsonString">対象JSON文字列</param>
+            <typeparam name="TargetType">デシリアライズ後オブジェクトタイプ</typeparam>
+            <returns>デシリアライズされたオブジェクト</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.NewtonsoftJsonSerializer.Deserialize``1(System.Byte[])">
+            <summary>
+            デシリアライズ
+            </summary>
+            <param name="jsonBytes">対象JSONバイトデータ列</param>
+            <typeparam name="TargetType">デシリアライズ後オブジェクトタイプ</typeparam>
+            <returns>デシリアライズされたオブジェクト</returns>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.SysRuntimeJsonSerializer">
+            <summary>
+            System.Runtime のシリアライザのラッパークラス
+            </summary>
+            <remarks>
+            シリアライズ時、/（スラッシュ）、”（ダブルクウォート）、\（バックスラッシュ）は、"\"エスケープされる。
+            /（スラッシュ）がエスケープされる事でメッセージのupstream時に問題が発生した為、利用時は注意する事。
+            </remarks>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.SysRuntimeJsonSerializer.Serialize``1(``0)">
+            <summary>
+            シリアライズ
+            </summary>
+            <param name="target">対象オブジェクト</param>
+            <typeparam name="TargetType">対象オブジェクトタイプ</typeparam>
+            <returns>シリアライズされた文字列</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.SysRuntimeJsonSerializer.SerializeBytes``1(``0)">
+            <summary>
+            バイト列シリアライズ
+            </summary>
+            <param name="target">対象オブジェクト</param>
+            <typeparam name="TargetType">対象オブジェクトタイプ</typeparam>
+            <returns>シリアライズされた文字列</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.SysRuntimeJsonSerializer.Deserialize``1(System.String)">
+            <summary>
+            デシリアライズ
+            </summary>
+            <param name="jsonString">対象JSON文字列</param>
+            <typeparam name="TargetType">デシリアライズ後オブジェクトタイプ</typeparam>
+            <returns>デシリアライズされたオブジェクト</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.SysRuntimeJsonSerializer.Deserialize``1(System.Byte[])">
+            <summary>
+            デシリアライズ
+            </summary>
+            <param name="jsonBytes">対象JSONバイトデータ列</param>
+            <typeparam name="TargetType">デシリアライズ後オブジェクトタイプ</typeparam>
+            <returns>デシリアライズされたオブジェクト</returns>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.ILogger">
+            <summary>
+            Logger インターフェース
+            </summary>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.ILogger.LogLevel">
+            <summary>
+            ログレベル
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.ILogger.LogLevel.TRACE">
+            <summary>
+            トレース
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.ILogger.LogLevel.DEBUG">
+            <summary>
+            デバッグ
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.ILogger.LogLevel.INFO">
+            <summary>
+            インフォ（デフォルト）
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.ILogger.LogLevel.WARN">
+            <summary>
+            ワーニング
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.ILogger.LogLevel.ERROR">
+            <summary>
+            エラー
+            </summary>
+        </member>
+        <member name="P:TICO.GAUDI.Commons.ILogger.OutputLogLevel">
+            <summary>
+            出力ログレベル
+            </summary>
+        </member>
+        <member name="P:TICO.GAUDI.Commons.ILogger.OutputName">
+            <summary>
+            ログ出力名
+            </summary>
+        </member>
+        <member name="P:TICO.GAUDI.Commons.ILogger.MyClient">
+            <summary>
+            モジュールクライアント
+            </summary>
+        </member>
+        <member name="P:TICO.GAUDI.Commons.ILogger.OutTextWriter">
+            <summary>
+            ログ出力先ストリーム
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.ILogger.SecondsDefinition_OUTOFRANGE">
+            <summary>
+            強制レベル設定時の時間定義-未設定（範囲外）
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.ILogger.SecondsDefinition_UNLIMITED">
+            <summary>
+            強制レベル設定時の時間定義-無制限
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.ILogger.SecondsDefinition_CANCEL">
+            <summary>
+            強制レベル設定時の時間定義-無制限の解除
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.ILogger.SecondsDefinition_MINIMUM">
+            <summary>
+            強制レベル設定時の時間定義-最小値
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.ILogger.SetOutputLogLevel(System.String)">
+            <summary>
+            出力ログレベルを文字列から設定する。
+            指定した出力ログレベルが不正な場合、ArgumentException をスローする。
+            </summary>
+            <param name="logLevel">出力ログレベル</param>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.ILogger.SetModuleClient(TICO.GAUDI.Commons.IModuleClient)">
+            <summary>
+            Loggerで使用するモジュールクライアントをセットする。
+            </summary>
+            <param name="moduleClient">モジュールクライアント</param>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.ILogger.SetOutputTextWriter(System.IO.TextWriter)">
+            <summary>
+            出力ストリームを設定する。
+            </summary>
+            <param name="textWriter">出力ストリーム</param>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.ILogger.WriteLog(TICO.GAUDI.Commons.ILogger.LogLevel,System.String,System.Boolean)">
+            <summary>
+            指定した出力ログレベルに応じて、ログメッセージを出力する。
+            メッセージ送信有無が true の場合、ログメッセージをアップロードする。
+            処理に失敗した場合、警告ログを出力する。
+            </summary>
+            <param name="level">出力ログレベル</param>
+            <param name="message">ログメッセージ</param>
+            <param name="isUpload">メッセージ送信有無（デフォルト：false）</param>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.ILogger.SetMandatoryLogLevel(System.String,System.Int32)">
+            <summary>
+            指定した時間定義に応じて、強制ログレベルを変更する。
+            時間定義が0の場合：解除
+            時間定義が1以上の場合：指定時間（秒）後まで適用
+            時間定義が-1の場合：無制限
+            時間定義が上記以外：ArgumentException をスローする
+            </summary>
+            <param name="level">出力ログレベル</param>
+            <param name="seconds">強制レベル設定時の時間定義</param>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.ILogger.IsLogLevelToOutput(TICO.GAUDI.Commons.ILogger.LogLevel)">
+            <summary>
+            指定した出力ログレベルが有効かチェックする。
+            </summary>
+            <param name="level">出力ログレベル</param>
+            <returns>有効(true)／無効(false)</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.Logger.GetLogger(System.Type)">
+            <summary>
+            Loggerインスタンスの取得
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.Logger.SetOutputLogLevel(System.String)">
+            <summary>
+            出力ログレベルを文字列から設定
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.Logger.SetModuleClient(TICO.GAUDI.Commons.IModuleClient)">
+            <summary>
+            Loggerで使用するモジュールクライアントをセット
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.Logger.SetOutputTextWriter(System.IO.TextWriter)">
+            <summary>
+            出力ストリーム設定
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.Logger.WriteLog(TICO.GAUDI.Commons.ILogger.LogLevel,System.String,System.Boolean)">
+            <summary>
+            ログの出力
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.Logger.SetMandatoryLogLevel(System.String,System.Int32)">
+            <summary>
+            強制ログレベル変更
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.Logger.IsLogLevelToOutput(TICO.GAUDI.Commons.ILogger.LogLevel)">
+            <summary>
+            指定したログレベルが有効かチェック
+            </summary>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.LoggerFactory">
+            <summary>
+            ロガーファクトリークラス
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.LoggerFactory.GetLogger(System.Type)">
+            <summary>
+            指定した Type に対応した ILogger クラスのインスタンスを取得する。
+            </summary>
+            <param name="type">ログ出力時に name を使用</param>
+            <returns>ILoggerインスタンス</returns>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.IotMessage">
+            <summary>
+            IotEdge用Messageクラス
+            </summary>
+            <remarks>
+            azure messageオブジェクトのGetBytes()/GetBodyStream()等を使用すると、
+            内部データにアクセスできなくなる・再度呼び出しできない等の問題が発生する。
+            そういった問題を回避する為にMessageクラスをラップした機能を提供する。
+            ByteデータやStreamはメンバで保持して、上位に返す。
+            メッセージプロパティは、内包するMessageクラスで直接管理する。
+            </remarks>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.IotMessage.PropertySetMode">
+            <summary>
+            プロパティ設定モード
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.IotMessage.PropertySetMode.Add">
+            <summary>
+            追加のみ（上書きしない）
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.IotMessage.PropertySetMode.Modify">
+            <summary>
+            更新のみ（追加しない）
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.IotMessage.PropertySetMode.AddOrModify">
+            <summary>
+            追加または更新
+            </summary>
+        </member>
+        <member name="P:TICO.GAUDI.Commons.IotMessage.message">
+            <summary>
+            azure messageオブジェクト
+            </summary>
+        </member>
+        <member name="P:TICO.GAUDI.Commons.IotMessage.byteData">
+            <summary>
+            メッセージBodyデータ
+            </summary>
+        </member>
+        <member name="P:TICO.GAUDI.Commons.IotMessage.bodyStream">
+            <summary>
+            message streamオブジェクト
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IotMessage.#ctor">
+            <summary>
+            空のメッセージ Body で、IotMessage インスタンスを生成する。
+            ContentType プロパティが設定されていない場合は "application/json" を設定、ContentEncoding プロパティが設定されていない場合は "utf-8" を設定する。
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IotMessage.#ctor(System.Byte[])">
+            <summary>
+            指定したメッセージ Body で、IotMessage インスタンスを生成する。
+            ContentType プロパティが設定されていない場合は "application/json" を設定、ContentEncoding プロパティが設定されていない場合は "utf-8" を設定する。
+            </summary>
+            <param name="byteArray">メッセージ Body バイト配列</param>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IotMessage.#ctor(System.String)">
+            <summary>
+            指定したメッセージ Body で、IotMessage インスタンスを生成する。
+            ContentType プロパティが設定されていない場合は "application/json" を設定、ContentEncoding プロパティが設定されていない場合は "utf-8" を設定する。
+            </summary>
+            <param name="messageString">メッセージ Body 文字列</param>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IotMessage.#ctor(System.IO.Stream)">
+            <summary>
+            指定したメッセージ Body で、IotMessage インスタンスを生成する。
+            ContentType プロパティが設定されていない場合は "application/json" を設定、ContentEncoding プロパティが設定されていない場合は "utf-8" を設定する。
+            </summary>
+            <param name="stream">メッセージ Body ストリーム</param>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IotMessage.#ctor(Microsoft.Azure.Devices.Client.Message)">
+            <summary>
+            コンストラクタ
+            </summary>
+            <remarks>
+            Commons内部利用用
+            </remarks>
+            <params name="orgMessage">azure メッセージオブジェクト</params>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IotMessage.#ctor(TICO.GAUDI.Commons.IotMessage)">
+            <summary>
+            既存の IotMessage インスタンスをコピーして生成する（メッセージプロパティもコピーする）。
+            ContentType プロパティが設定されていない場合は "application/json" を設定、ContentEncoding プロパティが設定されていない場合は "utf-8" を設定する。
+            </summary>
+            <param name="orgMessage">IotMessage インスタンス</param>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IotMessage.Dispose">
+            <summary>
+            リソースを解放する。
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IotMessage.GetBytes">
+            <summary>
+            メッセージ Body をバイト配列で取得して返す。
+            </summary>
+            <returns>メッセージBodyデータ</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IotMessage.GetBodyString">
+            <summary>
+            メッセージ Body を文字列で取得して返す。
+            </summary>
+            <returns>メッセージBody文字列</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IotMessage.GetBodyStream">
+            <summary>
+            メッセージ Body をストリームで取得して返す。
+            </summary>
+            <returns>メッセージBody Stream</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IotMessage.GetBodyLength">
+            <summary>
+            メッセージ Body のサイズを取得する。
+            </summary>
+            <returns>メッセージBodyサイズ</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IotMessage.SetProperty(System.String,System.String,TICO.GAUDI.Commons.IotMessage.PropertySetMode)">
+            <summary>
+            指定したプロパティ設定モードに応じて、プロパティを追加・更新する。
+            </summary>
+            <params name="key">プロパティキー</params>
+            <params name="value">プロパティ値</params>
+            <params name="setMode">プロパティ設定モード（デフォルト：AddOrModify）</params>
+            <returns>
+            設定した(true)／設定しなかった(false)
+            </returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IotMessage.GetProperty(System.String)">
+            <summary>
+            指定したプロパティキーのプロパティ値を取得する。
+            キーが存在しない場合、null を返す。
+            </summary>
+            <params name="key">プロパティキー</params>
+            <returns>プロパティ値</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IotMessage.SetProperties(System.Collections.Generic.IDictionary{System.String,System.String},TICO.GAUDI.Commons.IotMessage.PropertySetMode)">
+            <summary>
+            指定したプロパティ設定モードに応じて、複数のプロパティを一括で追加・更新する。
+            </summary>
+            <params name="properties">プロパティ辞書</params>
+            <params name="setMode">プロパティ設定モード（デフォルト：AddOrModify）</params>
+            <returns>全て設定した(true)／一部または全て設定しなかった(false)</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IotMessage.GetProperties">
+            <summary>
+            全プロパティを取得する。
+            プロパティが存在しない場合、null を返す。
+            </summary>
+            <returns>プロパティ辞書</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IotMessage.BytesToString(System.Byte[])">
+            <summary>
+            バイト配列を文字列に変換する。
+            </summary>
+            <params name="byteArray">変換するバイト配列</params>
+            <returns>変換した文字列</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IotMessage.StringToByates(System.String)">
+            <summary>
+            文字列をバイト配列に変換する。
+            </summary>
+            <params name="convString">変換する文字列</params>
+            <returns>変換したバイト配列</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IotMessage.setContentTypeAndEncoding">
+            <summary>
+            ContentTypeとContentEncodingを初期化
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IotMessage.GetMessage">
+            <summary>
+            messageの取得
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IotMessage.GetMessageId">
+            <summary>
+            MessageId プロパティを取得する。
+            </summary>
+            <returns>MessageId</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IotMessage.SetMessageId(System.String)">
+            <summary>
+            MessageId プロパティを設定する。
+            </summary>
+            <param name="messageId">MessageId</param>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IotMessage.GetContentType">
+            <summary>
+            ContentType プロパティを取得する。
+            </summary>
+            <returns>ContentType</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IotMessage.SetContentType(System.String)">
+            <summary>
+            ContentType プロパティを設定する。
+            </summary>
+            <param name="contentType">ContentType</param>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IotMessage.GetContentEncoding">
+            <summary>
+            ContentEncoding プロパティを取得する。
+            </summary>
+            <returns>ContentEncoding</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IotMessage.SetContentEncoding(System.String)">
+            <summary>
+            ContentEncoding プロパティを設定する。
+            </summary>
+            <param name="contentEncoding">ContentEncoding</param>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IotMessage.GetConnectionDeviceId">
+            <summary>
+            ConnectionDeviceId プロパティを取得する。
+            </summary>
+            <returns>ConnectionDeviceId</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IotMessage.GetConnectionModuleId">
+            <summary>
+            ConnectionModuleId プロパティを取得する。
+            </summary>
+            <returns>ConnectionModuleId</returns>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.JsonMessage">
+            <summary>
+            JSONメッセージクラス
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.JsonMessage.RecordList">
+            <summary>
+            レコード情報リスト
+            </summary>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.JsonMessage.RecordInfo">
+            <summary>
+            レコード情報クラス
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.JsonMessage.RecordInfo.RecordHeader">
+            <summary>
+            レコードヘッダーリスト
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.JsonMessage.RecordInfo.RecordData">
+            <summary>
+            レコードデータリスト
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.JsonMessage.DeserializeJsonMessage(System.String)">
+            <summary>
+            JSON文字列から JSONメッセージへデシリアライズする。
+            デシリアライズに失敗した場合、null を返す。
+            </summary>
+            <param name="message">JSON文字列</param>
+            <returns>JSONメッセージ</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.JsonMessage.DeserializeJsonMessage(System.Byte[])">
+            <summary>
+            JSONバイト配列から JSONメッセージへデシリアライズする。
+            デシリアライズに失敗した場合、null を返す。
+            </summary>
+            <param name="message">JSONバイト配列</param>
+            <returns>JSONメッセージ</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.JsonMessage.SerializeJsonMessage(TICO.GAUDI.Commons.JsonMessage)">
+            <summary>
+            JSONメッセージからJSON文字列へシリアライズする。
+            </summary>
+            <param name="message">JSONメッセージ</param>
+            <returns>JSON文字列</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.JsonMessage.SerializeJsonMessageByte(TICO.GAUDI.Commons.JsonMessage)">
+            <summary>
+            JSON メッセージから JSON バイト配列へシリアライズする。
+            シリアライズに失敗した場合、null を返す。
+            </summary>
+            <param name="message">JSONメッセージ</param>
+            <returns>JSONバイト配列</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.JsonMessage.DeserializeRecordInfo(System.String)">
+            <summary>
+            JSON 文字列から RecordInfo クラスへデシリアライズする。
+            デシリアライズに失敗した場合、null を返す。
+            </summary>
+            <param name="message">JSON文字列</param>
+            <returns>RecordInfoクラス</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.JsonMessage.DeserializeRecordInfo(System.Byte[])">
+            <summary>
+            JSONバイト配列からRecordInfoクラスへデシリアライズする。
+            デシリアライズに失敗した場合、null を返す。
+            </summary>
+            <param name="message">JSONバイト配列</param>
+            <returns>RecordInfoクラス</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.JsonMessage.SerializeRecordInfo(TICO.GAUDI.Commons.JsonMessage.RecordInfo)">
+            <summary>
+            RecordInfoクラスからJSON文字列へシリアライズする。
+            </summary>
+            <param name="message">RecordInfoクラス</param>
+            <returns>JSON文字列</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.JsonMessage.SerializeRecordInfoByte(TICO.GAUDI.Commons.JsonMessage.RecordInfo)">
+            <summary>
+            RecordInfoクラスからJSONバイト配列へシリアライズする。
+            シリアライズに失敗した場合、null を返す。
+            </summary>
+            <param name="message">RecordInfoクラス</param>
+            <returns>JSONバイト配列</returns>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.IotMessageHandler">
+            <summary>
+            Iotメッセージハンドラの定義
+            </summary>
+            <param name="message">Iotメッセージ</param>
+            <param name="userContext">ユーザーコンテキスト</param>
+            <returns>メッセージレスポンス</returns>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.IotConnectionStatusChangeHandler">
+            <summary>
+            Iot接続状態変更ハンドラの定義
+            </summary>
+            <param name="status">接続状態</param>
+            <param name="reason">変更理由</param>
+            <returns>タスク</returns>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.TransportTopic">
+            <summary>
+            トランスポートトピック種別
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.TransportTopic.Iothub">
+            <summary>
+            IoThubトピック
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.TransportTopic.Mqtt">
+            <summary>
+            一般的なMQTTトピック（未使用）
+            </summary>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.IotConnectionStatus">
+            <summary>
+            Iot接続状態
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.IotConnectionStatus.Disconnected">
+            <summary>
+            切断
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.IotConnectionStatus.Connected">
+            <summary>
+            接続
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.IotConnectionStatus.Disconnected_Retrying">
+            <summary>
+            再接続を試みている
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.IotConnectionStatus.Disabled">
+            <summary>
+            接続が閉じられた
+            </summary>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.IotConnectionStatusChangeReason">
+            <summary>
+            Iot接続状態変更理由
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.IotConnectionStatusChangeReason.Connection_Ok">
+            <summary>
+            正常
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.IotConnectionStatusChangeReason.Expired_SAS_Token">
+            <summary>
+            SASトークン期限切れ
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.IotConnectionStatusChangeReason.Device_Disabled">
+            <summary>
+            デバイス無効
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.IotConnectionStatusChangeReason.Bad_Credential">
+            <summary>
+            認証情報不正
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.IotConnectionStatusChangeReason.Retry_Expired">
+            <summary>
+            リトライ期限切れ
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.IotConnectionStatusChangeReason.No_Network">
+            <summary>
+            ネットワークなし
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.IotConnectionStatusChangeReason.Communication_Error">
+            <summary>
+            通信エラー
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.IotConnectionStatusChangeReason.Client_Close">
+            <summary>
+            クライアントクローズ
+            </summary>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.IModuleClient">
+            <summary>
+            モジュールクライアントインターフェース
+            </summary>
+        </member>
+        <member name="P:TICO.GAUDI.Commons.IModuleClient.ConnectionStatus">
+            <summary>
+            接続状態
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IModuleClient.OpenAsync">
+            <summary>
+            接続開始処理
+            </summary>
+            <returns>タスク</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IModuleClient.CloseAsync">
+            <summary>
+            切断処理
+            </summary>
+            <returns>タスク</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IModuleClient.GetTwinAsync">
+            <summary>
+            Twin情報取得処理
+            </summary>
+            <returns>Twin 情報</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IModuleClient.SetDesiredPropertyUpdateCallbackAsync(Microsoft.Azure.Devices.Client.DesiredPropertyUpdateCallback,System.Object)">
+            <summary>
+            Desiredプロパティ更新時のコールバックを設定する。
+            </summary>
+            <param name="callback">Desiredプロパティ更新コールバック</param>
+            <param name="userContext">ユーザーコンテキスト</param>
+            <returns>タスク</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IModuleClient.SetInputMessageHandlerAsync(System.String,TICO.GAUDI.Commons.IotMessageHandler,System.Object)">
+            <summary>
+            入力メッセージを処理するためのコールバックを設定する。
+            </summary>
+            <param name="inputName">インプット名</param>
+            <param name="handler">IoTメッセージハンドラ</param>
+            <param name="userContext">ユーザーコンテキスト</param>
+            <returns>タスク</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IModuleClient.SetMethodHandlerAsync(System.String,Microsoft.Azure.Devices.Client.MethodCallback,System.Object)">
+            <summary>
+            ダイレクトメソッドを処理するためのコールバックを設定する。
+            </summary>
+            <param name="methodName">メソッド名</param>
+            <param name="methodHandler">メソッドコールバック</param>
+            <param name="userContext">ユーザーコンテキスト</param>
+            <returns>タスク</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IModuleClient.SendEventAsync(System.String,TICO.GAUDI.Commons.IotMessage)">
+            <summary>
+            指定したアプトプット名とIoTメッセージを使って、IoTハブにイベントを送信する。
+            IoTメッセージにメッセージIDが設定されていない場合、生成して設定する。
+            </summary>
+            <param name="outputName">アウトプット名</param>
+            <param name="message">IoTメッセージ</param>
+            <returns>タスク</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IModuleClient.UpdateReportedPropertiesAsync(Microsoft.Azure.Devices.Shared.TwinCollection)">
+            <summary>
+            Reportedプロパティを更新する。
+            </summary>
+            <param name="reportedProperties">Reportedプロパティ</param>
+            <returns>タスク</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IModuleClient.SetConnectionStatusChangedHandlerAsync(TICO.GAUDI.Commons.IotConnectionStatusChangeHandler)">
+            <summary>
+            接続状態の変更通知を処理するためのコールバックを設定する。
+            受信した接続状態は、プロパティ：ConnectionStatusに保存する。
+            </summary>
+            <param name="handler">Iot接続状態変更ハンドラ</param>
+            <returns>タスク</returns>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.ModuleClientFactory">
+            <summary>
+            モジュールクライアントファクトリークラス
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.ModuleClientFactory.CreateAsync">
+            <summary>
+            ENV:TransportProtocolの値に基づいてトランスポート設定を選定し、IModuleClientクラスのインスタンスを生成する。
+            ENV:TransportProtocolの値が不正な場合、ArgumentException をスローする。
+            </summary>
+            <returns>IModuleClientクラスのインスタンス</returns>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.CallbackProperties">
+            <summary>
+            メッセージ受信時コールバック用プロパティクラス
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.CallbackProperties.messageHandler">
+            <summary>
+            メッセージハンドラ
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.CallbackProperties.messageUserContext">
+            <summary>
+            ユーザコンテキスト
+            </summary>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.MqttModuleClient">
+            <summary>
+            Azure IoT Edge モジュール用の IModuleClient インターフェースの MQTT ベース実装を提供
+            </summary>
+        </member>
+        <member name="P:TICO.GAUDI.Commons.MqttModuleClient.MyMqttClient">
+            <summary>
+            MQTTクライアントインスタンス
+            </summary>
+        </member>
+        <member name="P:TICO.GAUDI.Commons.MqttModuleClient.ConnectionStatus">
+            <summary>
+            IoT接続状態
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.MqttModuleClient.#ctor(System.String,System.String,System.String,TICO.GAUDI.Commons.TransportTopic,TICO.GAUDI.Commons.TransportTopic)">
+            <summary>
+            コンストラクタ
+            </summary>
+            <param name="sas">SASトークン</param>
+            <param name="hostName">ホスト名</param>
+            <param name="device">デバイスID</param>
+            <param name="defaultSendTopic">デフォルト送信トピック</param>
+            <param name="defaultReceiveTopic">デフォルト受信トピック</param>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.MqttModuleClient.CloseAsync">
+            <summary>
+            MQTTクライアント切断処理
+            </summary>
+            <returns>非同期タスク</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.MqttModuleClient.Dispose">
+            <summary>
+            リソース解放処理
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.MqttModuleClient.OpenAsync">
+            <summary>
+            MQTTクライアント接続処理
+            </summary>
+            <returns>非同期タスク</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.MqttModuleClient.GetTwinAsync">
+            <summary>
+            ツイン情報取得処理
+            </summary>
+            <returns>ツイン情報</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.MqttModuleClient.SendEventAsync(System.String,TICO.GAUDI.Commons.IotMessage)">
+            <summary>
+            イベント送信処理
+            </summary>
+            <param name="outputName">出力名</param>
+            <param name="message">送信メッセージ</param>
+            <returns>非同期タスク</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.MqttModuleClient.SendEventAsync(System.String,TICO.GAUDI.Commons.IotMessage,TICO.GAUDI.Commons.TransportTopic)">
+            <summary>
+            イベント送信処理（トピック指定）
+            </summary>
+            <param name="outputName">出力名</param>
+            <param name="message">送信メッセージ</param>
+            <param name="transportTopic">送信トピック</param>
+            <returns>非同期タスク</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.MqttModuleClient.SetDesiredPropertyUpdateCallbackAsync(Microsoft.Azure.Devices.Client.DesiredPropertyUpdateCallback,System.Object)">
+            <summary>
+            ツインプロパティ更新コールバック設定処理
+            </summary>
+            <param name="callback">コールバック</param>
+            <param name="userContext">ユーザーコンテキスト</param>
+            <returns>非同期タスク</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.MqttModuleClient.SetDesiredPropertyUpdateCallbackAsync(Microsoft.Azure.Devices.Client.DesiredPropertyUpdateCallback,System.Object,TICO.GAUDI.Commons.TransportTopic)">
+            <summary>
+            ツインプロパティ更新コールバック設定処理（トピック指定）
+            </summary>
+            <param name="callback">コールバック</param>
+            <param name="userContext">ユーザーコンテキスト</param>
+            <param name="transportTopic">受信トピック</param>
+            <returns>非同期タスク</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.MqttModuleClient.SetInputMessageHandlerAsync(System.String,TICO.GAUDI.Commons.IotMessageHandler,System.Object)">
+            <summary>
+            入力メッセージハンドラ設定処理
+            </summary>
+            <param name="inputName">入力名</param>
+            <param name="iotHandler">ハンドラ</param>
+            <param name="userContext">ユーザーコンテキスト</param>
+            <returns>非同期タスク</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.MqttModuleClient.SetInputMessageHandlerAsync(System.String,TICO.GAUDI.Commons.IotMessageHandler,System.Object,TICO.GAUDI.Commons.TransportTopic)">
+            <summary>
+            入力メッセージハンドラ設定処理（トピック指定）
+            </summary>
+            <param name="inputName">入力名</param>
+            <param name="iotHandler">ハンドラ</param>
+            <param name="userContext">ユーザーコンテキスト</param>
+            <param name="transportTopic">受信トピック</param>
+            <returns>非同期タスク</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.MqttModuleClient.SetMethodHandlerAsync(System.String,Microsoft.Azure.Devices.Client.MethodCallback,System.Object)">
+            <summary>
+            メソッドハンドラ設定処理
+            </summary>
+            <param name="methodName">メソッド名</param>
+            <param name="methodHandler">ハンドラ</param>
+            <param name="userContext">ユーザーコンテキスト</param>
+            <returns>非同期タスク</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.MqttModuleClient.SetMethodHandlerAsync(System.String,Microsoft.Azure.Devices.Client.MethodCallback,System.Object,TICO.GAUDI.Commons.TransportTopic)">
+            <summary>
+            メソッドハンドラ設定処理（トピック指定）
+            </summary>
+            <param name="methodName">メソッド名</param>
+            <param name="methodHandler">ハンドラ</param>
+            <param name="userContext">ユーザーコンテキスト</param>
+            <param name="transportTopic">受信トピック</param>
+            <returns>非同期タスク</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.MqttModuleClient.UpdateReportedPropertiesAsync(Microsoft.Azure.Devices.Shared.TwinCollection)">
+            <summary>
+            レポートプロパティ更新処理
+            </summary>
+            <param name="reportedProperties">レポートプロパティ</param>
+            <returns>非同期タスク</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.MqttModuleClient.UpdateReportedPropertiesAsync(Microsoft.Azure.Devices.Shared.TwinCollection,TICO.GAUDI.Commons.TransportTopic)">
+            <summary>
+            レポートプロパティ更新処理（トピック指定）
+            </summary>
+            <param name="reportedProperties">レポートプロパティ</param>
+            <param name="transportTopic">送信トピック</param>
+            <returns>非同期タスク</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.MqttModuleClient.SetConnectionStatusChangedHandlerAsync(TICO.GAUDI.Commons.IotConnectionStatusChangeHandler)">
+            <summary>
+            接続状態変更ハンドラ設定処理
+            </summary>
+            <param name="statusChangeHandler">状態変更ハンドラ</param>
+            <returns>非同期タスク</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.MqttModuleClient.Client_MqttMsgPublishReceived(System.Object,uPLibrary.Networking.M2Mqtt.Messages.MqttMsgPublishEventArgs)">
+            <summary>
+            メッセージ受信イベント
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.MqttModuleClient.ReceiveTwinPatch(System.String)">
+            <summary>
+            ツインパッチ受信ハンドラ
+            </summary>
+            <param name="message">受信メッセージ</param>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.MqttModuleClient.ReceiveTelemetry(System.Byte[],System.String)">
+            <summary>
+            テレメトリ受信ハンドラ
+            </summary>
+            <param name="message">受信メッセージ</param>
+            <param name="topic">受信トピック</param>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.MqttModuleClient.GetCallbackProperty(System.String)">
+            <summary>
+            コールバックプロパティデータ取得
+            </summary>
+            <param name="topic">指定トピック名</param>
+            <returns>
+            コールバックプロパティ
+            指定トピック名がない場合、nullを返す。
+            </returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.MqttModuleClient.GetMqttTopicName(System.String)">
+            <summary>
+            Mqttトピック名の抽出
+            </summary>
+            <remarks>
+            末尾の"/"以降を切り捨てる。
+            </remarks>
+            <param name="fullTopic">メッセージ受信したトピック全文</param>
+            <returns>
+            切り出したトピック名。
+            "/"が含まれない場合、入力のまま返す。
+            </returns>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.StateTransitable">
+            <summary>
+            enumare of StateTransitable
+            </summary>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.TransitableInfo">
+            <summary>
+            Table info class of state transitable
+            </summary>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.TranstableTable">
+            <summary>
+            State Translation Table internal class
+            </summary>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.StateController">
+            <summary>
+            Application State Controll class
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.StateController.#ctor">
+            <summary>
+            コンストラクタ
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.StateController.ChangeState(TICO.GAUDI.Commons.ApplicationState)">
+            <summary>
+            次ステート設定。
+            遷移不可能な場合は失敗する。
+            キューイング可能時はキューイングし、遷移可能となったら遷移して返る。
+            </summary>
+            <param name="nextState">遷移先ステート</param>
+            <returns></returns>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.I2CAction">
+            <summary>
+            I2Cアクション種別
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.I2CAction.Read">
+            <summary>
+            読み取り
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.I2CAction.Write">
+            <summary>
+            書き込み
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.I2CAction.Wait">
+            <summary>
+            待機
+            </summary>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.I2CActionExtentions">
+            <summary>
+            I2Cアクション拡張メソッドクラス
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.I2CActionExtentions.ToString(TICO.GAUDI.Commons.I2CAction)">
+            <summary>
+            I2Cアクション種別を文字列（小文字）へ変換する。
+            想定外のアクション種別が指定された場合、ArgumentExceptionをスローする。
+            </summary>
+            <param name="self">I2Cアクション種別</param>
+            <returns>文字列（小文字）</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.I2CActionExtentions.ToI2CAction(System.String)">
+            <summary>
+            文字列をI2Cアクション種別へ変換する。
+            想定外の変換対象文字列が指定された場合、ArgumentExceptionをスローする。
+            </summary>
+            <param name="self">変換対象文字列</param>
+            <returns>I2Cアクション種別</returns>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.I2CCommandsMessage">
+            <summary>
+            I2Cコマンドメッセージクラス
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.I2CCommandsMessage.CommandList">
+            <summary>
+            コマンドリスト
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.I2CCommandsMessage.DeserializeJson(System.String)">
+            <summary>
+            JSON文字列からI2CCommandsMessageへデシリアライズする。
+            デシリアライズに失敗した場合、nullを返す。
+            </summary>
+            <param name="message">JSON文字列</param>
+            <returns>I2CCommandsMessageインスタンス</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.I2CCommandsMessage.DeserializeJson(System.Byte[])">
+            <summary>
+            JSONバイト配列からI2CCommandsMessageへデシリアライズする。
+            デシリアライズに失敗した場合、nullを返す。
+            </summary>
+            <param name="message">JSONバイト配列</param>
+            <returns>I2CCommandsMessageインスタンス</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.I2CCommandsMessage.SerializeJson(TICO.GAUDI.Commons.I2CCommandsMessage)">
+            <summary>
+            I2CCommandsMessageをJSON文字列へシリアライズする。
+            シリアライズに失敗した場合、nullを返す。
+            </summary>
+            <param name="message">I2CCommandsMessageインスタンス</param>
+            <returns>JSON文字列</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.I2CCommandsMessage.SerializeJsonBytes(TICO.GAUDI.Commons.I2CCommandsMessage)">
+            <summary>
+            I2CCommandsMessageをJSONバイト配列へシリアライズする。
+            シリアライズに失敗した場合、nullを返す。
+            </summary>
+            <param name="message">I2CCommandsMessageインスタンス</param>
+            <returns>JSONバイト配列</returns>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.I2CCommand">
+            <summary>
+            I2Cコマンドクラス
+            </summary>
+        </member>
+        <member name="P:TICO.GAUDI.Commons.I2CCommand.Action">
+            <summary>
+            アクション
+            </summary>
+        </member>
+        <member name="P:TICO.GAUDI.Commons.I2CCommand.Address">
+            <summary>
+            アドレス
+            </summary>
+        </member>
+        <member name="P:TICO.GAUDI.Commons.I2CCommand.Command">
+            <summary>
+            コマンド
+            </summary>
+        </member>
+        <member name="P:TICO.GAUDI.Commons.I2CCommand.Data">
+            <summary>
+            データ
+            </summary>
+        </member>
+        <member name="P:TICO.GAUDI.Commons.I2CCommand.Filter">
+            <summary>
+            フィルタ
+            </summary>
+        </member>
+        <member name="P:TICO.GAUDI.Commons.I2CCommand.Length">
+            <summary>
+            データ長
+            </summary>
+        </member>
+        <member name="P:TICO.GAUDI.Commons.I2CCommand.Interval">
+            <summary>
+            インターバル
+            </summary>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.TransportProtocol">
+            <summary>
+            トランスポートプロトコル種別
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.TransportProtocol.Amqp">
+            <summary>
+            AMQP プロトコル
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.TransportProtocol.Mqtt">
+            <summary>
+            MQTT プロトコル
+            </summary>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.Util">
+            <summary>
+            ユーティリティクラス
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.Util.GetMessageId">
+            <summary>
+            現在日時("yyyyMMddHHmmssfff")とGUIDを組み合わせて、ユニークなメッセージ ID を生成する。
+            </summary>
+            <returns>生成したメッセージID</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.Util.GetTransportSettings(TICO.GAUDI.Commons.TransportProtocol)">
+            <summary>
+            指定したトランスポートプロトコル種別で生成したトランスポート設定を取得する。
+            想定外のトランスポートプロトコル種別が指定された場合、nullを返す。
+            </summary>
+            <param name="transportProtocol">トランスポートプロトコル種別</param>
+            <returns>トランスポート設定配列</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.Util.GetRequiredValue``1(Newtonsoft.Json.Linq.JObject,System.String)">
+            <summary>
+            JObjectより必須値を取得し、指定した型で取得する。
+            指定したキー名が存在しない場合、Exceptionをスローする。
+            【非推奨】GetDesiredProperty、GetEnvironmentVariableを使用してください。
+            </summary>
+            <typeparam name="T">戻り値の型</typeparam>
+            <param name="jobj">JObjectインスタンス</param>
+            <param name="key">キー名</param>
+            <returns>取得した値</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.Util.HexStringToByte(System.String)">
+            <summary>
+            16進数文字列からバイト値へ変換する。
+            指定した16進数文字列が2文字でない場合、Exceptionをスローする。
+            </summary>
+            <param name="val">16進数文字列（2文字）</param>
+            <returns>バイト値</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.Util.HexStringToBytes(System.String)">
+            <summary>
+            16進数文字列からバイト配列へ変換する。
+            エラー処理は特にしていない。
+            </summary>
+            <param name="val">16進数文字列（"-"区切り）</param>
+            <returns>バイト配列</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.Util.GetDesiredProperty``1(Newtonsoft.Json.Linq.JObject,System.String,System.Boolean,``0,System.Func{``0,System.Boolean})">
+            <summary>
+            DesiredProperty より、指定した型でキーの値を取得する。
+            必須項目でキーが存在しない場合、Exception をスローする。
+            必須でない項目でキーが存在しない場合、デフォルト値を返す。
+            型・制約条件違反の場合、Exception をスローする。
+            </summary>
+            <typeparam name="T">戻り値の型</typeparam>
+            <param name="properties">DesiredProperty</param>
+            <param name="key">キー名</param>
+            <param name="isRequired">必須項目フラグ</param>
+            <param name="defaultValue">デフォルト値（デフォルト：Default）</param>
+            <param name="condition">制約条件（デフォルト：null）</param>
+            <returns>取得した値</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.Util.GetEnvironmentVariable``1(System.String,System.Boolean,``0,System.Func{``0,System.Boolean})">
+            <summary>
+            環境変数より、指定した型で値を取得する。
+            必須項目でキーが存在しない場合、Exception をスローする。
+            必須でない項目でキーが存在しない場合、デフォルト値を返す。
+            型・制約条件違反の場合、Exception をスローする。
+            <typeparam name="T">戻り値の型</typeparam>
+            <param name="name">環境変数名</param>
+            <param name="isRequired">必須項目フラグ</param>
+            <param name="defaultValue">デフォルト値（デフォルト：Default）</param>
+            <param name="condition">制約条件（デフォルト：null）</param>
+            <returns>取得した値</returns>
+            </summary>
+        </member>
+    </members>
+</doc>

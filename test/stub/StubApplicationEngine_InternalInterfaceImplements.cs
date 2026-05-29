@@ -49,7 +49,7 @@ namespace TICO.GAUDI.Commons.Test
             MyLogger.WriteLog(ILogger.LogLevel.INFO, $"ModuelClient created.");
 
             // edgeHubへの接続
-            while (status)
+            while (status && null != MyModuleClient)
             {
                 try
                 {
@@ -71,7 +71,7 @@ namespace TICO.GAUDI.Commons.Test
                 MyLogger.SetModuleClient(MyModuleClient);
 
                 // 環境変数からログレベルを設定
-                string logEnv = Environment.GetEnvironmentVariable("LogLevel");
+                string? logEnv = Environment.GetEnvironmentVariable("LogLevel");
                 try
                 {
                     if (logEnv != null) MyLogger.SetOutputLogLevel(logEnv);
@@ -86,7 +86,7 @@ namespace TICO.GAUDI.Commons.Test
             MyLogger.WriteLog(ILogger.LogLevel.INFO, $"Logger initialized.");
 
             // desiredプロパティの取得
-            while (status)
+            while (status && null != MyModuleClient)
             {
                 try
                 {
@@ -113,13 +113,13 @@ namespace TICO.GAUDI.Commons.Test
             // ダイレクトメソッドコールバックの設定
             if (true == status)
             {
-                await AddDirectMethodHandlerAsync( "SetLogLevel",  DirectMethodCalled, null );
-                await AddDirectMethodHandlerAsync( "GetLogLevel",  DirectMethodCalled, null );
+                await AddDirectMethodHandlerAsync( "SetLogLevel",  DirectMethodCalled );
+                await AddDirectMethodHandlerAsync( "GetLogLevel",  DirectMethodCalled );
                 MyLogger.WriteLog(ILogger.LogLevel.INFO, $"DirectMethod handler was set.");
             }
 
             // 通信切断時コールバックの設定
-            if (true == status)
+            if (true == status && MyModuleClient != null)
             {
                 await MyModuleClient.SetConnectionStatusChangedHandlerAsync(OnConnectionStatusChangedAsync);
                 MyLogger.WriteLog(ILogger.LogLevel.INFO, $"Connection status change handler was setled.");
@@ -326,7 +326,7 @@ namespace TICO.GAUDI.Commons.Test
 
                 var eventData = messageInputEventData[(string)userContext];
 
-                if (null != eventData)
+                if (null != eventData && null != eventData.MsgHandler)
                 {
                     bool result = await eventData.MsgHandler(eventData.InputName, message, eventData.UserContext);
 
@@ -388,12 +388,12 @@ namespace TICO.GAUDI.Commons.Test
         /// <param name="request">ダイレクトメソッドリクエストデータ</param>
         /// <param name="userContext">拡張データ</param>
         /// <returns>ダイレクトメソッド応答</returns>
-        public async Task<MethodResponse> ReceiveMethodAsync(MethodRequest request,
+        public async Task<MethodResponse?> ReceiveMethodAsync(MethodRequest request,
                                                                     object userContext)
         {
             MyLogger.WriteLog(ILogger.LogLevel.TRACE, $"Start Method: ReceiveMethodAsync");
 
-            DirectMethodResponse resp = null;
+            DirectMethodResponse? resp = null;
             string methodName = (string)userContext;
 
             // ステートを実行中状態にする
@@ -413,7 +413,7 @@ namespace TICO.GAUDI.Commons.Test
             {
                 var eventData = methodRequestEventData[methodName];
 
-                if (null != eventData)
+                if (null != eventData && null != eventData.MethodHandler && null != request.ToDirectMethodRequest)
                 {
                     resp = await eventData.MethodHandler(eventData.MethodName, request.ToDirectMethodRequest(), eventData.UserContext);
                 }
@@ -451,13 +451,17 @@ namespace TICO.GAUDI.Commons.Test
             }
             Dequeue();
 
-            MethodResponse retResp = null;
+            MethodResponse? retResp = null;
             if (null != resp)
             {
                 retResp = resp.ToMethodResponse();
+                MyLogger.WriteLog(ILogger.LogLevel.DEBUG, $"retResp : Status={retResp.Status}, Result={retResp.ResultAsJson}");
+            }
+            else
+            {
+                MyLogger.WriteLog(ILogger.LogLevel.DEBUG, $"retResp : null");
             }
 
-            MyLogger.WriteLog(ILogger.LogLevel.DEBUG, $"retResp : Status={retResp.Status}, Result={retResp.ResultAsJson}");
             MyLogger.WriteLog(ILogger.LogLevel.TRACE, $"End Method: ReceiveMethodAsync");
             return retResp;
         }

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 namespace TICO.GAUDI.Commons
 {
     /// <summary>
-    /// Direct Method Calling class
+    /// Direct Method SetLogLevel class
     /// </summary>
     internal class DirectMethod_SetLogLevel : IDirectMethodRunner
     {

@@ -12,10 +12,10 @@ namespace TICO.GAUDI.Commons.Test
     internal class MessageEventData
     {
         public string InputName { get; set; } = "";
-        public object UserContext { get; set; } = null;
-        public MessageEventHandler MsgHandler = null;
+        public object? UserContext { get; set; } = null;
+        public MessageEventHandler? MsgHandler = null;
 
-        public MessageEventData(string inputName, object userContext, MessageEventHandler msgHandler)
+        public MessageEventData(string inputName, object? userContext, MessageEventHandler msgHandler)
         {
             this.InputName = inputName;
             this.UserContext = userContext;
@@ -26,10 +26,10 @@ namespace TICO.GAUDI.Commons.Test
     internal class MethodEventData
     {
         public string MethodName { get; set; } = "";
-        public object UserContext { get; set; } = null;
-        public DirectMethodHandler MethodHandler { get; set; } = null;
+        public object? UserContext { get; set; } = null;
+        public DirectMethodHandler? MethodHandler { get; set; } = null;
 
-        public MethodEventData(string methodName, object userContext, DirectMethodHandler methodHandler)
+        public MethodEventData(string methodName, object? userContext, DirectMethodHandler? methodHandler)
         {
             this.MethodName = methodName;
             this.UserContext = userContext;
@@ -80,9 +80,9 @@ namespace TICO.GAUDI.Commons.Test
         /// </summary>
         /// <param name="thisMethodResponse"></param>
         /// <returns></returns>
-        public static Byte[] ToBytes(this string thisString)
+        public static Byte[]? ToBytes(this string thisString)
         {
-            Byte[] retBytes = null;
+            Byte[]? retBytes = null;
 
             if (null != thisString)
             {
@@ -158,7 +158,7 @@ namespace TICO.GAUDI.Commons.Test
         /// <summary>
         /// アプリケーションメインインスタンス
         /// </summary>
-        protected IApplicationMain applicationMain = null;
+        protected IApplicationMain? applicationMain = null;
 
         /// <summary>
         /// メッセージ受信時のイベントデータ					
@@ -174,7 +174,7 @@ namespace TICO.GAUDI.Commons.Test
         /// <summary>
         /// モジュールクライアント
         /// </summary>
-        protected IModuleClient MyModuleClient = null;
+        protected IModuleClient? MyModuleClient = null;
 
         /// <summary>
         /// ステート管理クラス
@@ -189,7 +189,7 @@ namespace TICO.GAUDI.Commons.Test
             MyLogger.WriteLog(ILogger.LogLevel.TRACE, $"Start Method: GetCancelWaitTask");
 
             var tcs = new TaskCompletionSource<bool>();
-            cancellationToken.Register(s => ((TaskCompletionSource<bool>)s).SetResult(true), tcs);
+            cancellationToken.Register(s => { if (s != null) ((TaskCompletionSource<bool>)s).SetResult(true); }, tcs);
 
             MyLogger.WriteLog(ILogger.LogLevel.TRACE, $"End Method: GetCancelWaitTask");
             return tcs.Task;
@@ -198,7 +198,7 @@ namespace TICO.GAUDI.Commons.Test
         /// <summary>
         /// プロパティ更新処理
         /// </summary>
-        private async Task DesiredPropertiesUpdate(TwinCollection desiredProperties, object userContext)
+        private async Task DesiredPropertiesUpdate(TwinCollection desiredProperties, object? userContext)
         {
             MyLogger.WriteLog(ILogger.LogLevel.TRACE, $"Start Method: DesiredPropertiesUpdate");
             MyLogger.WriteLog(ILogger.LogLevel.INFO, "Updating desired properties.");
@@ -208,7 +208,11 @@ namespace TICO.GAUDI.Commons.Test
                 string jsonDesiredProperties = desiredProperties.ToJson();
                 IJsonSerializer jserializer = JsonSerializerFactory.GetJsonSerializer();
                 JObject jsonRootObject = jserializer.Deserialize<JObject>(jsonDesiredProperties);
-                await applicationMain.OnDesiredPropertiesReceivedAsync(jsonRootObject);
+                if (null != applicationMain)
+                {
+                    await applicationMain.OnDesiredPropertiesReceivedAsync(jsonRootObject);
+                }
+                    
             }
             catch (Exception ex)
             {
@@ -234,6 +238,21 @@ namespace TICO.GAUDI.Commons.Test
             }
             MyLogger.WriteLog(ILogger.LogLevel.TRACE, $"End Method: DirectMethodCalled");
             return retResp;
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            MyLogger.WriteLog(ILogger.LogLevel.TRACE, $"Start Method: DisposeAsync");
+
+            if (null != applicationMain)
+            {
+                await applicationMain.TerminateAsync().ConfigureAwait(false);
+                await applicationMain.DisposeAsync().ConfigureAwait(false);
+            }
+
+            applicationMain = null;
+
+            MyLogger.WriteLog(ILogger.LogLevel.TRACE, $"End Method: DisposeAsync");
         }
 
     }

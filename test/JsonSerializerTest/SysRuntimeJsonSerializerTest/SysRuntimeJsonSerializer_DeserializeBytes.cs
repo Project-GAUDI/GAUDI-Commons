@@ -4,7 +4,6 @@ using TICO.GAUDI.Commons;
 
 namespace TICO.GAUDI.Commons.Test
 {
-
     public class SysRuntimeJsonSerializer_DeserializeBytes
     {
         private readonly ITestOutputHelper _output;

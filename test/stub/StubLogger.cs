@@ -85,8 +85,8 @@ namespace TICO.GAUDI.Commons.Test
             set { myClient = value; }
         }
 
-        private static TextWriter outTextWriter = null;
-        public TextWriter OutTextWriter
+        private static TextWriter? outTextWriter = null;
+        public TextWriter? OutTextWriter
         {
             get { return outTextWriter; }
             set { outTextWriter = value; }
@@ -96,7 +96,7 @@ namespace TICO.GAUDI.Commons.Test
 
         private static Queue<string> MessageQueue { get; } = new Queue<string>();
 
-        private string LoggingClassName { get; }
+        private string LoggingClassName { get; } = "";
 
         private static ILogger.LogLevel mandatoryLoglevel = ILogger.LogLevel.INFO;
 
@@ -198,7 +198,7 @@ namespace TICO.GAUDI.Commons.Test
                     await MySemaphore.WaitAsync();
                     try
                     {
-                        string deqMsg;
+                        string? deqMsg = null;
                         if (MessageQueue.TryDequeue(out deqMsg))
                         {
                             var info = new JsonMessage.RecordInfo()

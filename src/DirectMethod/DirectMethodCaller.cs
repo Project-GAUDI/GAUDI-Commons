@@ -5,15 +5,15 @@ using System.Threading.Tasks;
 namespace TICO.GAUDI.Commons
 {
     /// <summary>
-    /// Direct Method Calling class
+    /// Direct Method Caller class
     /// </summary>
     public class DirectMethodCaller
     {
         /// <summary>
-        /// DirectMethod 呼び出しクラス
+        /// 指定したリクエスト情報をもとに、IDirectMethodRunner インターフェースの ParseRequest / Run / GetResult を呼び出し、実行結果を返す。
         /// </summary>
-        /// <param name="methodRequest"></param>
-        /// <returns></returns>
+        /// <param name="methodRequest">実行結果</param>
+        /// <returns>リクエスト情報</returns>
         public static async Task<DirectMethodResponse> Run(DirectMethodRequest methodRequest)
         {
             DirectMethodResponse resp = new DirectMethodResponse(-1);
@@ -56,6 +56,11 @@ namespace TICO.GAUDI.Commons
             return resp;
         }
 
+        /// <summary>
+        /// メソッド名からIDirectMethodRunnerインスタンス取得処理
+        /// </summary>
+        /// <param name="methodName">DirectMethod名</param>
+        /// <returns>IDirectMethodRunnerインスタンス</returns>
         protected static IDirectMethodRunner GetRunner(string methodName)
         {
             IDirectMethodRunner retRunner = null;

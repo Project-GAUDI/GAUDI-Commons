@@ -46,7 +46,7 @@ namespace TICO.GAUDI.Commons
         /// <summary>
         /// MessageResponse -> bool結果置換
         /// </summary>
-        /// <param name="thisMethodRequest"></param>
+        /// <param name="thisResult"></param>
         /// <returns>DirectMethodRequestインスタンス</returns>
         public static MessageResponse ToMessageResponse(this bool thisResult)
         {
@@ -59,9 +59,6 @@ namespace TICO.GAUDI.Commons
                     break;
                 case false:
                     retResp = MessageResponse.None;
-                    break;
-                default:
-                    retResp = MessageResponse.Abandoned;
                     break;
             }
             return retResp;

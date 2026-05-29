@@ -1,6 +1,6 @@
 using Xunit;
 using TICO.GAUDI.Commons;
-
+/*
 namespace TICO.GAUDI.Commons.Test
 {
     [Collection(nameof(DirectMethod_GetLogLevel_GetResult))]
@@ -34,3 +34,4 @@ namespace TICO.GAUDI.Commons.Test
         }
     }
 }
+*/

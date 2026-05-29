@@ -10,24 +10,37 @@ namespace TICO.GAUDI.Commons
     [DataContract]
     public class JsonMessage
     {
+        /// <summary>
+        /// レコード情報リスト
+        /// </summary>
         [DataMember(Name = "RecordList")]
         public List<RecordInfo> RecordList;
 
+        /// <summary>
+        /// レコード情報クラス
+        /// </summary>
         [DataContract]
         public class RecordInfo
         {
+            /// <summary>
+            /// レコードヘッダーリスト
+            /// </summary>
             [DataMember(Name = "RecordHeader", Order = 0)]
             public List<string> RecordHeader;
 
+            /// <summary>
+            /// レコードデータリスト
+            /// </summary>
             [DataMember(Name = "RecordData", Order = 1)]
             public List<string> RecordData;
         }
 
         /// <summary>
-        /// JSONメッセージのデシリアライズ
+        /// JSON文字列から JSONメッセージへデシリアライズする。
+        /// デシリアライズに失敗した場合、null を返す。
         /// </summary>
-        /// <param name="message"></param>
-        /// <returns></returns>
+        /// <param name="message">JSON文字列</param>
+        /// <returns>JSONメッセージ</returns>
         public static JsonMessage DeserializeJsonMessage(string message)
         {
             try
@@ -43,10 +56,11 @@ namespace TICO.GAUDI.Commons
         }
 
         /// <summary>
-        /// JSONメッセージのデシリアライズ
+        /// JSONバイト配列から JSONメッセージへデシリアライズする。
+        /// デシリアライズに失敗した場合、null を返す。
         /// </summary>
-        /// <param name="message"></param>
-        /// <returns></returns>
+        /// <param name="message">JSONバイト配列</param>
+        /// <returns>JSONメッセージ</returns>
         public static JsonMessage DeserializeJsonMessage(byte[] message)
         {
             try
@@ -61,8 +75,10 @@ namespace TICO.GAUDI.Commons
         }
 
         /// <summary>
-        /// JSONメッセージのシリアライズ
+        /// JSONメッセージからJSON文字列へシリアライズする。
         /// </summary>
+        /// <param name="message">JSONメッセージ</param>
+        /// <returns>JSON文字列</returns>
         public static string SerializeJsonMessage(JsonMessage message)
         {
             IJsonSerializer serializer = JsonSerializerFactory.GetJsonSerializer();
@@ -70,8 +86,11 @@ namespace TICO.GAUDI.Commons
         }
 
         /// <summary>
-        /// JSONメッセージのシリアライズ
+        /// JSON メッセージから JSON バイト配列へシリアライズする。
+        /// シリアライズに失敗した場合、null を返す。
         /// </summary>
+        /// <param name="message">JSONメッセージ</param>
+        /// <returns>JSONバイト配列</returns>
         public static byte[] SerializeJsonMessageByte(JsonMessage message)
         {
             if(message == null){
@@ -90,10 +109,11 @@ namespace TICO.GAUDI.Commons
         }
 
         /// <summary>
-        /// RecordInfoのデシリアライズ
+        /// JSON 文字列から RecordInfo クラスへデシリアライズする。
+        /// デシリアライズに失敗した場合、null を返す。
         /// </summary>
-        /// <param name="message"></param>
-        /// <returns></returns>
+        /// <param name="message">JSON文字列</param>
+        /// <returns>RecordInfoクラス</returns>
         public static JsonMessage.RecordInfo DeserializeRecordInfo(string message)
         {
             try
@@ -108,10 +128,11 @@ namespace TICO.GAUDI.Commons
         }
 
         /// <summary>
-        /// RecordInfoのデシリアライズ
+        /// JSONバイト配列からRecordInfoクラスへデシリアライズする。
+        /// デシリアライズに失敗した場合、null を返す。
         /// </summary>
-        /// <param name="message"></param>
-        /// <returns></returns>
+        /// <param name="message">JSONバイト配列</param>
+        /// <returns>RecordInfoクラス</returns>
         public static JsonMessage.RecordInfo DeserializeRecordInfo(byte[] message)
         {
             try
@@ -126,8 +147,10 @@ namespace TICO.GAUDI.Commons
         }
 
         /// <summary>
-        /// RecordInfoのシリアライズ
+        /// RecordInfoクラスからJSON文字列へシリアライズする。
         /// </summary>
+        /// <param name="message">RecordInfoクラス</param>
+        /// <returns>JSON文字列</returns>
         public static string SerializeRecordInfo(JsonMessage.RecordInfo message)
         {
             IJsonSerializer serializer = JsonSerializerFactory.GetJsonSerializer();
@@ -135,8 +158,11 @@ namespace TICO.GAUDI.Commons
         }
 
         /// <summary>
-        /// RecordInfoのシリアライズ
+        /// RecordInfoクラスからJSONバイト配列へシリアライズする。
+        /// シリアライズに失敗した場合、null を返す。
         /// </summary>
+        /// <param name="message">RecordInfoクラス</param>
+        /// <returns>JSONバイト配列</returns>
         public static byte[] SerializeRecordInfoByte(JsonMessage.RecordInfo message)
         {
             if(message == null){
