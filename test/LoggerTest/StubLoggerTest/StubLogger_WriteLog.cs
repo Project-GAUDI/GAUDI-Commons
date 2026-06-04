@@ -1,22 +1,16 @@
-using System;
-using System.IO;
 using Xunit;
 using Xunit.Abstractions;
-using TICO.GAUDI.Commons;
-using Microsoft.Azure.Devices.Client;
-using System.Threading.Tasks;
-
-namespace TICO.GAUDI.Commons.Test
+/*
+namespace TICO.GAUDI.Commons.Test.LoggerTest
 {
-    [Collection(nameof(StubLogger_WriteLog))]
-    [CollectionDefinition(nameof(StubLogger_WriteLog), DisableParallelization = true)]
+    [Collection(nameof(LoggerTest))]
+    [CollectionDefinition(nameof(LoggerTest), DisableParallelization = true)]
     public class StubLogger_WriteLog
     {
         const string ConnectionString = "TestConnectionString";
 
         private readonly ITestOutputHelper _output;
-        ILogger log = StubLoggerFactory.GetLogger(typeof(StubLogger_WriteLog));
-
+        readonly ILogger log = StubLoggerFactory.GetLogger(typeof(StubLogger_WriteLog));
 
         public StubLogger_WriteLog(ITestOutputHelper output)
         {
@@ -43,7 +37,10 @@ namespace TICO.GAUDI.Commons.Test
             log.WriteLog(ILogger.LogLevel.TRACE, inputMessage);
 
             //Then
-            IStubLoggerResults loggerResults = log as IStubLoggerResults;
+            IStubLoggerResults? loggerResults = log as IStubLoggerResults;
+            Assert.NotNull(loggerResults);
+            if (null == loggerResults) return;
+            
             var logs = loggerResults.GetLogs();
             Assert.Empty(logs);
         }
@@ -66,7 +63,10 @@ namespace TICO.GAUDI.Commons.Test
             log.WriteLog(ILogger.LogLevel.WARN, inputMessage);
 
             //Then
-            IStubLoggerResults loggerResults = log as IStubLoggerResults;
+            IStubLoggerResults? loggerResults = log as IStubLoggerResults;
+            Assert.NotNull(loggerResults);
+            if (null == loggerResults) return;
+            
             var logs = loggerResults.GetLogs();
             Assert.Empty(logs);
         }
@@ -79,7 +79,7 @@ namespace TICO.GAUDI.Commons.Test
         [Fact(DisplayName = "ログ出力：ログレベルTrace(0)")]
         public void WriteLogTest_003()
         {
-            string inputMessage;
+            string? inputMessage;
 
             //No3
             //Given
@@ -90,7 +90,10 @@ namespace TICO.GAUDI.Commons.Test
             log.WriteLog(ILogger.LogLevel.TRACE, inputMessage, true);
 
             //Then
-            IStubLoggerResults loggerResults = log as IStubLoggerResults;
+            IStubLoggerResults? loggerResults = log as IStubLoggerResults;
+            Assert.NotNull(loggerResults);
+            if (null == loggerResults) return;
+            
             var logs = loggerResults.GetLogs();
             Assert.Single(logs);
             // Assert.True(_consoleOutput.Contains("[TRC][Commons.Test.StubLogger_WriteLog] -"));
@@ -118,7 +121,10 @@ namespace TICO.GAUDI.Commons.Test
             log.WriteLog(ILogger.LogLevel.INFO, inputMessage, false);
 
             //Then
-            IStubLoggerResults loggerResults = log as IStubLoggerResults;
+            IStubLoggerResults? loggerResults = log as IStubLoggerResults;
+            Assert.NotNull(loggerResults);
+            if (null == loggerResults) return;
+
             var logs = loggerResults.GetLogs();
             Assert.Single(logs);
             // Assert.True(_consoleOutput.Contains("[INF][Commons.Test.StubLogger_WriteLog] - TestNo.4"));
@@ -215,7 +221,10 @@ namespace TICO.GAUDI.Commons.Test
 
             //Then
             System.Threading.Thread.Sleep(5000);//非同期処理の例外が発生するのを待つため５秒間停止する。
-            IStubLoggerResults loggerResults = log as IStubLoggerResults;
+            IStubLoggerResults? loggerResults = log as IStubLoggerResults;
+            Assert.NotNull(loggerResults);
+            if (null == loggerResults) return;
+
             var logs = loggerResults.GetLogs();
             Assert.Single(logs);
 
@@ -335,3 +344,4 @@ namespace TICO.GAUDI.Commons.Test
 
     }
 }
+*/

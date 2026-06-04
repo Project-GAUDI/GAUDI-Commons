@@ -4,8 +4,16 @@ using Microsoft.Azure.Devices.Client;
 
 namespace TICO.GAUDI.Commons
 {
+    /// <summary>
+    /// モジュールクライアントファクトリークラス
+    /// </summary>
     public class ModuleClientFactory
     {
+        /// <summary>
+        /// ENV:TransportProtocolの値に基づいてトランスポート設定を選定し、IModuleClientクラスのインスタンスを生成する。
+        /// ENV:TransportProtocolの値が不正な場合、ArgumentException をスローする。
+        /// </summary>
+        /// <returns>IModuleClientクラスのインスタンス</returns>
         public static async Task<IModuleClient> CreateAsync()
         {
             return await CreateIotHubModuleClientAsync();
@@ -14,15 +22,15 @@ namespace TICO.GAUDI.Commons
         private static async Task<IModuleClient> CreateIotHubModuleClientAsync()
         {
             ITransportSettings[] settings;
-            string protocolEnv = Environment.GetEnvironmentVariable("TransportProtocol");
-            if (Enum.TryParse(protocolEnv, true, out TransportProtocol transportProtocol))
+
+            try
             {
+                TransportProtocol transportProtocol = Util.GetEnvironmentVariable("TransportProtocol", false, TransportProtocol.Amqp);
                 settings = transportProtocol.GetTransportSettings();
             }
-            else
+            catch (Exception ex)
             {
-                // デフォルトのトランスポートプロトコルを使用
-                settings = TransportProtocol.Amqp.GetTransportSettings();
+                throw new ArgumentException(ex.Message);
             }
 
             return await IotHubModuleClient.CreateAsync(settings);

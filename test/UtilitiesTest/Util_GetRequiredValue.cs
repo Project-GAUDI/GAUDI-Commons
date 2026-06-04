@@ -1,27 +1,59 @@
 using System;
-using System.Threading;
 using Xunit;
 using Xunit.Abstractions;
-
 using Microsoft.Azure.Devices.Shared;
-
 using Newtonsoft.Json.Linq;
 
-using TICO.GAUDI.Commons;
-
-namespace TICO.GAUDI.Commons.Test
+namespace TICO.GAUDI.Commons.Test.UtilitiesTest
 {
-    [Collection(nameof(DirectMethodCaller_Run))]
-    [CollectionDefinition(nameof(DirectMethodCaller_Run), DisableParallelization = true)]
+    [Collection(nameof(Util_GetRequiredValue))]
     public class Util_GetRequiredValue
     {
         private readonly ITestOutputHelper _output;
-        private IJsonSerializer jsonSerializer = JsonSerializerFactory.GetJsonSerializer();
 
         public Util_GetRequiredValue(ITestOutputHelper output)
         {
             _output = output;
         }
+
+        [Fact(DisplayName = "Util No005_キーが存在し、その型が一致する場合のチェック")]
+        public void Util_Case005()
+        {
+            // Arrange
+            var jobj = JObject.Parse("{\"key1\": 123}");
+            string key = "key1";
+
+            // Act
+            int result = Util.GetRequiredValue<int>(jobj, key);
+
+            // Assert
+            Assert.Equal(123, result);
+        }
+
+        [Fact(DisplayName = "Util No006_キーが存在し、型が一致しない場合のチェック")]
+        public void Util_Case006()
+        {
+            // Arrange
+            var jobj = JObject.Parse("{\"key1\": \"abc\"}");
+            string key = "key1";
+
+            // Act & Assert
+            Assert.ThrowsAny<Exception>(() => Util.GetRequiredValue<int>(jobj, key));
+        }
+
+        [Fact(DisplayName = "Util No007_キーが存在しない場合のチェック")]
+        public void Util_Case007()
+        {
+            // Arrange
+            var jobj = JObject.Parse("{\"key1\": 123}");
+            string key = "key2";
+
+            // Act & Assert
+            Assert.ThrowsAny<Exception>(() => Util.GetRequiredValue<int>(jobj, key));
+        }
+
+        #region 単体テスト仕様書外の既存テスト
+        private IJsonSerializer jsonSerializer = JsonSerializerFactory.GetJsonSerializer();
 
         [Fact(DisplayName = "異常系：Itemが全く存在しない")]
         public void NoItems_ExceptionThrown()
@@ -250,5 +282,6 @@ namespace TICO.GAUDI.Commons.Test
                 var item1 = rootObj[tergetItem];
             });
         }
+        #endregion
     }
 }

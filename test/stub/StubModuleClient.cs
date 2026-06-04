@@ -90,9 +90,20 @@ namespace TICO.GAUDI.Commons.Test
             return;
         }
 
+        /// <summary>
+        /// リソース解放処理
+        /// </summary>
         public void Dispose()
         {
-
+            try
+            {
+                CloseAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+                _Handlers?.Clear();
+            }
+            catch
+            {
+                // Dispose中の例外は無視
+            }
         }
 
         /// ---------------------------------------------------------

@@ -4,25 +4,25 @@ using System.Threading.Tasks;
 namespace TICO.GAUDI.Commons
 {
     /// <summary>
-    /// Direct Method Interface class
+    /// Direct Method Runner class
     /// </summary>
     public interface IDirectMethodRunner : IDisposable
     {
         /// <summary>
-        /// リクエスト(JSON形式)の解析
+        /// リクエスト文字列（JSON 形式）を解析して、処理結果を返す。
         /// </summary>
-        /// <param name="requestJSON">リクエスト文字列(JSON形式)</param>
-        /// <returns>処理結果：true=成功、false=失敗</returns>
+        /// <param name="requestJSON">リクエスト文字列（JSON形式）</param>
+        /// <returns>処理成功(true)、処理失敗(false)</returns>
         public Task<bool> ParseRequest(string requestJSON);
 
         /// <summary>
-        ///　ダイレクトメソッドの実行 
+        ///　ダイレクトメソッドを実行する。 
         /// </summary>
-        /// <returns>処理結果：true=成功、false=失敗</returns>
+        /// <returns>処理成功(true)、処理失敗(false)</returns>
         public Task<bool> Run();
 
         /// <summary>
-        ///　ダイレクトメソッドの実行結果の取得
+        /// ダイレクトメソッドの実行結果を取得する。
         /// </summary>
         /// <returns>実行結果</returns>        
         public DirectMethodResponse GetResult();

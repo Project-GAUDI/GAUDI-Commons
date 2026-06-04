@@ -8,15 +8,14 @@ namespace TICO.GAUDI.Commons
     public class ApplicationEngineFactory
     {
         /// <summary>
-        /// エンジンインスタンス。(Singleton)					
+        /// エンジンインスタンス(Singleton)					
         /// </summary>
-        /// <param name=""></param>
         private static ApplicationEngine applicationEngine = new ApplicationEngine();
 
         /// <summary>
-        /// エンジンインスタンス。(Singleton)					
+        /// IApplicationEngine クラスのインスタンスを取得する。
         /// </summary>
-        /// <param name=""></param>
+        /// <returns>インスタンス</returns>
         public static IApplicationEngine GetEngine()
         {
             return applicationEngine;

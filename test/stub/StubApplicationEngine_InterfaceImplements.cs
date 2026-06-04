@@ -177,7 +177,7 @@ namespace TICO.GAUDI.Commons.Test
         {
             return stateController.IsTerminating;
         }
-                /// <summary>
+        /// <summary>
         /// メッセージ入力時のイベント処理追加
         /// </summary>
         /// <param name="inputName">入力名</param>
@@ -185,7 +185,7 @@ namespace TICO.GAUDI.Commons.Test
         /// <param name="userContext">拡張データ(省略可能)</param>
         public async Task AddMessageInputHandlerAsync(string inputName,
                                                         MessageEventHandler msgHandler,
-                                                        object userContext = null)
+                                                        object? userContext = null)
         {
             MyLogger.WriteLog(ILogger.LogLevel.TRACE, $"Start Method: AddMessageInputHandlerAsync");
 
@@ -193,7 +193,10 @@ namespace TICO.GAUDI.Commons.Test
             var msgEventData = new MessageEventData(inputName, userContext, msgHandler);
             messageInputEventData.Add(inputName, msgEventData);
 
-            await MyModuleClient.SetInputMessageHandlerAsync(inputName, ReceiveMessageAsync, inputName);
+            if (null != MyModuleClient)
+            {
+                await MyModuleClient.SetInputMessageHandlerAsync(inputName, ReceiveMessageAsync, inputName);
+            }
 
             MyLogger.WriteLog(ILogger.LogLevel.TRACE, $"End Method: AddMessageInputHandlerAsync");
         }
@@ -208,7 +211,12 @@ namespace TICO.GAUDI.Commons.Test
         {
             MyLogger.WriteLog(ILogger.LogLevel.TRACE, $"Start Method: SendMessageAsync");
 
-            Action sender = null;
+            Action? sender = null;
+            if (MyModuleClient == null)
+            {
+                return;
+            }
+
             var status = MyModuleClient.ConnectionStatus;
             switch (status)
             {
@@ -265,7 +273,7 @@ namespace TICO.GAUDI.Commons.Test
         /// <param name="userContext">拡張データ</param>
         public async Task AddDirectMethodHandlerAsync(string methodName,
                                                         DirectMethodHandler methodHandler,
-                                                        object userContext = null)
+                                                        object? userContext = null)
         {
             MyLogger.WriteLog(ILogger.LogLevel.TRACE, $"Start Method: AddDirectMethodHandlerAsync");
 
@@ -273,7 +281,10 @@ namespace TICO.GAUDI.Commons.Test
             var methodRequestData = new MethodEventData(methodName, userContext, methodHandler);
             methodRequestEventData.Add(methodName, methodRequestData);
 
-            await MyModuleClient.SetMethodHandlerAsync(methodName, ReceiveMethodAsync, methodName);
+            if (null != MyModuleClient)
+            {
+                await MyModuleClient.SetMethodHandlerAsync(methodName, ReceiveMethodAsync, methodName);
+            }
 
             MyLogger.WriteLog(ILogger.LogLevel.TRACE, $"End Method: AddDirectMethodHandlerAsync");
         }

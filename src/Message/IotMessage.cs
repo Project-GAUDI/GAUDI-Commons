@@ -18,14 +18,22 @@ namespace TICO.GAUDI.Commons
     /// </remarks>
     public class IotMessage : IDisposable
     {
-        /// <summary>Property設定モード</summary>
+        /// <summary>
+        /// プロパティ設定モード
+        /// </summary>
         public enum PropertySetMode
         {
-            /// <summary>追加のみ（上書きしない）</summary>
+            /// <summary>
+            /// 追加のみ（上書きしない）
+            /// </summary>
             Add,
-            /// <summary>更新（上書き）のみ（追加はなし）</summary>
+            /// <summary>
+            /// 更新のみ（追加しない）
+            /// </summary>
             Modify,
-            /// <summary>追加および更新</summary>
+            /// <summary>
+            /// 追加または更新
+            /// </summary>
             AddOrModify
         }
 
@@ -45,7 +53,8 @@ namespace TICO.GAUDI.Commons
         protected Stream bodyStream { get; set; } = null;
 
         /// <summary>
-        /// デフォルトコンストラクタ
+        /// 空のメッセージ Body で、IotMessage インスタンスを生成する。
+        /// ContentType プロパティが設定されていない場合は "application/json" を設定、ContentEncoding プロパティが設定されていない場合は "utf-8" を設定する。
         /// </summary>
         public IotMessage()
         {
@@ -54,9 +63,10 @@ namespace TICO.GAUDI.Commons
         }
 
         /// <summary>
-        /// コンストラクタ
+        /// 指定したメッセージ Body で、IotMessage インスタンスを生成する。
+        /// ContentType プロパティが設定されていない場合は "application/json" を設定、ContentEncoding プロパティが設定されていない場合は "utf-8" を設定する。
         /// </summary>
-        /// <params name="byteArray">メッセージBodyデータ</params>
+        /// <param name="byteArray">メッセージ Body バイト配列</param>
         public IotMessage(Byte[] byteArray)
         {
             byteData = byteArray;
@@ -65,9 +75,10 @@ namespace TICO.GAUDI.Commons
         }
 
         /// <summary>
-        /// コンストラクタ
+        /// 指定したメッセージ Body で、IotMessage インスタンスを生成する。
+        /// ContentType プロパティが設定されていない場合は "application/json" を設定、ContentEncoding プロパティが設定されていない場合は "utf-8" を設定する。
         /// </summary>
-        /// <params name="messageString">メッセージBody文字列</params>
+        /// <param name="messageString">メッセージ Body 文字列</param>
         public IotMessage(string messageString)
         {
             byteData = StringToByates(messageString);
@@ -76,9 +87,10 @@ namespace TICO.GAUDI.Commons
         }
 
         /// <summary>
-        /// コンストラクタ
+        /// 指定したメッセージ Body で、IotMessage インスタンスを生成する。
+        /// ContentType プロパティが設定されていない場合は "application/json" を設定、ContentEncoding プロパティが設定されていない場合は "utf-8" を設定する。
         /// </summary>
-        /// <params name="stream">メッセージBody Stream</params>
+        /// <param name="stream">メッセージ Body ストリーム</param>
         public IotMessage(System.IO.Stream stream)
         {
             bodyStream = stream;
@@ -90,7 +102,7 @@ namespace TICO.GAUDI.Commons
         /// コンストラクタ
         /// </summary>
         /// <remarks>
-        /// Commons内部利用用。
+        /// Commons内部利用用
         /// </remarks>
         /// <params name="orgMessage">azure メッセージオブジェクト</params>
         internal IotMessage(Message orgMessage)
@@ -98,13 +110,12 @@ namespace TICO.GAUDI.Commons
             message = orgMessage;
             setContentTypeAndEncoding();
         }
+        
         /// <summary>
-        /// コピーコンストラクタ
+        /// 既存の IotMessage インスタンスをコピーして生成する（メッセージプロパティもコピーする）。
+        /// ContentType プロパティが設定されていない場合は "application/json" を設定、ContentEncoding プロパティが設定されていない場合は "utf-8" を設定する。
         /// </summary>
-        /// <params name="orgMessage">azure メッセージオブジェクト</params>
-        /// <remarks>
-        /// メッセージプロパティもコピーします
-        /// </remarks>
+        /// <param name="orgMessage">IotMessage インスタンス</param>
         public IotMessage(IotMessage orgMessage)
         {
             var stream = orgMessage.GetBodyStream();
@@ -118,7 +129,7 @@ namespace TICO.GAUDI.Commons
         }
 
         /// <summary>
-        /// 廃棄メソッド。（IDisposableの実装メソッド）
+        /// リソースを解放する。
         /// </summary>
         public void Dispose()
         {
@@ -127,7 +138,7 @@ namespace TICO.GAUDI.Commons
         }
 
         /// <summary>
-        /// メッセージBodyデータを取得
+        /// メッセージ Body をバイト配列で取得して返す。
         /// </summary>
         /// <returns>メッセージBodyデータ</returns>
         public Byte[] GetBytes()
@@ -144,7 +155,7 @@ namespace TICO.GAUDI.Commons
         }
 
         /// <summary>
-        /// 文字列化したメッセージBodyを取得
+        /// メッセージ Body を文字列で取得して返す。
         /// </summary>
         /// <returns>メッセージBody文字列</returns>
         public string GetBodyString()
@@ -153,7 +164,7 @@ namespace TICO.GAUDI.Commons
         }
 
         /// <summary>
-        /// メッセージBody Streamを取得
+        /// メッセージ Body をストリームで取得して返す。
         /// </summary>
         /// <returns>メッセージBody Stream</returns>
         public Stream GetBodyStream()
@@ -179,7 +190,7 @@ namespace TICO.GAUDI.Commons
         }
 
         /// <summary>
-        /// メッセージBodyデータのサイズを取得
+        /// メッセージ Body のサイズを取得する。
         /// </summary>
         /// <returns>メッセージBodyサイズ</returns>
         public long GetBodyLength()
@@ -196,17 +207,13 @@ namespace TICO.GAUDI.Commons
         }
 
         /// <summary>
-        /// プロパティ設定
+        /// 指定したプロパティ設定モードに応じて、プロパティを追加・更新する。
         /// </summary>
         /// <params name="key">プロパティキー</params>
         /// <params name="value">プロパティ値</params>
-        /// <params name="setMode">
-        ///     設定モード（PropertySetMode参照）
-        ///     デフォルト：PropertySetMode.AddOrModify
-        ///　</params>
+        /// <params name="setMode">プロパティ設定モード（デフォルト：AddOrModify）</params>
         /// <returns>
-        /// true : 設定した
-        /// false : 設定しなかった
+        /// 設定した(true)／設定しなかった(false)
         /// </returns>
         public bool SetProperty(string key, string value, PropertySetMode setMode = PropertySetMode.AddOrModify)
         {
@@ -247,13 +254,11 @@ namespace TICO.GAUDI.Commons
         }
 
         /// <summary>
-        /// プロパティ取得
+        /// 指定したプロパティキーのプロパティ値を取得する。
+        /// キーが存在しない場合、null を返す。
         /// </summary>
         /// <params name="key">プロパティキー</params>
-        /// <returns>
-        /// プロパティ値。
-        /// キーが無い場合は、nullを返す。
-        /// </returns>
+        /// <returns>プロパティ値</returns>
         public string GetProperty(string key)
         {
             string retProperty = null;
@@ -270,17 +275,11 @@ namespace TICO.GAUDI.Commons
         }
 
         /// <summary>
-        /// プロパティ一括設定
+        /// 指定したプロパティ設定モードに応じて、複数のプロパティを一括で追加・更新する。
         /// </summary>
         /// <params name="properties">プロパティ辞書</params>
-        /// <params name="setMode">
-        ///     設定モード（PropertySetMode参照）
-        ///     デフォルト：PropertySetMode.AddOrModify
-        /// </params>        
-        /// <returns>
-        /// true : 全て設定した
-        /// false : 一部または全て設定しなかった
-        /// </returns>
+        /// <params name="setMode">プロパティ設定モード（デフォルト：AddOrModify）</params>
+        /// <returns>全て設定した(true)／一部または全て設定しなかった(false)</returns>
         public bool SetProperties(IDictionary<string, string> properties, PropertySetMode setMode = PropertySetMode.AddOrModify)
         {
             bool retResult = false;
@@ -300,11 +299,10 @@ namespace TICO.GAUDI.Commons
         }
 
         /// <summary>
-        /// プロパティ辞書取得
+        /// 全プロパティを取得する。
+        /// プロパティが存在しない場合、null を返す。
         /// </summary>
-        /// <returns>
-        /// プロパティ辞書
-        /// </returns>
+        /// <returns>プロパティ辞書</returns>
         public IDictionary<string, string> GetProperties()
         {
             IDictionary<string, string> retProperties = null;
@@ -318,12 +316,10 @@ namespace TICO.GAUDI.Commons
         }
 
         /// <summary>
-        /// バイト列→文字列変換
+        /// バイト配列を文字列に変換する。
         /// </summary>
-        /// <params name="byteArray">変換バイト列</params>
-        /// <returns>
-        /// 変換した文字列
-        /// </returns>
+        /// <params name="byteArray">変換するバイト配列</params>
+        /// <returns>変換した文字列</returns>
         public static string BytesToString(Byte[] convBytes)
         {
             string retString = null;
@@ -336,12 +332,10 @@ namespace TICO.GAUDI.Commons
         }
 
         /// <summary>
-        /// 文字列→バイト列変換
+        /// 文字列をバイト配列に変換する。
         /// </summary>
-        /// <params name="convString">変換文字列</params>
-        /// <returns>
-        /// 変換したバイト列
-        /// </returns>
+        /// <params name="convString">変換する文字列</params>
+        /// <returns>変換したバイト配列</returns>
         public static Byte[] StringToByates(string convString)
         {
             Byte[] retBytes = null;
@@ -383,8 +377,9 @@ namespace TICO.GAUDI.Commons
         }
 
         /// <summary>
-        /// MessageIdプロパティの取得
+        /// MessageId プロパティを取得する。
         /// </summary>
+        /// <returns>MessageId</returns>
         public string GetMessageId()
         {
             string messageId = null;
@@ -396,8 +391,9 @@ namespace TICO.GAUDI.Commons
         }
 
         /// <summary>
-        /// MessageIdプロパティのセット
+        /// MessageId プロパティを設定する。
         /// </summary>
+        /// <param name="messageId">MessageId</param>
         public void SetMessageId(string messageId)
         {
             if (message != null)
@@ -407,8 +403,9 @@ namespace TICO.GAUDI.Commons
         }
 
         /// <summary>
-        /// ContentTypeプロパティの取得
+        /// ContentType プロパティを取得する。
         /// </summary>
+        /// <returns>ContentType</returns>
         public string GetContentType()
         {
             string contentType = null;
@@ -420,8 +417,9 @@ namespace TICO.GAUDI.Commons
         }
 
         /// <summary>
-        /// ContentTypeプロパティのセット
+        /// ContentType プロパティを設定する。
         /// </summary>
+        /// <param name="contentType">ContentType</param>
         public void SetContentType(string contentType)
         {
             if (message != null)
@@ -431,8 +429,9 @@ namespace TICO.GAUDI.Commons
         }
 
         /// <summary>
-        /// ContentEncodingプロパティの取得
+        /// ContentEncoding プロパティを取得する。
         /// </summary>
+        /// <returns>ContentEncoding</returns>
         public string GetContentEncoding()
         {
             string contentEncoding = null;
@@ -444,8 +443,9 @@ namespace TICO.GAUDI.Commons
         }
 
         /// <summary>
-        /// ContentEncodingプロパティのセット
+        /// ContentEncoding プロパティを設定する。
         /// </summary>
+        /// <param name="contentEncoding">ContentEncoding</param>
         public void SetContentEncoding(string contentEncoding)
         {
             if (message != null)
@@ -455,8 +455,9 @@ namespace TICO.GAUDI.Commons
         }
 
         /// <summary>
-        /// ConnectionDeviceIdプロパティの取得
+        /// ConnectionDeviceId プロパティを取得する。
         /// </summary>
+        /// <returns>ConnectionDeviceId</returns>
         public string GetConnectionDeviceId()
         {
             string connectionDeviceId = null;
@@ -468,8 +469,9 @@ namespace TICO.GAUDI.Commons
         }
 
         /// <summary>
-        /// ConnectionModuleIdプロパティの取得
+        /// ConnectionModuleId プロパティを取得する。
         /// </summary>
+        /// <returns>ConnectionModuleId</returns>
         public string GetConnectionModuleId()
         {
             string connectionModuleId = null;

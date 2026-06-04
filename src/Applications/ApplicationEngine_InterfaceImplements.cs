@@ -10,34 +10,75 @@ namespace TICO.GAUDI.Commons
     /// </summary>
     internal partial class ApplicationEngine : IApplicationEngineInternal
     {
+        private int _disposed = 0; // 0: false, 1: true
 
-        public void Dispose()
+        /// <summary>
+        /// リソース解放
+        /// </summary>
+        public async ValueTask DisposeAsync()
         {
-            MyLogger.WriteLog(ILogger.LogLevel.TRACE, $"Start Method: Dispose");
+            MyLogger.WriteLog(ILogger.LogLevel.TRACE, $"Start Method: DisposeAsync");
 
-            if (null != applicationMain)
+            // 2重実行防止
+            if (Interlocked.Exchange(ref _disposed, 1) == 1)
             {
-                applicationMain.TerminateAsync().Wait();
-            }
-            
-            if (null != MyModuleClient)
-            {
-                MyModuleClient.CloseAsync();
-                MyModuleClient.Dispose();
-                MyModuleClient = null;
+                MyLogger.WriteLog(ILogger.LogLevel.TRACE, $"Exit Method: Already disposed, skipping DisposeAsync");
+                return;
             }
 
-            // Program.cs側で管理する為、Disposeはしない
-            applicationMain = null;
+            try
+            {
+                if (null != applicationMain)
+                {
+                    try
+                    {
+                        await applicationMain.TerminateAsync().ConfigureAwait(false);
+                    }
+                    catch (Exception ex)
+                    {
+                        MyLogger.WriteLog(ILogger.LogLevel.ERROR, $"Exception occurred during TerminateAsync: {ex.Message}");
+                    }
 
-            messageInputEventData.Clear();
-            methodRequestEventData.Clear();
+                    // Program.cs側で管理する為、DisposeAsyncはしない
+                    applicationMain = null;
+                }
 
-            MyLogger.WriteLog(ILogger.LogLevel.TRACE, $"End Method: Dispose");
+                if (null != MyModuleClient)
+                {
+                    try
+                    {
+                        await MyModuleClient.CloseAsync().ConfigureAwait(false);
+                    }
+                    catch (Exception ex)
+                    {
+                        MyLogger.WriteLog(ILogger.LogLevel.ERROR, $"Exception occurred during CloseAsync: {ex.Message}");
+                    }
+
+                    try
+                    {
+                        MyModuleClient.Dispose();
+                    }
+                    catch (Exception ex)
+                    {
+                        MyLogger.WriteLog(ILogger.LogLevel.ERROR, $"Exception occurred during ModuleClient Dispose: {ex.Message}");
+                    }
+
+                    MyModuleClient = null;
+                }
+
+                messageInputEventData.Clear();
+                methodRequestEventData.Clear();
+            }
+            catch (Exception ex)
+            {
+                MyLogger.WriteLog(ILogger.LogLevel.ERROR, $"Error in DisposeAsync: {ex.Message}");
+            }
+
+            MyLogger.WriteLog(ILogger.LogLevel.TRACE, $"End Method: DisposeAsync");
         }
 
         /// <summary>
-        /// アプリケーションインスタンスを注入。
+        /// アプリケーションインスタンスを注入
         /// </summary>
         /// <param name="applicationMain">アプリケーションメインインスタンス</param>
         public void SetApplication(IApplicationMain applicationMain)
@@ -93,8 +134,28 @@ namespace TICO.GAUDI.Commons
             {
                 // Wait until the app unloads or is cancelled
                 engineCanceller = new CancellationTokenSource();
-                AssemblyLoadContext.Default.Unloading += (ctx) => engineCanceller.Cancel();
-                Console.CancelKeyPress += (sender, cpe) => engineCanceller.Cancel();
+                AssemblyLoadContext.Default.Unloading += (ctx) =>
+                {
+                    try
+                    {
+                        engineCanceller?.Cancel();
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        MyLogger.WriteLog(ILogger.LogLevel.INFO, $"Ignored as already released");
+                    }
+                };
+                Console.CancelKeyPress += (sender, cpe) =>
+                {
+                    try
+                    {
+                        engineCanceller?.Cancel();
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        MyLogger.WriteLog(ILogger.LogLevel.INFO, $"Ignored as already released");
+                    }
+                };
                 await GetCancelWaitTask(engineCanceller.Token).ConfigureAwait(false);
 
                 await Terminate(true).ConfigureAwait(false);
