@@ -1,4 +1,4 @@
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 using Xunit;
 using Xunit.Abstractions;
 using TICO.GAUDI.Commons;

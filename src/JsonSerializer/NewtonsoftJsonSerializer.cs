@@ -23,13 +23,13 @@ namespace TICO.GAUDI.Commons
         public string Serialize<TargetType>(TargetType target)
         {
             string retSerialized = null;
-                                         
+
             try
-            {  
-                if ( target != null ) 
+            {
+                if (target != null)
                 {
                     // Newtonsoft.Json のシリアライザ設定を実施
-                    JsonSerializerSettings serializerSettings = new JsonSerializerSettings();
+                    var serializerSettings = new Newtonsoft.Json.JsonSerializerSettings();
                     // エスケープオプションをデフォルトに設定。
                     // 参考）
                     // Default: ”（ダブルクウォート）、\（バックスラッシュ）は、"\"エスケープされる。
@@ -41,7 +41,7 @@ namespace TICO.GAUDI.Commons
                     retSerialized = JsonConvert.SerializeObject(target, serializerSettings);
                 }
             }
-            catch (Exception )
+            catch (Exception)
             {
                 retSerialized = null;
             }
@@ -61,15 +61,15 @@ namespace TICO.GAUDI.Commons
 
             // シリアライズ実行
             string serialized = this.Serialize<TargetType>(target);
-            if ( serialized != null ) 
+            if (serialized != null)
             {
-                retSerialized =  Encoding.UTF8.GetBytes( serialized );
+                retSerialized = Encoding.UTF8.GetBytes(serialized);
             }
 
             return retSerialized;
         }
 
-        
+
         /// <summary>
         /// デシリアライズ
         /// </summary>
@@ -81,19 +81,19 @@ namespace TICO.GAUDI.Commons
             TargetType retDeserialized = default(TargetType);
 
             try
-            {  
-                if ( jsonString != null ) 
+            {
+                if (jsonString != null)
                 {
                     // デシリアライズ実行
                     retDeserialized = JsonConvert.DeserializeObject<TargetType>(jsonString);
                 }
             }
-            catch (Exception )
+            catch (Exception)
             {
                 retDeserialized = default(TargetType);
             }
-            
-            return retDeserialized; 
+
+            return retDeserialized;
         }
 
         /// <summary>
@@ -107,14 +107,88 @@ namespace TICO.GAUDI.Commons
             TargetType retDeserialized = default(TargetType);
 
             // デシリアライズ実行
-            if ( jsonBytes != null ) 
+            if (jsonBytes != null)
             {
-                var jsonString =  Encoding.UTF8.GetString( jsonBytes );
+                var jsonString = Encoding.UTF8.GetString(jsonBytes);
                 retDeserialized = this.Deserialize<TargetType>(jsonString);
             }
 
-            return retDeserialized; 
+            return retDeserialized;
         }
 
-    } 
+        /// <summary>
+        /// 指定した設定でシリアライズ
+        /// </summary>
+        public string Serialize<TargetType>(TargetType target, JsonSerializerSettings settings)
+        {
+            string retSerialized = null;
+            try
+            {
+                if (target != null)
+                {
+                    var serializerSettings = settings != null
+                        ? settings.ToNewtonsoftSettings()
+                        : new Newtonsoft.Json.JsonSerializerSettings { StringEscapeHandling = StringEscapeHandling.Default };
+                    retSerialized = JsonConvert.SerializeObject(target, serializerSettings);
+                }
+            }
+            catch (Exception)
+            {
+                retSerialized = null;
+            }
+            return retSerialized;
+        }
+
+        /// <summary>
+        /// 指定した設定でバイト列シリアライズ
+        /// </summary>
+        public Byte[] SerializeBytes<TargetType>(TargetType target, JsonSerializerSettings settings)
+        {
+            Byte[] retSerialized = null;
+            string serialized = this.Serialize<TargetType>(target, settings);
+            if (serialized != null)
+            {
+                retSerialized = Encoding.UTF8.GetBytes(serialized);
+            }
+            return retSerialized;
+        }
+
+        /// <summary>
+        /// 指定した設定で文字列からデシリアライズ
+        /// </summary>
+        public TargetType Deserialize<TargetType>(string jsonString, JsonSerializerSettings settings)
+        {
+            TargetType retDeserialized = default(TargetType);
+            try
+            {
+                if (jsonString != null)
+                {
+                    var serializerSettings = settings != null
+                        ? settings.ToNewtonsoftSettings()
+                        : new Newtonsoft.Json.JsonSerializerSettings();
+                    retDeserialized = JsonConvert.DeserializeObject<TargetType>(jsonString, serializerSettings);
+                }
+            }
+            catch (Exception)
+            {
+                retDeserialized = default(TargetType);
+            }
+            return retDeserialized;
+        }
+
+        /// <summary>
+        /// 指定した設定でバイト列からデシリアライズ
+        /// </summary>
+        public TargetType Deserialize<TargetType>(Byte[] jsonBytes, JsonSerializerSettings settings)
+        {
+            TargetType retDeserialized = default(TargetType);
+            if (jsonBytes != null)
+            {
+                var jsonString = Encoding.UTF8.GetString(jsonBytes);
+                retDeserialized = this.Deserialize<TargetType>(jsonString, settings);
+            }
+            return retDeserialized;
+        }
+
+    }
 }

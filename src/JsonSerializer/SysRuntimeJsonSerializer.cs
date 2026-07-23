@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.Serialization.Json;
 using System.Text;
+using System.Xml;
 
 namespace TICO.GAUDI.Commons
 {
@@ -31,7 +34,7 @@ namespace TICO.GAUDI.Commons
             {
                 retSerialized = Encoding.UTF8.GetString(byteAry);
             }
-            
+
             return retSerialized;
         }
 
@@ -63,11 +66,11 @@ namespace TICO.GAUDI.Commons
                     retSerialized = null;
                 }
             }
-            
+
             return retSerialized;
         }
 
-        
+
         /// <summary>
         /// デシリアライズ
         /// </summary>
@@ -105,8 +108,126 @@ namespace TICO.GAUDI.Commons
                 retDeserialized = default(TargetType);
             }
 
-            return retDeserialized; 
+            return retDeserialized;
         }
 
-    } 
+        // SysRuntimeSerialization は設定の大部分をサポートしない。
+        // ただし Formatting=Indented はシリアライズ時にサポートする。
+        // デフォルト値と異なる設定が渡された場合は警告を出力し、無視して処理を続行する。
+
+        private static readonly JsonSerializerSettings _defaultSettings = new JsonSerializerSettings();
+
+        /// <summary>
+        /// 指定した設定でシリアライズ（Formatting をサポート、その他は警告して無視）
+        /// </summary>
+        public string Serialize<TargetType>(TargetType target, JsonSerializerSettings settings)
+        {
+            var byteAry = this.SerializeBytes(target, settings);
+            return byteAry != null ? Encoding.UTF8.GetString(byteAry) : null;
+        }
+
+        /// <summary>
+        /// 指定した設定でバイト列シリアライズ（Formatting をサポート、その他は警告して無視）
+        /// </summary>
+        public Byte[] SerializeBytes<TargetType>(TargetType target, JsonSerializerSettings settings)
+        {
+            if (settings == null)
+            {
+                return this.SerializeBytes(target);
+            }
+
+            WarnUnsupportedSettings(settings);
+
+            // Formatting=Indented の場合は JsonWriter 経由で整形出力
+            bool useIndent = settings.Formatting == JsonFormatting.Indented;
+
+            Byte[] retSerialized = null;
+
+            if (target != null)
+            {
+                var serializer = new DataContractJsonSerializer(typeof(TargetType));
+                try
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        if (useIndent)
+                        {
+                            // インデント付き出力
+                            using (var writer = JsonReaderWriterFactory.CreateJsonWriter(ms, Encoding.UTF8, ownsStream: false, indent: true))
+                            {
+                                serializer.WriteObject(writer, target);
+                                writer.Flush();
+                            }
+                        }
+                        else
+                        {
+                            // コンパクト出力（既存動作）
+                            serializer.WriteObject(ms, target);
+                        }
+                        retSerialized = ms.ToArray();
+                    }
+                }
+                catch (Exception)
+                {
+                    retSerialized = null;
+                }
+            }
+
+            return retSerialized;
+        }
+
+        /// <summary>
+        /// 指定した設定で文字列からデシリアライズ（非対応設定は警告して無視）
+        /// </summary>
+        public TargetType Deserialize<TargetType>(string jsonString, JsonSerializerSettings settings)
+        {
+            WarnUnsupportedSettings(settings);
+            return this.Deserialize<TargetType>(jsonString);
+        }
+
+        /// <summary>
+        /// 指定した設定でバイト列からデシリアライズ（非対応設定は警告して無視）
+        /// </summary>
+        public TargetType Deserialize<TargetType>(Byte[] jsonBytes, JsonSerializerSettings settings)
+        {
+            WarnUnsupportedSettings(settings);
+            return this.Deserialize<TargetType>(jsonBytes);
+        }
+
+        /// <summary>
+        /// デフォルト値と異なる設定項目を列挙して警告を出力する。
+        /// すべてデフォルト値の場合は警告しない。
+        /// Formatting はサポートされているため警告対象外。
+        /// </summary>
+        private static void WarnUnsupportedSettings(JsonSerializerSettings settings)
+        {
+            if (settings == null) return;
+
+            var unsupported = new List<string>(8);
+
+            if (settings.NullValueHandling != _defaultSettings.NullValueHandling)
+                unsupported.Add(string.Format("{0}={1}", nameof(settings.NullValueHandling), settings.NullValueHandling));
+            if (settings.DefaultValueHandling != _defaultSettings.DefaultValueHandling)
+                unsupported.Add(string.Format("{0}={1}", nameof(settings.DefaultValueHandling), settings.DefaultValueHandling));
+            // Formatting はサポートされているため警告しない
+            if (settings.ReferenceLoopHandling != _defaultSettings.ReferenceLoopHandling)
+                unsupported.Add(string.Format("{0}={1}", nameof(settings.ReferenceLoopHandling), settings.ReferenceLoopHandling));
+            if (settings.DateParseHandling != _defaultSettings.DateParseHandling)
+                unsupported.Add(string.Format("{0}={1}", nameof(settings.DateParseHandling), settings.DateParseHandling));
+            if (settings.DateFormatHandling != _defaultSettings.DateFormatHandling)
+                unsupported.Add(string.Format("{0}={1}", nameof(settings.DateFormatHandling), settings.DateFormatHandling));
+            if (settings.StringEscapeHandling != _defaultSettings.StringEscapeHandling)
+                unsupported.Add(string.Format("{0}={1}", nameof(settings.StringEscapeHandling), settings.StringEscapeHandling));
+            if (settings.ExcludeEmptyCollections != _defaultSettings.ExcludeEmptyCollections)
+                unsupported.Add(string.Format("{0}={1}", nameof(settings.ExcludeEmptyCollections), settings.ExcludeEmptyCollections));
+
+            if (unsupported.Count == 0) return;
+
+            Trace.TraceWarning(string.Format(
+                "[{0}] The current serializer is {0}. The following settings are not supported and will be ignored: {1}",
+                nameof(SysRuntimeJsonSerializer),
+                string.Join(", ", unsupported)));
+        }
+
+    }
 }
