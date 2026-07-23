@@ -5,7 +5,8 @@ namespace TICO.GAUDI.Commons
     /// <summary>
     /// シリアライザタイプ
     /// </summary>
-    public enum SerializerType {
+    public enum SerializerType
+    {
         /// <summary>
         /// デフォルトのシリアライザタイプ
         /// </summary>
@@ -23,7 +24,7 @@ namespace TICO.GAUDI.Commons
     /// <summary>
     /// Jsonシリアライザファクトリークラス
     /// </summary>
-    public class JsonSerializerFactory 
+    public class JsonSerializerFactory
     {
         /// <summary>
         /// デフォルトシリアライザ環境変数名
@@ -51,12 +52,14 @@ namespace TICO.GAUDI.Commons
 
             // デフォルト指定の場合、有効とするシリアライザタイプを決定する。
             SerializerType validSerializerType = serializerType;
-            if (validSerializerType == SerializerType.Default) {
+            if (validSerializerType == SerializerType.Default)
+            {
                 validSerializerType = GetDefaultSerializerType();
             }
 
             // タイプ毎にシリアライザを取得
-            switch (validSerializerType){
+            switch (validSerializerType)
+            {
                 case SerializerType.SysRuntimeSerialization:
                     retSerializer = new SysRuntimeJsonSerializer();
                     break;
@@ -67,7 +70,6 @@ namespace TICO.GAUDI.Commons
 
             return retSerializer;
         }
-
 
         /// <summary>
         /// デフォルトシリアライザタイプ取得
@@ -84,8 +86,10 @@ namespace TICO.GAUDI.Commons
 
             // 環境変数が設定されている場合、そちらを優先する
             string envDefaultSerializer = Environment.GetEnvironmentVariable(ENVNAME_DEFAULT_SERIALIZER);
-            if ( envDefaultSerializer != null ) {
-                switch ( envDefaultSerializer.ToUpper() ) {
+            if (envDefaultSerializer != null)
+            {
+                switch (envDefaultSerializer.ToUpper())
+                {
                     case ENVVALUE_SERIALIZER_SYSRUNTIME:
                         retSerializeType = SerializerType.SysRuntimeSerialization;
                         break;
