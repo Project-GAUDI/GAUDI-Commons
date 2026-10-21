@@ -1,5 +1,4 @@
 using Xunit;
-using Xunit.Abstractions;
 using Moq;
 
 namespace TICO.GAUDI.Commons.Test.ApplicationsTest;

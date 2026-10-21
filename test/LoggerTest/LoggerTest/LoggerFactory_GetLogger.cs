@@ -1,15 +1,27 @@
 using System.Text;
 using DotNetty.Transport.Channels;
 using Microsoft.VisualBasic;
-using Xunit.Abstractions;
 
 namespace TICO.GAUDI.Commons.Test.LoggerTest;
 
 [Trait("LoggerTest", "true")]
 [Collection(nameof(LoggerTest))]
-public class LoggerFactory_GetLogger : LoggerBase
+public class LoggerFactory_GetLogger : LoggerBase, IDisposable
 {
-    public LoggerFactory_GetLogger(ITestOutputHelper output) : base(output) { }
+    public LoggerFactory_GetLogger(ITestOutputHelper output) : base(output)
+    {
+        Environment.SetEnvironmentVariable("LogLevel", null);
+        _log.SetOutputLogLevel("INFO");
+        _log.SetMandatoryLogLevel("INFO", 0);
+        // 他テストクラスが静的 outTextWriter を破棄済み StreamWriter に差し替えている可能性があるため、有効な Writer にリセットする
+        _log.SetOutputTextWriter(new StreamWriter(Console.OpenStandardOutput()));
+    }
+
+    public void Dispose(){
+        _log.SetMandatoryLogLevel("INFO", 0);
+    }
+
+    private readonly Logger _log = new();
 
     private readonly LoggerFactory _factry = new();
 
@@ -60,7 +72,7 @@ public class LoggerFactory_GetLogger : LoggerBase
         Assert.Equal(myClient, logger.MyClient);
     }
 
-    [Fact(DisplayName = "LoggerFactory No006_有効なクラス型でILoggerを取得し、SetOutputTextWriterメソッドを呼び出す", Skip = "StreamWriter解放により他のテストがエラーになってしまうため、スキップ")]
+    [Fact(DisplayName = "LoggerFactory No006_有効なクラス型でILoggerを取得し、SetOutputTextWriterメソッドを呼び出す")]
     public void LoggerFactory_Case006()
     {
         var filePath = "LoggerFactory_Case006.txt";
@@ -100,7 +112,7 @@ public class LoggerFactory_GetLogger : LoggerBase
     }
 
     [Fact(DisplayName = "LoggerFactory No008_有効なクラス型でILoggerを取得し、SetMandatoryLogLevelメソッドを呼び出す")]
-    public async void LoggerFactory_Case008()
+    public async Task LoggerFactory_Case008()
     {
         var logger = (ILogger)_factry.GetType().GetMethod("GetLogger")!.Invoke(null, [type])!;
 
@@ -116,7 +128,7 @@ public class LoggerFactory_GetLogger : LoggerBase
         Assert.False(isMandatoryLoglevelPermanent);
 
         // 強制ログレベル解除待ち
-        await Task.Delay(11000);
+        await Task.Delay(11000,TestContext.Current.CancellationToken);
     }
 
     [Fact(DisplayName = "LoggerFactory No009_有効なクラス型でILoggerを取得し、IsLogLevelToOutputメソッドを呼び出す")]

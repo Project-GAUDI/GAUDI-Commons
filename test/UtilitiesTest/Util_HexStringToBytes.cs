@@ -1,5 +1,4 @@
 using Xunit;
-using Xunit.Abstractions;
 using System;
 
 namespace TICO.GAUDI.Commons.Test.UtilitiesTest;

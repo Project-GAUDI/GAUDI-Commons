@@ -1,5 +1,4 @@
 using Xunit;
-using Xunit.Abstractions;
 using System.Reflection;
 using System.Collections.Concurrent;
 
@@ -232,7 +231,7 @@ public class StateController_SetCurrentState
         Assert.Equal(ApplicationState.Initialize, stateController.CurrentState);
         Assert.Equal(1, updatedTasksInCurrentState);
         Assert.False((bool)isTerminating!);
-        Assert.Empty(updatedStateQueue);
+        Assert.Empty(updatedStateQueue!);
     }
 
     [Fact(DisplayName = "StateController No018_後処理: ApplicationState.Terminate のテスト")]
@@ -265,6 +264,6 @@ public class StateController_SetCurrentState
         // Assert: テスト結果を検証
         Assert.Equal(ApplicationState.Terminate, stateController.CurrentState);
         Assert.Equal(1, updatedTasksInCurrentState);
-        Assert.Empty(updatedStateQueue);
+        Assert.Empty(updatedStateQueue!);
     }
 }

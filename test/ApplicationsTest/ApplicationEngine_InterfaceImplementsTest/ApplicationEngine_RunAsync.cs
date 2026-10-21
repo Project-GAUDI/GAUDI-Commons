@@ -1,6 +1,5 @@
 using System;
 using Xunit;
-using Xunit.Abstractions;
 using TICO.GAUDI.Commons;
 /*
 namespace TICO.GAUDI.Commons.Test
@@ -19,7 +18,7 @@ namespace TICO.GAUDI.Commons.Test
         }
 
         [Fact(DisplayName = "Application未設定")]
-        public async void NotSetApplication_ExceptionThrown()
+        public async Task NotSetApplication_ExceptionThrown()
         {
             ApplicationEngineTester tester = new ApplicationEngineTester();
             IApplicationEngine engine = tester;
@@ -33,7 +32,7 @@ namespace TICO.GAUDI.Commons.Test
         }
 
         [Fact(DisplayName = "Application設定済み")]
-        public async void Normal_Success()
+        public async Task Normal_Success()
         {
             ApplicationEngineTester tester = new ApplicationEngineTester();
             IApplicationEngine engine = tester;

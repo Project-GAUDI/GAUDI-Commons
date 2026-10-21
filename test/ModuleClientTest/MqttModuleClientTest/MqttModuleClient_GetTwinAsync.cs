@@ -52,7 +52,7 @@ public class MqttModuleClient_GetTwinAsync : MqttModuleClientTesterBase
         var begin = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         while (!MqttClientProxy.WasPublished)
         {
-            await Task.Delay(100);
+            await Task.Delay(100,TestContext.Current.CancellationToken);
 
             if (begin - DateTimeOffset.UtcNow.ToUnixTimeSeconds() > TEST_WAITING_TIMEOUT_SECONDS)
                 throw new TimeoutException();
@@ -79,7 +79,7 @@ public class MqttModuleClient_GetTwinAsync : MqttModuleClientTesterBase
         var begin = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         while (!MqttClientProxy.WasPublished)
         {
-            await Task.Delay(100);
+            await Task.Delay(100,TestContext.Current.CancellationToken);
 
             if (begin - DateTimeOffset.UtcNow.ToUnixTimeSeconds() > TEST_WAITING_TIMEOUT_SECONDS)
                 throw new TimeoutException();
@@ -121,7 +121,7 @@ public class MqttModuleClient_GetTwinAsync : MqttModuleClientTesterBase
         var begin = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         while (!MqttClientProxy.WasPublished)
         {
-            await Task.Delay(100);
+            await Task.Delay(100, TestContext.Current.CancellationToken);
 
             if (begin - DateTimeOffset.UtcNow.ToUnixTimeSeconds() > TEST_WAITING_TIMEOUT_SECONDS)
                 throw new TimeoutException();
@@ -147,7 +147,7 @@ public class MqttModuleClient_GetTwinAsync : MqttModuleClientTesterBase
         var begin = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         while (!MqttClientProxy.WasPublished)
         {
-            await Task.Delay(100);
+            await Task.Delay(100,TestContext.Current.CancellationToken);
 
             if (begin - DateTimeOffset.UtcNow.ToUnixTimeSeconds() > TEST_WAITING_TIMEOUT_SECONDS)
                 throw new TimeoutException();
@@ -169,7 +169,7 @@ public class MqttModuleClient_GetTwinAsync : MqttModuleClientTesterBase
         var begin = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         while (!MqttClientProxy.WasPublished)
         {
-            await Task.Delay(100);
+            await Task.Delay(100, TestContext.Current.CancellationToken);
 
             if (begin - DateTimeOffset.UtcNow.ToUnixTimeSeconds() > TEST_WAITING_TIMEOUT_SECONDS)
                 throw new TimeoutException();
@@ -192,7 +192,7 @@ public class MqttModuleClient_GetTwinAsync : MqttModuleClientTesterBase
         var begin = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         while (!MqttClientProxy.WasPublished)
         {
-            await Task.Delay(100);
+            await Task.Delay(100, TestContext.Current.CancellationToken);
 
             if (begin - DateTimeOffset.UtcNow.ToUnixTimeSeconds() > TEST_WAITING_TIMEOUT_SECONDS)
                 throw new TimeoutException();

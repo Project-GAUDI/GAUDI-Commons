@@ -1,6 +1,5 @@
 using System;
 using Xunit;
-using Xunit.Abstractions;
 using System.Threading;
 using Moq;
 
@@ -17,7 +16,7 @@ public class ApplicationEngine_End
     }
 
     [Fact(DisplayName = "Applications No053_ステートを終了状態にできない場合、かつ、強制終了フラグがfalseの場合")]
-    public async void Applications_Case053()
+    public async Task Applications_Case053()
     {
         var applicationMainMock = new Mock<IApplicationMain>();
         ApplicationEngine applicationEngine = new();
@@ -32,7 +31,7 @@ public class ApplicationEngine_End
     }
 
     [Fact(DisplayName = "Applications No054_engineCancellerがnullではない場合、かつ、強制終了フラグは指定しない場合")]
-    public async void Applications_Case054()
+    public async Task Applications_Case054()
     {
         var applicationMainMock = new Mock<IApplicationMain>();
         ApplicationEngine applicationEngine = new();
@@ -55,7 +54,7 @@ public class ApplicationEngine_End
     }
 
     [Fact(DisplayName = "Applications No056_engineCancellerがnullではない場合、かつ、強制終了フラグにtrueを指定した場合")]
-    public async void Applications_Case056()
+    public async Task Applications_Case056()
     {
         var applicationMainMock = new Mock<IApplicationMain>();
         ApplicationEngine applicationEngine = new();

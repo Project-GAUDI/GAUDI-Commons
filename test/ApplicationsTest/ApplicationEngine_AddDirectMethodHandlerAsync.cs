@@ -1,5 +1,4 @@
 using Xunit;
-using Xunit.Abstractions;
 using Moq;
 using System.Collections.Generic;
 using System;
@@ -18,7 +17,7 @@ public class ApplicationEngine_AddDirectMethodHandlerAsync
     }
 
     [Fact(DisplayName = "Applications No032_引数のmethodNameが文字列の場合、かつ、繰り返し処理をした場合に異なる文字列を指定した場合")]
-    public async void Applications_Case032()
+    public async Task Applications_Case032()
     {
         ApplicationEngine applicationEngine = new();
 
@@ -40,7 +39,7 @@ public class ApplicationEngine_AddDirectMethodHandlerAsync
     }
 
     [Fact(DisplayName = "Applications No033_引数のmethodNameが文字列の場合に同じ文字列を指定して繰り返し追加した場合")]
-    public async void Applications_Case033()
+    public async Task Applications_Case033()
     {
         ApplicationEngine applicationEngine = new();
 
@@ -57,7 +56,7 @@ public class ApplicationEngine_AddDirectMethodHandlerAsync
     }
 
     [Fact(DisplayName = "Applications No034_引数のmethodNameがnullの場合")]
-    public async void Applications_Case034()
+    public async Task Applications_Case034()
     {
         ApplicationEngine applicationEngine = new();
 
@@ -73,7 +72,7 @@ public class ApplicationEngine_AddDirectMethodHandlerAsync
     }
 
     [Fact(DisplayName = "Applications No035_引数のmethodNameが空文字の場合に空文字を指定して繰り返し追加した場合")]
-    public async void Applications_Case035()
+    public async Task Applications_Case035()
     {
         ApplicationEngine applicationEngine = new();
 

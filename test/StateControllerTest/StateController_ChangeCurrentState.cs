@@ -2,7 +2,6 @@ using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Xunit;
-using Xunit.Abstractions;
 using TICO.GAUDI.Commons;
 
 namespace TICO.GAUDI.Commons.Test
@@ -93,19 +92,19 @@ namespace TICO.GAUDI.Commons.Test
             Assert.Equal(ApplicationStateChangeResult.Success, _target.ChangeState(ApplicationState.Ready));  // Initialize -> Ready
 
             // 非同期でRunnningに遷移＋キューエントリ待ち後、Readyに戻す
-            var preTask = Task.Run(ToRunningAndReady);
+            var preTask = Task.Run(ToRunningAndReady,TestContext.Current.CancellationToken);
 
             // テスト実行
             while (_started <= 0)
             {
-                await Task.Delay(100);
+                await Task.Delay(100,TestContext.Current.CancellationToken);
             }
             DoTest(ApplicationState.Running, nextState, requiredResult);
 
             await preTask;
 
             // 終了待ち
-            await Task.Delay(1500);
+            await Task.Delay(1500,TestContext.Current.CancellationToken);
 
         }
 
@@ -156,12 +155,12 @@ namespace TICO.GAUDI.Commons.Test
             Assert.Equal(ApplicationStateChangeResult.Success, _target.ChangeState(ApplicationState.Ready));  // Initialize -> Ready
 
             // 非同期でRunnningに遷移＋キューエントリ待ち後、Readyに戻す
-            var preTask = Task.Run(ToRunningAndReady);
+            var preTask = Task.Run(ToRunningAndReady,TestContext.Current.CancellationToken);
 
             // テスト実行
             while (_started <= 0)
             {
-                await Task.Delay(100);
+                await Task.Delay(100,TestContext.Current.CancellationToken);
             }
 
             List<Task> tasks = new List<Task>();
@@ -173,11 +172,12 @@ namespace TICO.GAUDI.Commons.Test
                     {
                         await ToRunningAndReadyMini();
                         Assert.Equal(required, _finished);
-                    }
+                    },
+                    TestContext.Current.CancellationToken
                 );
 
                 tasks.Add(task);
-                await Task.Delay(50);
+                await Task.Delay(50,TestContext.Current.CancellationToken);
             }
 
             // Runningは並列可能なので、開始済みになっている想定
@@ -186,7 +186,8 @@ namespace TICO.GAUDI.Commons.Test
 
             // 終了待ち
             await preTask;
-            Task.WaitAll(tasks.ToArray());
+            // Task.WaitAll(tasks.ToArray());
+            await Task.WhenAll(tasks.ToArray());
 
             Assert.Equal(4, _finished);
         }
@@ -199,12 +200,12 @@ namespace TICO.GAUDI.Commons.Test
             Assert.Equal(ApplicationStateChangeResult.Success, _target.ChangeState(ApplicationState.Ready));  // Initialize -> Ready
 
             // 非同期でRunnningに遷移＋キューエントリ待ち後、Readyに戻す
-            var preTask = Task.Run(ToRunningAndReady);
+            var preTask = Task.Run(ToRunningAndReady,TestContext.Current.CancellationToken);
 
             // テスト実行
             while (_started <= 0)
             {
-                await Task.Delay(100);
+                await Task.Delay(100,TestContext.Current.CancellationToken);
             }
 
             // 先にエントリするキュー
@@ -218,17 +219,18 @@ namespace TICO.GAUDI.Commons.Test
                     {
                         await ToRunningAndReadyMini();
                         Assert.Equal(required, _finished);
-                    }
+                    },
+                    TestContext.Current.CancellationToken
                 );
 
                 tasks.Add(task);
-                await Task.Delay(50);
+                await Task.Delay(50,TestContext.Current.CancellationToken);
             }
 
             // 開始済みが４になるまで待機
             while (_started < 4)
             {
-                await Task.Delay(100);
+                await Task.Delay(100,TestContext.Current.CancellationToken);
             }
 
             // Terminateをキュー
@@ -238,10 +240,11 @@ namespace TICO.GAUDI.Commons.Test
                     Assert.Equal(ApplicationStateChangeResult.Success, _target.ChangeState(ApplicationState.Terminate));  // Ready -> Terminate
                     await Task.Delay(100);
                     Assert.Equal(4, _finished);
-                }
+                },
+                TestContext.Current.CancellationToken
             );
             tasks.Add(termTask);
-            await Task.Delay(100);
+            await Task.Delay(100,TestContext.Current.CancellationToken);
 
             // 後からエントリするキュー
             for (int icnt = 4; icnt <= 6; icnt++)
@@ -251,18 +254,19 @@ namespace TICO.GAUDI.Commons.Test
                     async () =>
                     {
                         await ToRunningAndReadyMiniIgnored();
-                        await Task.Delay(10);
+                        await Task.Delay(10,TestContext.Current.CancellationToken);
                         Assert.True(_started <= 4);
-                    }
+                    },
+                    TestContext.Current.CancellationToken
                 );
 
                 tasks.Add(task);
-                await Task.Delay(10);
+                await Task.Delay(10,TestContext.Current.CancellationToken);
             }
 
             // 終了待ち
             await preTask;
-            Task.WaitAll(tasks.ToArray());
+            await Task.WhenAll(tasks.ToArray());
 
             Assert.Equal(4, _finished);
 

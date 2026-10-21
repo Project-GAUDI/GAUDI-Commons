@@ -1,5 +1,4 @@
 using Xunit;
-using Xunit.Abstractions;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Reflection;
@@ -17,7 +16,7 @@ public class ApplicationEngine_GetCancelWaitTask
     }
 
     [Fact(DisplayName = "Applications No105_cancellationTokenがキャンセルされた場合")]
-    public async void Applications_Case105()
+    public async Task Applications_Case105()
     {
         CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
@@ -26,7 +25,7 @@ public class ApplicationEngine_GetCancelWaitTask
         {
             Thread.Sleep(3000);
             cancellationTokenSource.Cancel();
-        });
+        }, TestContext.Current.CancellationToken);
 
         ApplicationEngine applicationEngine = new();
         var info = applicationEngine.GetType().GetMethod("GetCancelWaitTask", BindingFlags.NonPublic | BindingFlags.Static);

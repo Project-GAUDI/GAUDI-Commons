@@ -2,13 +2,12 @@ using System;
 using System.Reflection;
 using System.Threading.Tasks;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace TICO.GAUDI.Commons.Test.LoggerTest;
 
 [Trait("LoggerTest", "true")]
 [Collection(nameof(LoggerTest))]
-public class Logger_SetMandatoryLogLevel : LoggerBase
+public class Logger_SetMandatoryLogLevel : LoggerBase, IDisposable
 {
     #region 既存テストで利用
     //const string ConnectionString = "TestConnectionString";
@@ -24,10 +23,14 @@ public class Logger_SetMandatoryLogLevel : LoggerBase
         #endregion
     }
 
+    public void Dispose(){
+        _log.SetMandatoryLogLevel("INFO", 0);
+    }
+
     private readonly Logger _log = new();
 
     [Fact(DisplayName = "Logger No021_標準的な強制ログレベル設定")]
-    public async void Logger_Case021()
+    public async Task Logger_Case021()
     {
         _log.SetOutputLogLevel(ILogger.LogLevel.TRACE.ToString());
         _output.WriteLine($"before loglevel: {_log.OutputLogLevel}");
@@ -43,7 +46,7 @@ public class Logger_SetMandatoryLogLevel : LoggerBase
         var isMandatoryLoglevelPermanent = (bool)isMandatoryLoglevelPermanentInfo.GetValue(null)!;
         Assert.False(isMandatoryLoglevelPermanent);
 
-        await Task.Delay((seconds + 1) * 1000);
+        await Task.Delay((seconds + 1) * 1000,TestContext.Current.CancellationToken);
 
         _output.WriteLine($"after {seconds + 1}s loglevel: {_log.OutputLogLevel}");
         Assert.Equal(ILogger.LogLevel.TRACE, _log.OutputLogLevel);

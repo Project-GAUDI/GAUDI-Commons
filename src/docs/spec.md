@@ -1,9 +1,9 @@
 ---
-slug: "/iotedge-v2/iotedge-v2-Commons/6.1.1/spec"
-version: "6.1.1"
+slug: "/iotedge-v2/Commons/7.0.0/spec"
+version: "7.0.0"
 ---
 
-# Commons(6.1.1)
+# Commons(7.0.0)
 
 ## 目次
 
@@ -53,13 +53,7 @@ version: "6.1.1"
 | ------------------------------------- | ------- | -------- | --------------------------------------------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | TransportProtocol                     | string  |          | ["Amqp", "Mqtt"]                              | Amqp           | ModuleClient の接続プロトコル。                                                                                                                                         |
 | LogLevel                              | string  |          | ["trace", "debug", "info", "warn", "error"]   | info           | 出力ログレベル。                                                                                                                                                        |
-| MessageSizeLimitExpansion             | boolean |          | ["true", "false"]                             | false          | モジュール間のメッセージサイズの上限拡張指定。<br>true：メッセージサイズ上限が拡張され16MBになる(※1,2)<br>false：メッセージサイズ上限はデフォルトの256KBになる          |
 | IOTEDGE_COMMON_DEFAULT_JSONSERIALIZER | string  |          | ["NEWTONSOFTJSON", "SYSRUNTIMESERIALIZATION"] | NEWTONSOFTJSON | Json化クラスの使用Jsonライブラリのデフォルトを切り替える。<br>NEWTONSOFTJSON：Newtonsoft.Jsonを使用<br>SYSRUNTIMESERIALIZATION：System.Runtime.Serialization.Jsonを使用 |
-
-※1：**IoTHubへ**のupstreamする際のメッセージサイズ上限は256KBのまま変わらない。  
-送信してしまった場合、edgeHubからの送信がエラーとなり、その後のメッセージ送信も停滞してしまう。  
-Edge→Fog間の拡張サイズメッセージの送信は可能。  
-※2：edgeHubは、メッセージサイズ拡張対応が入っているGAUDIIotEdge-Hubを使用し、edgeHub・送信先モジュールにもMessageSizeLimitExpansion=trueが設定されている必要がある。  
 
 ## 利用可能クラス
 
@@ -289,9 +283,9 @@ ILogger インスタンスを取得するためのファクトリークラス。
 
 #### Logger-LoggerFactory-メソッド
 
-| 静的 | 名前      | 引数（型：説明）               | 戻り値（型：説明）    | 説明                                                                                                                           |
-| ---- | --------- | ------------------------------ | --------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| ○    | GetLogger | Type：ログ出力時に name を使用 | ILogger：インスタンス | 指定した Type に対応した ILogger クラスのインスタンスを取得する。<br>環境変数:LogLevel を取得し、ログレベルを設定する。<br>環境変数:LogLevel が不正な場合、ポリシーとしてはエラーを返すべきだが、ログが出力できない状態としないため、デフォルトのログレベル（INFO）とする。|
+| 静的 | 名前      | 引数（型：説明）               | 戻り値（型：説明）    | 説明                                                                                                                                                                                                                                                                        |
+| ---- | --------- | ------------------------------ | --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ○    | GetLogger | Type：ログ出力時に name を使用 | ILogger：インスタンス | 指定した Type に対応した ILogger クラスのインスタンスを取得する。<br>環境変数:LogLevel を取得し、ログレベルを設定する。<br>環境変数:LogLevel が不正な場合、ポリシーとしてはエラーを返すべきだが、ログが出力できない状態としないため、デフォルトのログレベル（INFO）とする。 |
 
 ---
 
@@ -351,29 +345,65 @@ IDisposable を継承している。
 
 レコード情報のリストを JSON 形式で管理・シリアライズ／デシリアライズするためのデータコンテナ。  
 
+#### Message-GAUDI標準メッセージ仕様
+
+GAUDI 標準メッセージは以下の2層構造で構成される：  
+
+**トランスポート層（IotMessage Properties）:**
+
+| プロパティキー  | 必須 | 値の形式                | 説明                                                                                                                            |
+| --------------- | ---- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| ContentType     | ○    | string                  | コンテンツタイプ。IotMessage 生成時に未設定の場合 "application/json" が自動設定される。                                         |
+| ContentEncoding | ○    | string                  | コンテンツエンコーディング。IotMessage 生成時に未設定の場合 "utf-8" が自動設定される。                                          |
+| type            |      | string                  | メッセージ種別。例: "log", "eof" 等。<br>type="eof" の場合、Body が空または省略されても有効とする。                             |
+| columns         |      | string (JSON文字列配列) | カラム定義。RecordData の各要素に対応するカラム名を JSON 文字列配列で格納する。<br>例: `["temperature","humidity","timestamp"]` |
+
+**データ層（IotMessage Body / JSON）:**
+
+```json
+{
+  "RecordList": [
+    {
+      "RecordHeader": ["header1"],
+      "RecordData": ["text", 123, 45.6, true, null]
+    }
+  ]
+}
+```
+
+**バリデーションルール:**
+
+| 項目 | 制約 |
+| --- | --- |
+| RecordList | 必須（null 不可）。空配列 `[]` は許容。 |
+| RecordData | 必須（null 不可）。空配列 `[]` は許容。 |
+| RecordHeader | 任意（将来廃止予定）。null または省略可。 |
+| Body 空許容 | Properties.type="eof" の場合のみ、Body が空または省略されても有効とする。 |
+
 #### Message-JsonMessage-フィールド
 
-| 名前       | 型                | 説明                      |
-| ---------- | ----------------- | ------------------------- |
-| RecordList | List\<RecordInfo> | RecordInfo クラスのリスト |
+| 名前       | 型                | 必須 | 説明                      |
+| ---------- | ----------------- | ---- | ------------------------- |
+| RecordList | List\<RecordInfo> | ○    | RecordInfo クラスのリスト |
 
 #### Message-JsonMessage-メソッド
 
-| 静的 | 名前                     | 引数（型：説明）             | 戻り値（型：説明）           | 説明                                                                                                     |
-| ---- | ------------------------ | ---------------------------- | ---------------------------- | -------------------------------------------------------------------------------------------------------- |
-| ○    | DeserializeJsonMessage   | string：JSON 文字列          | JsonMessage：JSON メッセージ | JSON 文字列から JSON メッセージへデシリアライズする。<br>デシリアライズに失敗した場合、null を返す。     |
-| ○    | DeserializeJsonMessage   | byte[]：JSON バイト配列      | JsonMessage：JSON メッセージ | JSON バイト配列から JSON メッセージへデシリアライズする。<br>デシリアライズに失敗した場合、null を返す。 |
-| ○    | SerializeJsonMessage     | JsonMessage：JSON メッセージ | string：JSON 文字列          | JSON メッセージから JSON 文字列へシリアライズする。                                                      |
-| ○    | SerializeJsonMessageByte | JsonMessage：JSON メッセージ | byte[]：JSON バイト配列      | JSON メッセージから JSON バイト配列へシリアライズする。<br>シリアライズに失敗した場合、null を返す。     |
+| 静的 | 名前                     | 引数（型：説明）                                                   | 戻り値（型：説明）            | 説明                                                                                                                                                                                      |
+| ---- | ------------------------ | ------------------------------------------------------------------ | ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ○    | DeserializeJsonMessage   | string：JSON 文字列                                                | JsonMessage：JSON メッセージ  | JSON 文字列から JSON メッセージへデシリアライズする。<br>デシリアライズに失敗した場合、null を返す。                                                                                      |
+| ○    | DeserializeJsonMessage   | byte[]：JSON バイト配列                                            | JsonMessage：JSON メッセージ  | JSON バイト配列から JSON メッセージへデシリアライズする。<br>デシリアライズに失敗した場合、null を返す。                                                                                  |
+| ○    | SerializeJsonMessage     | JsonMessage：JSON メッセージ                                       | string：JSON 文字列           | JSON メッセージから JSON 文字列へシリアライズする。                                                                                                                                       |
+| ○    | SerializeJsonMessageByte | JsonMessage：JSON メッセージ                                       | byte[]：JSON バイト配列       | JSON メッセージから JSON バイト配列へシリアライズする。<br>シリアライズに失敗した場合、null を返す。                                                                                      |
+| ○    | Validate                 | JsonMessage：検証対象<br>bool：allowEmptyBody（デフォルト：false） | bool：有効(true)／無効(false) | JsonMessage のバリデーションを行う。<br>RecordList および各 RecordInfo.RecordData が null でないことを検証する。<br>allowEmptyBody=true の場合、message が null でも有効とする（EOF用）。 |
 
 #### Message-JsonMessage-RecordInfo-クラス（内部クラス）
 
 #### Message-JsonMessage-RecordInfo-フィールド
 
-| 名前         | 型            | 説明                   |
-| ------------ | ------------- | ---------------------- |
-| RecordHeader | List\<string> | レコードヘッダーリスト |
-| RecordData   | List\<string> | レコードデータリスト   |
+| 名前         | 型            | 必須 | 説明                                                                                                  |
+| ------------ | ------------- | ---- | ----------------------------------------------------------------------------------------------------- |
+| RecordHeader | List\<string> |      | レコードヘッダーリスト（任意。将来廃止予定）。<br>null の場合、シリアライズ時に JSON から省略される。 |
+| RecordData   | List\<object> | ○    | レコードデータリスト。<br>要素には string, 数値(long/double), bool, null を格納可能。                 |
 
 #### Message-JsonMessage-RecordInfo-メソッド
 
@@ -525,15 +555,15 @@ I2C 通信で複数のコマンドをまとめて管理・シリアライズ／�
 
 #### Utilities-Util-メソッド
 
-| 静的 | 名前                   | 引数（型：説明）                                                                                                                                                         | 戻り値（型：説明）                           | 説明                                                                                                                                                                                                                                                    |
-| ---- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ○    | GetMessageId           | なし                                                                                                                                                                     | string：生成したメッセージ ID                | 現在日時("yyyyMMddHHmmssfff")とGUIDを組み合わせて、ユニークなメッセージ ID を生成する。                                                                                                                                                                 |
-| ○    | GetTransportSettings   | this TransportProtocol：トランスポートプロトコル種別                                                                                                                     | ITransportSettings[]：トランスポート設定配列 | 指定したトランスポートプロトコル種別で生成したトランスポート設定を取得する。<br>想定外のトランスポートプロトコル種別が指定された場合、null を返す。                                                                                                     |
-| ○    | GetRequiredValue       | T：戻り値の型<br>JObject：JObject インスタンス<br>string：キー名                                                                                                         | T：取得した値                                | JObject より必須値を取得し、指定した型で取得する。<br>指定したキー名が存在しない場合、Exception をスローする。<br>【v6.1.0～非推奨】GetDesiredProperty、または、GetEnvironmentVariable を使用してください。<!--（使用している場合、ビルド時に警告が出ます）--> |
-| ○    | HexStringToByte        | string：16進数文字列（2文字）                                                                                                                                            | byte：バイト値                               | 16進数文字列からバイト値へ変換する。<br>指定した16進数文字列が2文字でない場合、Exception をスローする。                                                                                                                                                 |
-| ○    | HexStringToBytes       | string：16進数文字列（"-"区切り）                                                                                                                                        | byte[]：バイト配列                           | 16進数文字列からバイト配列へ変換する。<br>エラー処理は特にしていない。                                                                                                                                                                                  |
-| ○    | GetDesiredProperty     | T：戻り値の型<br>JObject：DesiredProperty<br>string：キー名<br>bool：Required<br>T：デフォルト値（デフォルト：Default）<br>Func<T, bool>：制約条件（デフォルト：null）※1 | T：取得した値                                | DesiredProperty より、指定した型でキーの値を取得する。<br>必須項目でキーが存在しない場合、Exception をスローする。<br>必須項目で値が null または空白の場合、Exception をスローする。<br>必須でない項目でキーが存在しない場合、デフォルト値を返す。<br>型・制約条件違反の場合、Exception をスローする。                    |
-| ○    | GetEnvironmentVariable | T：戻り値の型<br>string：環境変数名<br>bool：Required<br>T：デフォルト値（デフォルト：Default）<br>Func<T, bool>：制約条件（デフォルト：null）※1                         | T：取得した値                                | 環境変数より、指定した型で値を取得する。<br>必須項目でキーが存在しない場合、Exception をスローする。<br>必須項目で値が null または空白の場合、Exception をスローする。<br>必須でない項目でキーが存在しない場合、デフォルト値を返す。<br>型・制約条件違反の場合、Exception をスローする。                                  |
+| 静的 | 名前                   | 引数（型：説明）                                                                                                                                                         | 戻り値（型：説明）                           | 説明                                                                                                                                                                                                                                                                                                   |
+| ---- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| ○    | GetMessageId           | なし                                                                                                                                                                     | string：生成したメッセージ ID                | 現在日時("yyyyMMddHHmmssfff")とGUIDを組み合わせて、ユニークなメッセージ ID を生成する。                                                                                                                                                                                                                |
+| ○    | GetTransportSettings   | this TransportProtocol：トランスポートプロトコル種別                                                                                                                     | ITransportSettings[]：トランスポート設定配列 | 指定したトランスポートプロトコル種別で生成したトランスポート設定を取得する。<br>想定外のトランスポートプロトコル種別が指定された場合、null を返す。                                                                                                                                                    |
+| ○    | GetRequiredValue       | T：戻り値の型<br>JObject：JObject インスタンス<br>string：キー名                                                                                                         | T：取得した値                                | JObject より必須値を取得し、指定した型で取得する。<br>指定したキー名が存在しない場合、Exception をスローする。<br>【v6.1.0～非推奨】GetDesiredProperty、または、GetEnvironmentVariable を使用してください。使用している場合、ビルド時に警告が出ます。                                                  |
+| ○    | HexStringToByte        | string：16進数文字列（2文字）                                                                                                                                            | byte：バイト値                               | 16進数文字列からバイト値へ変換する。<br>指定した16進数文字列が2文字でない場合、Exception をスローする。                                                                                                                                                                                                |
+| ○    | HexStringToBytes       | string：16進数文字列（"-"区切り）                                                                                                                                        | byte[]：バイト配列                           | 16進数文字列からバイト配列へ変換する。<br>エラー処理は特にしていない。                                                                                                                                                                                                                                 |
+| ○    | GetDesiredProperty     | T：戻り値の型<br>JObject：DesiredProperty<br>string：キー名<br>bool：Required<br>T：デフォルト値（デフォルト：Default）<br>Func<T, bool>：制約条件（デフォルト：null）※1 | T：取得した値                                | DesiredProperty より、指定した型でキーの値を取得する。<br>必須項目でキーが存在しない場合、Exception をスローする。<br>必須項目で値が null または空白の場合、Exception をスローする。<br>必須でない項目でキーが存在しない場合、デフォルト値を返す。<br>型・制約条件違反の場合、Exception をスローする。 |
+| ○    | GetEnvironmentVariable | T：戻り値の型<br>string：環境変数名<br>bool：Required<br>T：デフォルト値（デフォルト：Default）<br>Func<T, bool>：制約条件（デフォルト：null）※1                         | T：取得した値                                | 環境変数より、指定した型で値を取得する。<br>必須項目でキーが存在しない場合、Exception をスローする。<br>必須項目で値が null または空白の場合、Exception をスローする。<br>必須でない項目でキーが存在しない場合、デフォルト値を返す。<br>型・制約条件違反の場合、Exception をスローする。               |
 
 ※1：戻り値の型が int で、1以上100以下のみ指定可の場合、以下のように設定する。  
      value => value >= 1 && value <= 100

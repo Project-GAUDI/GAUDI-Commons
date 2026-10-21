@@ -1,5 +1,4 @@
 using Xunit;
-using Xunit.Abstractions;
 using Moq;
 
 namespace TICO.GAUDI.Commons.Test.ApplicationsTest;
@@ -15,7 +14,7 @@ public class ApplicationEngine_Terminate
     }
 
     [Fact(DisplayName = "Applications No072_すべての処理が正常に終了した場合")]
-    public async void Applications_Case072()
+    public async Task Applications_Case072()
     {
         var applicationMainMock = new Mock<IApplicationMain>();
         ApplicationEngine applicationEngine = new();

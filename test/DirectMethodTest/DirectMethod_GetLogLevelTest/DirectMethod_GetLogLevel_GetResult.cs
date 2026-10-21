@@ -11,7 +11,7 @@ namespace TICO.GAUDI.Commons.Test
         private static ILogger _logger = LoggerFactory.GetLogger(typeof(DirectMethod_SetLogLevel_Run));
 
         [Fact(DisplayName = "正常系：正常構成")]
-        public async void NormalInput_TrueReturned()
+        public async Task NormalInput_TrueReturned()
         {
             DirectMethod_GetLogLevel target1 = new DirectMethod_GetLogLevel();
             _logger.SetOutputLogLevel("INFO");

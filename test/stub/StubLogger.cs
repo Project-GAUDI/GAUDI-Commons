@@ -207,7 +207,7 @@ namespace TICO.GAUDI.Commons.Test
                                 {
                                     time
                                 },
-                                RecordData = new List<string>()
+                                RecordData = new List<object>()
                                 {
                                     deqMsg
                                 }

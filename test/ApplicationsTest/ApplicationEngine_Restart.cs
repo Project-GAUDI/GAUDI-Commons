@@ -1,6 +1,5 @@
 using System;
 using Xunit;
-using Xunit.Abstractions;
 using Moq;
 
 namespace TICO.GAUDI.Commons.Test.ApplicationsTest;
@@ -16,7 +15,7 @@ public class ApplicationEngine_Restart
     }
 
     [Fact(DisplayName = "Applications No063_applicationMainがnullの状態で呼び出し")]
-    public async void Applications_Case063()
+    public async Task Applications_Case063()
     {
         ApplicationEngine applicationEngine = new();
         await Assert.ThrowsAsync<Exception>(applicationEngine.Restart);
@@ -24,7 +23,7 @@ public class ApplicationEngine_Restart
 
     // 現段階ではIOT Edgeに接続できずRestartの中のInitで予期せぬエラーが発生するが、IOT Edgeにつながるようになったらエラーがでなくなる。
     [Fact(DisplayName = "Applications No066_Initの処理が正常終了でない場合")]
-    public async void Applications_Case066()
+    public async Task Applications_Case066()
     {
         var applicationMainMock = new Mock<IApplicationMain>();
         ApplicationEngine applicationEngine = new();

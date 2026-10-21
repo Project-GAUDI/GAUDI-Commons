@@ -1,7 +1,6 @@
 using HarmonyLib;
 using Newtonsoft.Json;
 using System.Runtime.Serialization;
-using System.Runtime.Serialization.Json;
 using System.Text;
 
 namespace TICO.GAUDI.Commons.Test.MessageTest.JsonMessageTest;
@@ -260,12 +259,7 @@ public class JsonMessage_DeserializeJsonMessage : JsonMessageTesterBase
 
         message = builder.ToString();
 
-        JsonMessage? jsonMessage;
-        var serializer = new DataContractJsonSerializer(typeof(JsonMessage));
-        using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(message)))
-        {
-            jsonMessage = (JsonMessage?)serializer.ReadObject(ms);
-        }
+        JsonMessage? jsonMessage = JsonConvert.DeserializeObject<JsonMessage>(message);
 
         //When
         resultMessage = JsonMessage.SerializeJsonMessage(jsonMessage);
@@ -581,12 +575,7 @@ public class JsonMessage_DeserializeJsonMessage : JsonMessageTesterBase
 
         message = builder.ToString();
 
-        var serializer = new DataContractJsonSerializer(typeof(JsonMessage.RecordInfo));
-
-        using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(message)))
-        {
-            resultRecordInfo = (JsonMessage.RecordInfo?)serializer.ReadObject(ms);
-        }
+        resultRecordInfo = JsonConvert.DeserializeObject<JsonMessage.RecordInfo>(message);
 
         //When
         //シリアライズする
@@ -599,7 +588,7 @@ public class JsonMessage_DeserializeJsonMessage : JsonMessageTesterBase
     ///RecordInfoのシリアライズ
     ///正常系
     ///その２
-    ///RecordHeader,RecordDataがNULL => {"RecordHeader":null,"RecordData":null} を返す
+    ///RecordHeader,RecordDataがNULL => {"RecordData":null} を返す（RecordHeaderはEmitDefaultValue=falseのため省略）
     [Fact]
     public void SerializeRecordInfoTest002()
     {
@@ -612,7 +601,7 @@ public class JsonMessage_DeserializeJsonMessage : JsonMessageTesterBase
         resultMessage = JsonMessage.SerializeRecordInfo(resultRecordInfo);
 
         //Then
-        Assert.Equal("{\"RecordHeader\":null,\"RecordData\":null}", resultMessage);
+        Assert.Equal("{\"RecordData\":null}", resultMessage);
     }
 
     ///RecordInfoのシリアライズ
@@ -625,7 +614,7 @@ public class JsonMessage_DeserializeJsonMessage : JsonMessageTesterBase
         //Given
 
         JsonMessage.RecordInfo resultRecordInfo = new JsonMessage.RecordInfo();
-        resultRecordInfo.RecordData = new List<string>();
+        resultRecordInfo.RecordData = new List<object>();
         resultRecordInfo.RecordHeader = new List<string>();
 
         //When
@@ -652,8 +641,8 @@ public class JsonMessage_DeserializeJsonMessage : JsonMessageTesterBase
         // 旧API仕様
         // Assert.True(resultMessage == null);
 
-        // 新API
-        Assert.Equal("{\"RecordHeader\":null,\"RecordData\":null}", resultMessage);
+        // 新API（RecordHeaderはEmitDefaultValue=falseのため省略）
+        Assert.Equal("{\"RecordData\":null}", resultMessage);
     }
 
     ///RecordInfoのシリアライズ
@@ -691,8 +680,8 @@ public class JsonMessage_DeserializeJsonMessage : JsonMessageTesterBase
         // 旧API仕様
         // Assert.True(resultByteMessage == null);
 
-        // 新API
-        Assert.Equal("{\"RecordHeader\":null,\"RecordData\":null}", System.Text.Encoding.UTF8.GetString(resultByteMessage));
+        // 新API（RecordHeaderはEmitDefaultValue=falseのため省略）
+        Assert.Equal("{\"RecordData\":null}", System.Text.Encoding.UTF8.GetString(resultByteMessage));
     }
 
     ///RecordInfoのシリアライズ

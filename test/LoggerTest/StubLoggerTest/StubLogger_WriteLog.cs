@@ -1,5 +1,4 @@
 using Xunit;
-using Xunit.Abstractions;
 /*
 namespace TICO.GAUDI.Commons.Test.LoggerTest
 {
@@ -294,7 +293,7 @@ namespace TICO.GAUDI.Commons.Test.LoggerTest
         ///     isUpload：true
         ///     ModuleClient：StubModuleClient
         // [Fact(Skip = "ログ出力：ModuleClientによる送信")]
-        // public async void MessageSendTest001()
+        // public async Task MessageSendTest001()
         // {
         //     // Stub未対応メソッドの為、対象外
         //     string inputMessage;

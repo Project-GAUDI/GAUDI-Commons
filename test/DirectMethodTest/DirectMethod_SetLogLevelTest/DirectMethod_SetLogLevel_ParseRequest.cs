@@ -1,5 +1,4 @@
 using Xunit;
-using Xunit.Abstractions;
 using TICO.GAUDI.Commons;
 /*
 namespace TICO.GAUDI.Commons.Test
@@ -16,7 +15,7 @@ namespace TICO.GAUDI.Commons.Test
         }
 
         [Fact(DisplayName = "異常系：null指定")]
-        public async void NullInput_FalseReturned()
+        public async Task NullInput_FalseReturned()
         {
             DirectMethod_SetLogLevel target = new DirectMethod_SetLogLevel();
 
@@ -26,7 +25,7 @@ namespace TICO.GAUDI.Commons.Test
         }
 
         [Fact(DisplayName = "異常系：空文字列指定")]
-        public async void EmptyStringInput_FalseReturned()
+        public async Task EmptyStringInput_FalseReturned()
         {
             DirectMethod_SetLogLevel target = new DirectMethod_SetLogLevel();
 
@@ -36,7 +35,7 @@ namespace TICO.GAUDI.Commons.Test
         }
 
         [Fact(DisplayName = "異常系：非JSON書式指定")]
-        public async void NonJsonInput_FalseReturned()
+        public async Task NonJsonInput_FalseReturned()
         {
             DirectMethod_SetLogLevel target = new DirectMethod_SetLogLevel();
 
@@ -46,7 +45,7 @@ namespace TICO.GAUDI.Commons.Test
         }
 
         [Fact(DisplayName = "異常系：対象パラメータなし")]
-        public async void NoParametersMatched_FalseReturned()
+        public async Task NoParametersMatched_FalseReturned()
         {
             DirectMethod_SetLogLevel target = new DirectMethod_SetLogLevel();
 
@@ -56,7 +55,7 @@ namespace TICO.GAUDI.Commons.Test
         }
 
         [Fact(DisplayName = "異常系：ログレベル指定なし")]
-        public async void NoLogLevel_FalseReturned()
+        public async Task NoLogLevel_FalseReturned()
         {
             DirectMethod_SetLogLevel target = new DirectMethod_SetLogLevel();
 
@@ -66,7 +65,7 @@ namespace TICO.GAUDI.Commons.Test
         }
 
         [Fact(DisplayName = "異常系：有効時間指定なし")]
-        public async void NoEnableSec_FalseReturned()
+        public async Task NoEnableSec_FalseReturned()
         {
             DirectMethod_SetLogLevel target = new DirectMethod_SetLogLevel();
 
@@ -76,7 +75,7 @@ namespace TICO.GAUDI.Commons.Test
         }
 
         [Fact(DisplayName = "異常系：有効時間指定範囲外")]
-        public async void BadEnableSec_FalseReturned()
+        public async Task BadEnableSec_FalseReturned()
         {
             DirectMethod_SetLogLevel target = new DirectMethod_SetLogLevel();
 
@@ -86,7 +85,7 @@ namespace TICO.GAUDI.Commons.Test
         }
 
         [Fact(DisplayName = "正常系：ログレベル指定不正")]
-        public async void BadLogLevel_TrueReturned()
+        public async Task BadLogLevel_TrueReturned()
         {
             DirectMethod_SetLogLevel target = new DirectMethod_SetLogLevel();
 
@@ -96,7 +95,7 @@ namespace TICO.GAUDI.Commons.Test
         }
 
         [Fact(DisplayName = "正常系：有効時間指定0(キャンセル)＋ログレベル指定なし")]
-        public async void EnableSec0andNoLogLevel_TrueReturned()
+        public async Task EnableSec0andNoLogLevel_TrueReturned()
         {
             DirectMethod_SetLogLevel target = new DirectMethod_SetLogLevel();
 
@@ -106,7 +105,7 @@ namespace TICO.GAUDI.Commons.Test
         }
 
         [Fact(DisplayName = "正常系：正常構成")]
-        public async void NormalInput_TrueReturned()
+        public async Task NormalInput_TrueReturned()
         {
             DirectMethod_SetLogLevel target = new DirectMethod_SetLogLevel();
 

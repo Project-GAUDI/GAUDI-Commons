@@ -1,6 +1,5 @@
 using System.Reflection;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace TICO.GAUDI.Commons.Test.LoggerTest;
 
