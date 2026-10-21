@@ -1,6 +1,5 @@
 using System;
 using Xunit;
-using Xunit.Abstractions;
 using Moq;
 
 namespace TICO.GAUDI.Commons.Test.ApplicationsTest;
@@ -16,7 +15,7 @@ public class ApplicationEngine_Ready
     }
 
     [Fact(DisplayName = "Applications No050_ステートを待機状態にできない場合")]
-    public async void Applications_Case050()
+    public async Task Applications_Case050()
     {
         var applicationMainMock = new Mock<IApplicationMain>();
         ApplicationEngine applicationEngine = new();
@@ -25,7 +24,7 @@ public class ApplicationEngine_Ready
     }
 
     [Fact(DisplayName = "Applications No052_すべての処理が正常に終了した場合")]
-    public async void Applications_Case052()
+    public async Task Applications_Case052()
     {
         var applicationMainMock = new Mock<IApplicationMain>();
         ApplicationEngine applicationEngine = new();

@@ -1,6 +1,5 @@
 using System;
 using Xunit;
-using Xunit.Abstractions;
 using Microsoft.Azure.Devices.Shared;
 using Newtonsoft.Json.Linq;
 

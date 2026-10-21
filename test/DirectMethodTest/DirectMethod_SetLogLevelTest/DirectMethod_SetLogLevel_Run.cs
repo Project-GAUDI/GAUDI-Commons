@@ -1,6 +1,5 @@
 using System.Threading;
 using Xunit;
-using Xunit.Abstractions;
 using TICO.GAUDI.Commons;
 /*
 namespace TICO.GAUDI.Commons.Test
@@ -21,7 +20,7 @@ namespace TICO.GAUDI.Commons.Test
         }
 
         [Fact(DisplayName = "異常系：ログレベル指定不正")]
-        public async void BadLogLevel_FalseReturned()
+        public async Task BadLogLevel_FalseReturned()
         {
             DirectMethod_SetLogLevel target = new DirectMethod_SetLogLevel();
 
@@ -32,7 +31,7 @@ namespace TICO.GAUDI.Commons.Test
         }
 
         [Fact(DisplayName = "正常系：有効時間指定0(キャンセル)＋ログレベル指定なし")]
-        public async void EnableSec0andNoLogLevel_TrueReturned()
+        public async Task EnableSec0andNoLogLevel_TrueReturned()
         {
             DirectMethod_SetLogLevel target = new DirectMethod_SetLogLevel();
 
@@ -43,7 +42,7 @@ namespace TICO.GAUDI.Commons.Test
         }
 
         [Fact(DisplayName = "正常系：正常構成")]
-        public async void NormalInput_TrueReturned()
+        public async Task NormalInput_TrueReturned()
         {
             DirectMethod_SetLogLevel target = new DirectMethod_SetLogLevel();
 

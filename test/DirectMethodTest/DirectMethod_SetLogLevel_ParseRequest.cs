@@ -1,5 +1,4 @@
 using Xunit;
-using Xunit.Abstractions;
 
 namespace TICO.GAUDI.Commons.Test.DirectMethodTest;
 
@@ -16,7 +15,7 @@ public class DirectMethod_SetLogLevel_ParseRequest
     }
 
     [Fact(DisplayName = "DirectMethod Case012_関数内で呼び出される")]
-    public async void DirectMethod_Case012()
+    public async Task DirectMethod_Case012()
     {
         DirectMethod_SetLogLevel setLogLevel = new();
         System.Environment.SetEnvironmentVariable("OTEDGE_COMMON_DEFAULT_JSONSERIALIZER", "NEWTONSOFTJSON");
@@ -36,7 +35,7 @@ public class DirectMethod_SetLogLevel_ParseRequest
     }
 
     [Fact(DisplayName = "DirectMethod Case014_関数内で呼び出される")]
-    public async void DirectMethod_Case014()
+    public async Task DirectMethod_Case014()
     {
         DirectMethod_SetLogLevel setLogLevel = new();
         var ret = await setLogLevel.ParseRequest("SAMPLE");
@@ -54,7 +53,7 @@ public class DirectMethod_SetLogLevel_ParseRequest
     }
 
     [Fact(DisplayName = "DirectMethod Case016_関数内で呼び出される")]
-    public async void DirectMethod_Case016()
+    public async Task DirectMethod_Case016()
     {
         DirectMethod_SetLogLevel setLogLevel = new();
         var ret = await setLogLevel.ParseRequest("{\"LogLevel\":\"DEBUG\",\"EnableSec\":\"1\"}");

@@ -1248,7 +1248,7 @@
         </member>
         <member name="F:TICO.GAUDI.Commons.JsonMessage.RecordInfo.RecordHeader">
             <summary>
-            レコードヘッダーリスト
+            レコードヘッダーリスト（任意。将来廃止予定）
             </summary>
         </member>
         <member name="F:TICO.GAUDI.Commons.JsonMessage.RecordInfo.RecordData">
@@ -1317,6 +1317,15 @@
             </summary>
             <param name="message">RecordInfoクラス</param>
             <returns>JSONバイト配列</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.JsonMessage.Validate(TICO.GAUDI.Commons.JsonMessage,System.Boolean)">
+            <summary>
+            JsonMessage のバリデーションを行う。
+            RecordList および各 RecordInfo.RecordData が null でないことを検証する。
+            </summary>
+            <param name="message">検証対象の JsonMessage</param>
+            <param name="allowEmptyBody">true の場合、message が null でも有効とする（EOF用）</param>
+            <returns>有効(true)／無効(false)</returns>
         </member>
         <member name="T:TICO.GAUDI.Commons.IotMessageHandler">
             <summary>

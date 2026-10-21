@@ -1,5 +1,4 @@
 using Xunit;
-using Xunit.Abstractions;
 
 namespace TICO.GAUDI.Commons.Test.StateControllerTest;
 
@@ -110,7 +109,7 @@ public class StateController_ChangeState
             // 【重要】このメソッド内でループ処理に入った後、状態変更が行われるタイミングを制御し、
             // CurrentState が最終的に Terminate になることを保証する
             result = stateController.ChangeState(ApplicationState.Terminate);
-        });
+        }, TestContext.Current.CancellationToken);
 
         // 別スレッドで currentState を Ready に変更するタスク
         var changeStateTask = Task.Run(async () =>
@@ -120,7 +119,7 @@ public class StateController_ChangeState
             // これにより、ループ内で正しい状態遷移が行われるかを検証する
             await Task.Delay(1000);
             currentStateField!.SetValue(stateController, ApplicationState.Ready);
-        });
+        }, TestContext.Current.CancellationToken);
 
         // 両タスクを待機
         await Task.WhenAll(terminateTask, changeStateTask);
@@ -220,7 +219,7 @@ public class StateController_ChangeState
         }
 
         // タイムアウト設定
-        var timeoutTask = Task.Delay(5000);
+        var timeoutTask = Task.Delay(5000,TestContext.Current.CancellationToken);
         var allTasks = Task.WhenAll(tasks);
         var completedTask = await Task.WhenAny(allTasks, timeoutTask);
         Assert.True(completedTask == allTasks, "Test timed out.");

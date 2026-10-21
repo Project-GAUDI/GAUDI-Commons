@@ -1,5 +1,4 @@
 using Xunit;
-using Xunit.Abstractions;
 using System;
 
 namespace TICO.GAUDI.Commons.Test.ApplicationsTest;
@@ -15,7 +14,7 @@ public class ApplicationEngine_RunAsync
     }
 
     [Fact(DisplayName = "Applications No007_applicationMainがnullの状態で呼び出し")]
-    public async void Applications_Case007()
+    public async Task Applications_Case007()
     {
         ApplicationEngine applicationEngine = new();
         applicationEngine.SetApplication(null);

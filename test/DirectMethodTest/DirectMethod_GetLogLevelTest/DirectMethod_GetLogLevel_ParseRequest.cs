@@ -1,5 +1,4 @@
 using Xunit;
-using Xunit.Abstractions;
 using TICO.GAUDI.Commons;
 /*
 namespace TICO.GAUDI.Commons.Test
@@ -17,7 +16,7 @@ namespace TICO.GAUDI.Commons.Test
         }
 
         [Fact(DisplayName = "正常系：正常構成(null指定)")]
-        public async void NormalInput_TrueReturned001()
+        public async Task NormalInput_TrueReturned001()
         {
             DirectMethod_GetLogLevel target = new DirectMethod_GetLogLevel();
             
@@ -26,7 +25,7 @@ namespace TICO.GAUDI.Commons.Test
             Assert.True(result);       
         }
         [Fact(DisplayName = "正常系：正常構成(空文字指定)")]
-        public async void NormalInput_TrueReturned002()
+        public async Task NormalInput_TrueReturned002()
         {
             DirectMethod_GetLogLevel target = new DirectMethod_GetLogLevel();
             
@@ -36,7 +35,7 @@ namespace TICO.GAUDI.Commons.Test
         }
 
         [Fact(DisplayName = "正常系：正常構成(文字列指定)")]
-        public async void NormalInput_TrueReturned003()
+        public async Task NormalInput_TrueReturned003()
         {
             DirectMethod_GetLogLevel target = new DirectMethod_GetLogLevel();
             

@@ -1,5 +1,4 @@
 using Xunit;
-using Xunit.Abstractions;
 using Moq;
 
 namespace TICO.GAUDI.Commons.Test.ApplicationsTest;
@@ -15,7 +14,7 @@ public class ApplicationEngine_IsTerminating
     }
 
     [Fact(DisplayName = "Applications No017_終了中の状態で呼び出し")]
-    public async void Applications_Case017()
+    public async Task Applications_Case017()
     {
         var applicationMainMock = new Mock<IApplicationMain>();
         ApplicationEngine applicationEngine = new();

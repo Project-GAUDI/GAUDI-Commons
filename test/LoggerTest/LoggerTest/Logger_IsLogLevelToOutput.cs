@@ -1,5 +1,4 @@
 using Xunit;
-using Xunit.Abstractions;
 
 namespace TICO.GAUDI.Commons.Test.LoggerTest;
 
@@ -18,6 +17,8 @@ public class Logger_IsLogLevelToOutput : LoggerBase
         //log.SetOutputLogLevel("INFO");
         //log.SetMandatoryLogLevel("INFO", 0);
         #endregion
+        _log.SetOutputLogLevel("INFO");
+        _log.SetMandatoryLogLevel("INFO", 0);
     }
 
     private readonly Logger _log = new();

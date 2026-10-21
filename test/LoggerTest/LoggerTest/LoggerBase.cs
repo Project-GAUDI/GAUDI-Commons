@@ -1,6 +1,5 @@
 using System.Text.RegularExpressions;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace TICO.GAUDI.Commons.Test.LoggerTest;
 

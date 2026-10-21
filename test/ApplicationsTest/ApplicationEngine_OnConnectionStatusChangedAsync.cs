@@ -1,6 +1,5 @@
 using System;
 using Xunit;
-using Xunit.Abstractions;
 using Moq;
 
 namespace TICO.GAUDI.Commons.Test.ApplicationsTest;
@@ -16,7 +15,7 @@ public class ApplicationEngine_OnConnectionStatusChangedAsync
     }
 
     [Fact(DisplayName = "Applications No100_IotConnectionStatusがDisconnected以外の場合")]
-    public async void Applications_Case100()
+    public async Task Applications_Case100()
     {
         var applicationMainMock = new Mock<IApplicationMain>();
         ApplicationEngine applicationEngine = new();
@@ -32,7 +31,7 @@ public class ApplicationEngine_OnConnectionStatusChangedAsync
     }
 
     [Fact(DisplayName = "Applications No102_Restartで予期せぬエラーが発生した場合")]
-    public async void Applications_Case102()
+    public async Task Applications_Case102()
     {
         var applicationMainMock = new Mock<IApplicationMain>();
         var applicationEngine = new ApplicationEngine();

@@ -1,15 +1,19 @@
 using System.IO;
 using System.Text;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace TICO.GAUDI.Commons.Test.LoggerTest;
 
 [Trait("LoggerTest", "true")]
 [Collection(nameof(LoggerTest))]
-public class Logger_SetOutputTextWriter : LoggerBase
+public class Logger_SetOutputTextWriter : LoggerBase, IDisposable
 {
     public Logger_SetOutputTextWriter(ITestOutputHelper output) : base(output) { }
+
+    public void Dispose(){
+        var stream = new StreamWriter(Console.OpenStandardOutput());
+        _log.SetOutputTextWriter(stream);
+    }
 
     private readonly Logger _log = new();
 

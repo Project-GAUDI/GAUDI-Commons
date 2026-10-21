@@ -10,13 +10,12 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace TICO.GAUDI.Commons.Test.LoggerTest;
 
 [Trait("LoggerTest", "true")]
 [Collection(nameof(LoggerTest))]
-public class Logger_WriteLog : LoggerBase
+public class Logger_WriteLog : LoggerBase, IDisposable
 {
     #region 既存テストで利用
     // ILogger log = LoggerFactory.GetLogger(typeof(Logger_WriteLog));
@@ -30,6 +29,13 @@ public class Logger_WriteLog : LoggerBase
         #endregion
     }
 
+    public void Dispose()
+    {
+        // テスト内で SetOutputTextWriter に渡した StreamWriter が using で破棄された後、
+        // 静的 outTextWriter が破棄済み Writer を参照し続ける問題を防止するためリセットする
+        _logger.SetOutputTextWriter(new StreamWriter(Console.OpenStandardOutput()));
+    }
+
     private readonly Mock<IModuleClient> _moduleClientMock = new();
 
     private readonly string _testClassName = "testClass";
@@ -37,6 +43,8 @@ public class Logger_WriteLog : LoggerBase
     private readonly string _uploadFailedMsg = "- UpdateReportedProperties failed:";
 
     private readonly string _moduleClientNotFoundMsg = "- Can't Update Reported Properties because Logger dosen't have module client.";
+
+    private Logger _logger = new Logger("testClass");
 
     private void SetupModuleClientMock(string tag, string className, string logMessage)
     {
@@ -63,7 +71,7 @@ public class Logger_WriteLog : LoggerBase
                     Assert.True(match.Success);
 
                     // RecordDataの1件目に該当ログがあることを前提としてチェックしている
-                    VerfyLogMessage(recordInfo.RecordData.First(), tag, className, logMessage);
+                    VerfyLogMessage((string)recordInfo.RecordData.First(), tag, className, logMessage);
                 }).
             Returns(Task.CompletedTask);
     }
@@ -93,15 +101,14 @@ public class Logger_WriteLog : LoggerBase
     [Fact(DisplayName = "Logger No033_設定されたログレベルが等しい")]
     public void Logger_Case033()
     {
-        var logger = new Logger(_testClassName);
         var logLevel = ILogger.LogLevel.INFO;
-        logger.SetOutputLogLevel(logLevel.ToString());
+        _logger.SetOutputLogLevel(logLevel.ToString());
 
         var stringWriter = new StringWriter();
-        logger.SetOutputTextWriter(stringWriter);
+        _logger.SetOutputTextWriter(stringWriter);
 
         var logMessage = "Information message";
-        logger.WriteLog(logLevel, logMessage);
+        _logger.WriteLog(logLevel, logMessage);
 
         var consoleOutput = stringWriter.GetStringBuilder().ToString().Trim();
         _output.WriteLine("-- Output Log --");
@@ -113,15 +120,14 @@ public class Logger_WriteLog : LoggerBase
     [Fact(DisplayName = "Logger No034_設定されたログレベルを上回る")]
     public void Logger_Case034()
     {
-        var logger = new Logger(_testClassName);
-        logger.SetOutputLogLevel(ILogger.LogLevel.INFO.ToString());
+        _logger.SetOutputLogLevel(ILogger.LogLevel.INFO.ToString());
 
         var stringWriter = new StringWriter();
-        logger.SetOutputTextWriter(stringWriter);
+        _logger.SetOutputTextWriter(stringWriter);
 
         var logMessage = "Warning message";
         var logLevel = ILogger.LogLevel.WARN;
-        logger.WriteLog(logLevel, logMessage);
+        _logger.WriteLog(logLevel, logMessage);
 
         var consoleOutput = stringWriter.GetStringBuilder().ToString().Trim();
         _output.WriteLine("-- Output Log --");
@@ -133,15 +139,14 @@ public class Logger_WriteLog : LoggerBase
     [Fact(DisplayName = "Logger No035_設定されたログレベルを下回る")]
     public void Logger_Case035()
     {
-        var logger = new Logger(_testClassName);
-        logger.SetOutputLogLevel(ILogger.LogLevel.INFO.ToString());
+        _logger.SetOutputLogLevel(ILogger.LogLevel.INFO.ToString());
 
         var stringWriter = new StringWriter();
-        logger.SetOutputTextWriter(stringWriter);
+        _logger.SetOutputTextWriter(stringWriter);
 
         var logMessage = "Debug message";
         var logLevel = ILogger.LogLevel.DEBUG;
-        logger.WriteLog(logLevel, logMessage);
+        _logger.WriteLog(logLevel, logMessage);
 
         var consoleOutput = stringWriter.GetStringBuilder().ToString().Trim();
         _output.WriteLine("-- Output Log --");
@@ -153,15 +158,14 @@ public class Logger_WriteLog : LoggerBase
     [Fact(DisplayName = "Logger No036_設定されたログレベルが最高ログレベル")]
     public void Logger_Case036()
     {
-        var logger = new Logger(_testClassName);
         var logLevel = ILogger.LogLevel.ERROR;
-        logger.SetOutputLogLevel(logLevel.ToString());
+        _logger.SetOutputLogLevel(logLevel.ToString());
 
         var stringWriter = new StringWriter();
-        logger.SetOutputTextWriter(stringWriter);
+        _logger.SetOutputTextWriter(stringWriter);
 
         var logMessage = "Error message";
-        logger.WriteLog(logLevel, logMessage);
+        _logger.WriteLog(logLevel, logMessage);
 
         var consoleOutput = stringWriter.GetStringBuilder().ToString().Trim();
         _output.WriteLine("-- Output Log --");
@@ -173,15 +177,14 @@ public class Logger_WriteLog : LoggerBase
     [Fact(DisplayName = "Logger No037_設定されたログレベルが最低ログレベル")]
     public void Logger_Case037()
     {
-        var logger = new Logger(_testClassName);
         var logLevel = ILogger.LogLevel.TRACE;
-        logger.SetOutputLogLevel(logLevel.ToString());
+        _logger.SetOutputLogLevel(logLevel.ToString());
 
         var stringWriter = new StringWriter();
-        logger.SetOutputTextWriter(stringWriter);
+        _logger.SetOutputTextWriter(stringWriter);
 
         var logMessage = "Trace message";
-        logger.WriteLog(logLevel, logMessage);
+        _logger.WriteLog(logLevel, logMessage);
 
         var consoleOutput = stringWriter.GetStringBuilder().ToString().Trim();
         _output.WriteLine("-- Output Log --");
@@ -198,14 +201,13 @@ public class Logger_WriteLog : LoggerBase
             File.Delete(filePath);
 
         var logLevel = ILogger.LogLevel.INFO;
-        var logger = new Logger(_testClassName);
-        logger.SetOutputLogLevel(logLevel.ToString());
+        _logger.SetOutputLogLevel(logLevel.ToString());
 
         var stringWriter = new StringWriter();
-        logger.SetOutputTextWriter(stringWriter);
+        _logger.SetOutputTextWriter(stringWriter);
 
         var consoleMessage = "console message";
-        logger.WriteLog(ILogger.LogLevel.WARN, consoleMessage);
+        _logger.WriteLog(ILogger.LogLevel.WARN, consoleMessage);
 
         var consoleOutput = stringWriter.GetStringBuilder().ToString().Trim();
         _output.WriteLine("-- StringWriter Output Log --");
@@ -215,8 +217,8 @@ public class Logger_WriteLog : LoggerBase
         using (var stream = new StreamWriter(filePath, true, Encoding.UTF8))
         {
             stream.WriteLine("test message");
-            logger.SetOutputTextWriter(stream);
-            logger.WriteLog(logLevel, logMessage);
+            _logger.SetOutputTextWriter(stream);
+            _logger.WriteLog(logLevel, logMessage);
         }
 
         string output;
@@ -230,8 +232,8 @@ public class Logger_WriteLog : LoggerBase
         VerfyLogMessage(output, GetTag(logLevel), _testClassName, logMessage);
 
         // 出力先が変更されたことのチェックとして、それぞれのメッセージが含まれていないことをチェック
-        Assert.False(consoleOutput.Contains(logMessage)!);
-        Assert.False(output.Contains(consoleMessage)!);
+        Assert.DoesNotContain(logMessage,consoleOutput);
+        Assert.DoesNotContain(consoleMessage,output);
 
         File.Delete(filePath);
     }
@@ -244,14 +246,13 @@ public class Logger_WriteLog : LoggerBase
             File.Delete(filePath);
 
         var logLevel = ILogger.LogLevel.INFO;
-        var logger = new Logger(_testClassName);
-        logger.SetOutputLogLevel(logLevel.ToString());
+        _logger.SetOutputLogLevel(logLevel.ToString());
 
         var stringWriter = new StringWriter();
-        logger.SetOutputTextWriter(stringWriter);
+        _logger.SetOutputTextWriter(stringWriter);
 
         var logMessage = "Infomation message";
-        logger.WriteLog(logLevel, logMessage);
+        _logger.WriteLog(logLevel, logMessage);
 
         var consoleOutput = stringWriter.GetStringBuilder().ToString().Trim();
         _output.WriteLine("-- StringWriter Output Log --");
@@ -261,9 +262,9 @@ public class Logger_WriteLog : LoggerBase
         {
             stream.WriteLine("test message");
             stream.Close();
-            logger.SetOutputTextWriter(stream);
+            _logger.SetOutputTextWriter(stream);
         }
-        Assert.ThrowsAny<Exception>(() => logger.WriteLog(logLevel, logMessage));
+        Assert.ThrowsAny<Exception>(() => _logger.WriteLog(logLevel, logMessage));
 
         File.Delete(filePath);
     }
@@ -271,22 +272,21 @@ public class Logger_WriteLog : LoggerBase
     [Fact(DisplayName = "Logger No040_出力先にnullを指定して、メソッドを呼ぶ")]
     public void Logger_Case040()
     {
-        var logger = new Logger(_testClassName);
         var logLevel = ILogger.LogLevel.INFO;
-        logger.SetOutputLogLevel(logLevel.ToString());
+        _logger.SetOutputLogLevel(logLevel.ToString());
 
         var stringWriter = new StringWriter();
-        logger.SetOutputTextWriter(stringWriter);
+        _logger.SetOutputTextWriter(stringWriter);
 
         var logMessage = "Infomation message";
-        logger.WriteLog(ILogger.LogLevel.WARN, logMessage);
+        _logger.WriteLog(ILogger.LogLevel.WARN, logMessage);
 
         var consoleOutput = stringWriter.GetStringBuilder().ToString().Trim();
         _output.WriteLine("-- StringWriter Output Log --");
         _output.WriteLine(consoleOutput);
 
-        logger.SetOutputTextWriter(null);
-        logger.WriteLog(logLevel, logMessage);
+        _logger.SetOutputTextWriter(null);
+        _logger.WriteLog(logLevel, logMessage);
 
         consoleOutput = stringWriter.GetStringBuilder().ToString().Trim();
         _output.WriteLine("-- StringWriter Output Log --");
@@ -302,8 +302,7 @@ public class Logger_WriteLog : LoggerBase
         if (File.Exists(filePath))
             File.Delete(filePath);
 
-        var logger = new Logger(_testClassName);
-        logger.SetOutputLogLevel(ILogger.LogLevel.TRACE.ToString());
+        _logger.SetOutputLogLevel(ILogger.LogLevel.TRACE.ToString());
 
         var logMessages = new List<(ILogger.LogLevel, string)>();
         var patternList = new List<string>();
@@ -319,10 +318,11 @@ public class Logger_WriteLog : LoggerBase
 
         using (var stream = new StreamWriter(filePath, true, Encoding.UTF8))
         {
-            logger.SetOutputTextWriter(stream);
+            _logger.SetOutputTextWriter(stream);
 
             Parallel.ForEach(logMessages, logMessage =>
-                logger.WriteLog(logMessage.Item1, logMessage.Item2));
+                _logger.WriteLog(logMessage.Item1, logMessage.Item2)
+            );
         }
 
         string output;
@@ -349,15 +349,14 @@ public class Logger_WriteLog : LoggerBase
             File.Delete(filePath);
 
         var logLevel = ILogger.LogLevel.INFO;
-        var logger = new Logger(_testClassName);
-        logger.SetOutputLogLevel(logLevel.ToString());
+        _logger.SetOutputLogLevel(logLevel.ToString());
 
         var logMessage = string.Join("", Enumerable.Range(0, 10000).Select(x => (x % 10).ToString()));
 
         using (var stream = new StreamWriter(filePath, true, Encoding.UTF8))
         {
-            logger.SetOutputTextWriter(stream);
-            logger.WriteLog(logLevel, logMessage);
+            _logger.SetOutputTextWriter(stream);
+            _logger.WriteLog(logLevel, logMessage);
         }
 
         string output;
@@ -379,14 +378,13 @@ public class Logger_WriteLog : LoggerBase
             File.Delete(filePath);
 
         var logLevel = ILogger.LogLevel.INFO;
-        var logger = new Logger(_testClassName);
-        logger.SetOutputLogLevel(logLevel.ToString());
+        _logger.SetOutputLogLevel(logLevel.ToString());
 
         var logMessage = "";
         using (var stream = new StreamWriter(filePath, true, Encoding.UTF8))
         {
-            logger.SetOutputTextWriter(stream);
-            logger.WriteLog(logLevel, logMessage);
+            _logger.SetOutputTextWriter(stream);
+            _logger.WriteLog(logLevel, logMessage);
         }
 
         string output;
@@ -410,14 +408,13 @@ public class Logger_WriteLog : LoggerBase
             File.Delete(filePath);
 
         var logLevel = ILogger.LogLevel.INFO;
-        var logger = new Logger(_testClassName);
-        logger.SetOutputLogLevel(logLevel.ToString());
+        _logger.SetOutputLogLevel(logLevel.ToString());
 
         string? logMessage = null;
         using (var stream = new StreamWriter(filePath, true, Encoding.UTF8))
         {
-            logger.SetOutputTextWriter(stream);
-            logger.WriteLog(logLevel, logMessage);
+            _logger.SetOutputTextWriter(stream);
+            _logger.WriteLog(logLevel, logMessage);
         }
 
         string output;
@@ -441,8 +438,7 @@ public class Logger_WriteLog : LoggerBase
         if (File.Exists(filePath))
             File.Delete(filePath);
 
-        var logger = new Logger(_testClassName);
-        logger.SetOutputLogLevel(ILogger.LogLevel.INFO.ToString());
+        _logger.SetOutputLogLevel(ILogger.LogLevel.INFO.ToString());
 
         var line1 = "Line1";
         var line2 = "Line2";
@@ -450,8 +446,8 @@ public class Logger_WriteLog : LoggerBase
         var logLevel = ILogger.LogLevel.INFO;
         using (var stream = new StreamWriter(filePath, true, Encoding.UTF8))
         {
-            logger.SetOutputTextWriter(stream);
-            logger.WriteLog(logLevel, logMessage);
+            _logger.SetOutputTextWriter(stream);
+            _logger.WriteLog(logLevel, logMessage);
         }
 
         string output;
@@ -476,8 +472,7 @@ public class Logger_WriteLog : LoggerBase
         if (File.Exists(filePath))
             File.Delete(filePath);
 
-        var logger = new Logger(_testClassName);
-        logger.SetOutputLogLevel(ILogger.LogLevel.INFO.ToString());
+        _logger.SetOutputLogLevel(ILogger.LogLevel.INFO.ToString());
 
         var line1 = "Line1";
         var line2 = "Line2";
@@ -485,8 +480,8 @@ public class Logger_WriteLog : LoggerBase
         var logLevel = ILogger.LogLevel.INFO;
         using (var stream = new StreamWriter(filePath, true, Encoding.UTF8))
         {
-            logger.SetOutputTextWriter(stream);
-            logger.WriteLog(logLevel, logMessage);
+            _logger.SetOutputTextWriter(stream);
+            _logger.WriteLog(logLevel, logMessage);
         }
 
         string output;
@@ -505,24 +500,23 @@ public class Logger_WriteLog : LoggerBase
     }
 
     [Fact(DisplayName = "Logger No047_MyClientが有効で接続状態がConnectedの場合のTRACEログ出力")]
-    public async void Logger_Case047()
+    public async Task Logger_Case047()
     {
-        var logger = new Logger(_testClassName);
-        logger.SetOutputLogLevel(ILogger.LogLevel.TRACE.ToString());
+        _logger.SetOutputLogLevel(ILogger.LogLevel.TRACE.ToString());
 
         _moduleClientMock.SetupGet(x => x.ConnectionStatus).Returns(IotConnectionStatus.Connected);
-        logger.SetModuleClient(_moduleClientMock.Object);
+        _logger.SetModuleClient(_moduleClientMock.Object);
 
         var stringWriter = new StringWriter();
-        logger.SetOutputTextWriter(stringWriter);
+        _logger.SetOutputTextWriter(stringWriter);
 
         var logMessage = "Trace message";
         var logLevel = ILogger.LogLevel.TRACE;
         SetupModuleClientMock(GetTag(logLevel), _testClassName, logMessage);
 
-        logger.WriteLog(logLevel, logMessage, true);
+        _logger.WriteLog(logLevel, logMessage, true);
 
-        await Task.Delay(1000);
+        await Task.Delay(1000, TestContext.Current.CancellationToken);
         _moduleClientMock.
             Verify(x => x.SendEventAsync(It.IsAny<string>(), It.IsAny<IotMessage>()), Times.Once);
 
@@ -535,24 +529,23 @@ public class Logger_WriteLog : LoggerBase
     }
 
     [Fact(DisplayName = "Logger No048_MyClientが有効で接続状態がConnectedの場合のDEBUGログ出力")]
-    public async void Logger_Case048()
+    public async Task Logger_Case048()
     {
-        var logger = new Logger(_testClassName);
-        logger.SetOutputLogLevel(ILogger.LogLevel.TRACE.ToString());
+        _logger.SetOutputLogLevel(ILogger.LogLevel.TRACE.ToString());
 
         _moduleClientMock.SetupGet(x => x.ConnectionStatus).Returns(IotConnectionStatus.Connected);
-        logger.SetModuleClient(_moduleClientMock.Object);
+        _logger.SetModuleClient(_moduleClientMock.Object);
 
         var stringWriter = new StringWriter();
-        logger.SetOutputTextWriter(stringWriter);
+        _logger.SetOutputTextWriter(stringWriter);
 
         var logMessage = "Debug message";
         var logLevel = ILogger.LogLevel.DEBUG;
         SetupModuleClientMock(GetTag(logLevel), _testClassName, logMessage);
 
-        logger.WriteLog(ILogger.LogLevel.DEBUG, logMessage, true);
+        _logger.WriteLog(ILogger.LogLevel.DEBUG, logMessage, true);
 
-        await Task.Delay(1000);
+        await Task.Delay(1000, TestContext.Current.CancellationToken);
         _moduleClientMock.
             Verify(x => x.SendEventAsync(It.IsAny<string>(), It.IsAny<IotMessage>()), Times.Once);
 
@@ -565,24 +558,23 @@ public class Logger_WriteLog : LoggerBase
     }
 
     [Fact(DisplayName = "Logger No049_MyClientが有効で接続状態がConnectedの場合のINFOログ出力")]
-    public async void Logger_Case049()
+    public async Task Logger_Case049()
     {
-        var logger = new Logger(_testClassName);
-        logger.SetOutputLogLevel(ILogger.LogLevel.TRACE.ToString());
+        _logger.SetOutputLogLevel(ILogger.LogLevel.TRACE.ToString());
 
         _moduleClientMock.SetupGet(x => x.ConnectionStatus).Returns(IotConnectionStatus.Connected);
-        logger.SetModuleClient(_moduleClientMock.Object);
+        _logger.SetModuleClient(_moduleClientMock.Object);
 
         var stringWriter = new StringWriter();
-        logger.SetOutputTextWriter(stringWriter);
+        _logger.SetOutputTextWriter(stringWriter);
 
         var logMessage = "Infomation message";
         var logLevel = ILogger.LogLevel.INFO;
         SetupModuleClientMock(GetTag(logLevel), _testClassName, logMessage);
 
-        logger.WriteLog(logLevel, logMessage, true);
+        _logger.WriteLog(logLevel, logMessage, true);
 
-        await Task.Delay(1000);
+        await Task.Delay(1000, TestContext.Current.CancellationToken);
         _moduleClientMock.
             Verify(x => x.SendEventAsync(It.IsAny<string>(), It.IsAny<IotMessage>()), Times.Once);
 
@@ -595,24 +587,23 @@ public class Logger_WriteLog : LoggerBase
     }
 
     [Fact(DisplayName = "Logger No050_MyClientが有効で接続状態がConnectedの場合のWARNログ出力")]
-    public async void Logger_Case050()
+    public async Task Logger_Case050()
     {
-        var logger = new Logger(_testClassName);
-        logger.SetOutputLogLevel(ILogger.LogLevel.TRACE.ToString());
+        _logger.SetOutputLogLevel(ILogger.LogLevel.TRACE.ToString());
 
         _moduleClientMock.SetupGet(x => x.ConnectionStatus).Returns(IotConnectionStatus.Connected);
-        logger.SetModuleClient(_moduleClientMock.Object);
+        _logger.SetModuleClient(_moduleClientMock.Object);
 
         var stringWriter = new StringWriter();
-        logger.SetOutputTextWriter(stringWriter);
+        _logger.SetOutputTextWriter(stringWriter);
 
         var logMessage = "Warning message";
         var logLevel = ILogger.LogLevel.WARN;
         SetupModuleClientMock(GetTag(logLevel), _testClassName, logMessage);
 
-        logger.WriteLog(logLevel, logMessage, true);
+        _logger.WriteLog(logLevel, logMessage, true);
 
-        await Task.Delay(1000);
+        await Task.Delay(1000,TestContext.Current.CancellationToken);
         _moduleClientMock.
             Verify(x => x.SendEventAsync(It.IsAny<string>(), It.IsAny<IotMessage>()), Times.Once);
 
@@ -625,24 +616,23 @@ public class Logger_WriteLog : LoggerBase
     }
 
     [Fact(DisplayName = "Logger No051_MyClientが有効で接続状態がConnectedの場合のERRORログ出力")]
-    public async void Logger_Case051()
+    public async Task Logger_Case051()
     {
-        var logger = new Logger(_testClassName);
-        logger.SetOutputLogLevel(ILogger.LogLevel.TRACE.ToString());
+        _logger.SetOutputLogLevel(ILogger.LogLevel.TRACE.ToString());
 
         _moduleClientMock.SetupGet(x => x.ConnectionStatus).Returns(IotConnectionStatus.Connected);
-        logger.SetModuleClient(_moduleClientMock.Object);
+        _logger.SetModuleClient(_moduleClientMock.Object);
 
         var stringWriter = new StringWriter();
-        logger.SetOutputTextWriter(stringWriter);
+        _logger.SetOutputTextWriter(stringWriter);
 
         var logMessage = "Error message";
         var logLevel = ILogger.LogLevel.ERROR;
         SetupModuleClientMock(GetTag(logLevel), _testClassName, logMessage);
 
-        logger.WriteLog(logLevel, logMessage, true);
+        _logger.WriteLog(logLevel, logMessage, true);
 
-        await Task.Delay(1000);
+        await Task.Delay(1000,TestContext.Current.CancellationToken);
         _moduleClientMock.
             Verify(x => x.SendEventAsync(It.IsAny<string>(), It.IsAny<IotMessage>()), Times.Once);
 
@@ -655,16 +645,15 @@ public class Logger_WriteLog : LoggerBase
     }
 
     [Fact(DisplayName = "Logger No052_MyClientが有効で接続状態がConnectedの場合の複数スレッドからの複数アップロード")]
-    public async void Logger_Case052()
+    public async Task Logger_Case052()
     {
-        var logger = new Logger(_testClassName);
-        logger.SetOutputLogLevel(ILogger.LogLevel.TRACE.ToString());
+        _logger.SetOutputLogLevel(ILogger.LogLevel.TRACE.ToString());
 
         _moduleClientMock.SetupGet(x => x.ConnectionStatus).Returns(IotConnectionStatus.Connected);
-        logger.SetModuleClient(_moduleClientMock.Object);
+        _logger.SetModuleClient(_moduleClientMock.Object);
 
         var stringWriter = new StringWriter();
-        logger.SetOutputTextWriter(stringWriter);
+        _logger.SetOutputTextWriter(stringWriter);
 
         var logMessages = new List<(ILogger.LogLevel, string)>();
         for (var i = 0; i < 10; i++)
@@ -680,9 +669,9 @@ public class Logger_WriteLog : LoggerBase
             Returns(Task.CompletedTask);
 
         logMessages.ForEach(logMessage =>
-            logger.WriteLog(logMessage.Item1, logMessage.Item2, true));
+            _logger.WriteLog(logMessage.Item1, logMessage.Item2, true));
 
-        await Task.Delay(2000);
+        await Task.Delay(2000, TestContext.Current.CancellationToken);
 
         foreach (var logMessage in logMessages)
         {
@@ -701,16 +690,15 @@ public class Logger_WriteLog : LoggerBase
     [Fact(DisplayName = "Logger No053_MyClientがnull")]
     public void Logger_Case053()
     {
-        var logger = new Logger(_testClassName);
-        logger.SetOutputLogLevel(ILogger.LogLevel.TRACE.ToString());
+        _logger.SetOutputLogLevel(ILogger.LogLevel.TRACE.ToString());
 
-        logger.SetModuleClient(null);
+        _logger.SetModuleClient(null);
 
         var stringWriter = new StringWriter();
-        logger.SetOutputTextWriter(stringWriter);
+        _logger.SetOutputTextWriter(stringWriter);
 
         var logMessage = "Trace message";
-        logger.WriteLog(ILogger.LogLevel.TRACE, logMessage, true);
+        _logger.WriteLog(ILogger.LogLevel.TRACE, logMessage, true);
 
         var consoleOutput = stringWriter.GetStringBuilder().ToString().Trim();
         _output.WriteLine("-- Output Log --");
@@ -723,17 +711,16 @@ public class Logger_WriteLog : LoggerBase
     [Fact(DisplayName = "Logger No054_MyClientが有効で接続状態がConnectedでない")]
     public void Logger_Case054()
     {
-        var logger = new Logger(_testClassName);
-        logger.SetOutputLogLevel(ILogger.LogLevel.TRACE.ToString());
+        _logger.SetOutputLogLevel(ILogger.LogLevel.TRACE.ToString());
 
         _moduleClientMock.SetupGet(x => x.ConnectionStatus).Returns(IotConnectionStatus.Disabled);
-        logger.SetModuleClient(_moduleClientMock.Object);
+        _logger.SetModuleClient(_moduleClientMock.Object);
 
         var stringWriter = new StringWriter();
-        logger.SetOutputTextWriter(stringWriter);
+        _logger.SetOutputTextWriter(stringWriter);
 
         var logMessage = "Trace message";
-        logger.WriteLog(ILogger.LogLevel.TRACE, logMessage, true);
+        _logger.WriteLog(ILogger.LogLevel.TRACE, logMessage, true);
 
         var consoleOutput = stringWriter.GetStringBuilder().ToString().Trim();
         _output.WriteLine("-- Output Log --");
@@ -744,25 +731,24 @@ public class Logger_WriteLog : LoggerBase
     }
 
     [Fact(DisplayName = "Logger No055_アップロード中に例外が発生する")]
-    public async void Logger_Case055()
+    public async Task Logger_Case055()
     {
-        var logger = new Logger(_testClassName);
-        logger.SetOutputLogLevel(ILogger.LogLevel.TRACE.ToString());
+        _logger.SetOutputLogLevel(ILogger.LogLevel.TRACE.ToString());
 
         _moduleClientMock.SetupGet(x => x.ConnectionStatus).Returns(IotConnectionStatus.Connected);
-        logger.SetModuleClient(_moduleClientMock.Object);
+        _logger.SetModuleClient(_moduleClientMock.Object);
 
         var stringWriter = new StringWriter();
-        logger.SetOutputTextWriter(stringWriter);
+        _logger.SetOutputTextWriter(stringWriter);
 
         var logMessage = "throw exeptionCase";
         _moduleClientMock.
             Setup(x => x.SendEventAsync(It.IsAny<string>(), It.Is<IotMessage>(x => x.GetBodyString().Contains(logMessage)))).
             Throws(new Exception("upload error"));
 
-        logger.WriteLog(ILogger.LogLevel.INFO, logMessage, true);
+        _logger.WriteLog(ILogger.LogLevel.INFO, logMessage, true);
 
-        await Task.Delay(1000);
+        await Task.Delay(1000, TestContext.Current.CancellationToken);
         _moduleClientMock.
             Verify(x => x.SendEventAsync(It.IsAny<string>(), It.Is<IotMessage>(x => x.GetBodyString().Contains(logMessage))), Times.Once);
 
@@ -1065,7 +1051,7 @@ public class Logger_WriteLog : LoggerBase
     //     isUpload：true
     //     ModuleClient：StubModuleClient
     [Fact(DisplayName = "ログ出力：ModuleClientによる送信")]
-    public async void MessageSendTest001()
+    public async Task MessageSendTest001()
     {
         string inputMessage;
 

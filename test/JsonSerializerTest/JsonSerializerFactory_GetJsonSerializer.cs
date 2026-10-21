@@ -1,15 +1,15 @@
 using Xunit;
-using Xunit.Abstractions;
 
 namespace TICO.GAUDI.Commons.Test.JsonSerializerTest;
 
-[Collection(nameof(JsonSerializerFactory_GetJsonSerializer))]
+[Collection("JsonSerializerFactory")]
 public class JsonSerializerFactory_GetJsonSerializer
 {
     private readonly ITestOutputHelper _output;
 
     public JsonSerializerFactory_GetJsonSerializer(ITestOutputHelper output)
     {
+        System.Environment.SetEnvironmentVariable("IOTEDGE_COMMON_DEFAULT_JSONSERIALIZER", null);
         _output = output;
     }
 
@@ -24,6 +24,7 @@ public class JsonSerializerFactory_GetJsonSerializer
     public void JsonSerializer_Case002()
     {
         var serializer = JsonSerializerFactory.GetJsonSerializer();
+        _output.WriteLine($"env={Environment.GetEnvironmentVariable("IOTEDGE_COMMON_DEFAULT_JSONSERIALIZER")}");
         Assert.IsType<NewtonsoftJsonSerializer>(serializer);
     }
 

@@ -1,5 +1,4 @@
 using Xunit;
-using Xunit.Abstractions;
 using Moq;
 using System.Collections.Generic;
 using System;
@@ -17,7 +16,7 @@ public class ApplicationEngine_AddMessageInputHandlerAsync
     }
 
     [Fact(DisplayName = "Applications No019_引数のinputNameが文字列の場合、かつ、繰り返し処理をした場合に異なる文字列を指定した場合")]
-    public async void Applications_Case019()
+    public async Task Applications_Case019()
     {
         ApplicationEngine applicationEngine = new();
 
@@ -39,7 +38,7 @@ public class ApplicationEngine_AddMessageInputHandlerAsync
     }
 
     [Fact(DisplayName = "Applications No020_引数のinputNameが文字列の場合に同じ文字列を指定して繰り返し追加した場合")]
-    public async void Applications_Case020()
+    public async Task Applications_Case020()
     {
         ApplicationEngine applicationEngine = new();
 
@@ -56,7 +55,7 @@ public class ApplicationEngine_AddMessageInputHandlerAsync
     }
 
     [Fact(DisplayName = "Applications No021_引数のinputNameがnullの場合")]
-    public async void Applications_Case021()
+    public async Task Applications_Case021()
     {
         ApplicationEngine applicationEngine = new();
 
@@ -72,7 +71,7 @@ public class ApplicationEngine_AddMessageInputHandlerAsync
     }
 
     [Fact(DisplayName = "Applications No022_引数のinputNameが空文字の場合に空文字を指定して繰り返し追加した場合")]
-    public async void Applications_Case022()
+    public async Task Applications_Case022()
     {
         ApplicationEngine applicationEngine = new();
 

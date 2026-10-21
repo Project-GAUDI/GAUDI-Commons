@@ -1,6 +1,5 @@
 using System.Threading;
 using Xunit;
-using Xunit.Abstractions;
 using TICO.GAUDI.Commons;
 /*
 namespace TICO.GAUDI.Commons.Test
@@ -21,7 +20,7 @@ namespace TICO.GAUDI.Commons.Test
         }
 
         [Fact(DisplayName = "異常系：メソッド指定null")]
-        public async void MethodNameNullInput_ExecutionFailedReturned()
+        public async Task MethodNameNullInput_ExecutionFailedReturned()
         {
             DirectMethodRequest methodRequest = new DirectMethodRequest() { MethodName = null };
             methodRequest.RequestJson = null;
@@ -32,7 +31,7 @@ namespace TICO.GAUDI.Commons.Test
         }
 
         [Fact(DisplayName = "異常系：メソッド指定空文字列")]
-        public async void MethodNameEmptyInput_ExecutionFailedReturned()
+        public async Task MethodNameEmptyInput_ExecutionFailedReturned()
         {
             DirectMethodRequest methodRequest = new DirectMethodRequest() { MethodName = "" };
             methodRequest.RequestJson = null;
@@ -43,7 +42,7 @@ namespace TICO.GAUDI.Commons.Test
         }
 
         [Fact(DisplayName = "異常系：存在しないメソッド指定")]
-        public async void NotExistMethodNameInput_ExecutionFailedReturned()
+        public async Task NotExistMethodNameInput_ExecutionFailedReturned()
         {
             DirectMethodRequest methodRequest = new DirectMethodRequest() { MethodName = "ResetLogLevel" };
             methodRequest.RequestJson = null;
@@ -54,7 +53,7 @@ namespace TICO.GAUDI.Commons.Test
         }
 
         [Fact(DisplayName = "異常系：リクエストnull指定")]
-        public async void RequestNullInput_BadRequestReturned()
+        public async Task RequestNullInput_BadRequestReturned()
         {
             DirectMethodRequest methodRequest = new DirectMethodRequest() { MethodName = "SetLogLevel" };
             methodRequest.RequestJson = null;
@@ -65,7 +64,7 @@ namespace TICO.GAUDI.Commons.Test
         }
 
         [Fact(DisplayName = "異常系：リクエスト空文字列指定")]
-        public async void RequestEmptyStringInput_BadRequestReturned()
+        public async Task RequestEmptyStringInput_BadRequestReturned()
         {
             DirectMethodRequest methodRequest = new DirectMethodRequest() { MethodName = "SetLogLevel" };
             methodRequest.RequestJson = "";
@@ -76,7 +75,7 @@ namespace TICO.GAUDI.Commons.Test
         }
 
         [Fact(DisplayName = "異常系：リクエスト非JSON書式指定")]
-        public async void RequestNonJsonInput_BadRequestReturned()
+        public async Task RequestNonJsonInput_BadRequestReturned()
         {
             DirectMethodRequest methodRequest = new DirectMethodRequest() { MethodName = "SetLogLevel" };
             methodRequest.RequestJson = "This is Test.";
@@ -87,7 +86,7 @@ namespace TICO.GAUDI.Commons.Test
         }
 
         [Fact(DisplayName = "異常系：リクエスト対象パラメータなし")]
-        public async void RequestNoParametersMatched_BadRequestReturned()
+        public async Task RequestNoParametersMatched_BadRequestReturned()
         {
             DirectMethodRequest methodRequest = new DirectMethodRequest() { MethodName = "SetLogLevel" };
             methodRequest.RequestJson = "{\"level\":\"debug\",\"seconds\":\"1\"}";
@@ -98,7 +97,7 @@ namespace TICO.GAUDI.Commons.Test
         }
 
         [Fact(DisplayName = "異常系：リクエストログレベル指定なし")]
-        public async void RequestNoLogLevel_BadRequestReturned()
+        public async Task RequestNoLogLevel_BadRequestReturned()
         {
             DirectMethodRequest methodRequest = new DirectMethodRequest() { MethodName = "SetLogLevel" };
             methodRequest.RequestJson = "{\"level\":\"debug\",\"EnableSec\":\"1\"}";
@@ -109,7 +108,7 @@ namespace TICO.GAUDI.Commons.Test
         }
 
         [Fact(DisplayName = "異常系：リクエストログレベル指定不正")]
-        public async void RequestBadLogLevel_SetLogLevelFailedReturned()
+        public async Task RequestBadLogLevel_SetLogLevelFailedReturned()
         {
             DirectMethodRequest methodRequest = new DirectMethodRequest() { MethodName = "SetLogLevel" };
             methodRequest.RequestJson = "{\"LogLevel\":\"デバッグ\",\"EnableSec\":\"1\"}";
@@ -120,7 +119,7 @@ namespace TICO.GAUDI.Commons.Test
         }
 
         [Fact(DisplayName = "正常系：正常構成")]
-        public async void NormalInput_TrueReturned()
+        public async Task NormalInput_TrueReturned()
         {
             DirectMethodRequest methodRequest = new DirectMethodRequest() { MethodName = "SetLogLevel" };
             methodRequest.RequestJson = "{\"LogLevel\":\"debug\",\"EnableSec\":\"1\"}";

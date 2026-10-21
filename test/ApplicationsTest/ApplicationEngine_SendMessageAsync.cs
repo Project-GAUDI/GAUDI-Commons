@@ -1,5 +1,4 @@
 using Xunit;
-using Xunit.Abstractions;
 using System.Threading.Tasks;
 using Moq;
 using System;
@@ -17,7 +16,7 @@ public class ApplicationEngine_SendMessageAsync
     }
 
     [Fact(DisplayName = "Applications No023_IotConnectionStatus.Connectedの状態で呼び出し")]
-    public async void Applications_Case023()
+    public async Task Applications_Case023()
     {
         ApplicationEngine applicationEngine = new();
 
@@ -37,7 +36,7 @@ public class ApplicationEngine_SendMessageAsync
     }
 
     [Fact(DisplayName = "Applications No024_引数のoutputNameが文字列の場合")]
-    public async void Applications_Case024()
+    public async Task Applications_Case024()
     {
         ApplicationEngine applicationEngine = new();
 
@@ -57,7 +56,7 @@ public class ApplicationEngine_SendMessageAsync
     }
 
     [Fact(DisplayName = "Applications No025_引数のoutputNameがnullの場合")]
-    public async void Applications_Case025()
+    public async Task Applications_Case025()
     {
         ApplicationEngine applicationEngine = new();
 
@@ -77,7 +76,7 @@ public class ApplicationEngine_SendMessageAsync
     }
 
     [Fact(DisplayName = "Applications No026_引数のoutputNameが空文字の場合")]
-    public async void Applications_Case026()
+    public async Task Applications_Case026()
     {
         ApplicationEngine applicationEngine = new();
 
@@ -97,7 +96,7 @@ public class ApplicationEngine_SendMessageAsync
     }
 
     [Fact(DisplayName = "Applications No027_IotConnectionStatus.Disabledの状態で呼び出し")]
-    public async void Applications_Case027()
+    public async Task Applications_Case027()
     {
         ApplicationEngine applicationEngine = new();
 
@@ -115,7 +114,7 @@ public class ApplicationEngine_SendMessageAsync
     }
 
     [Fact(DisplayName = "Applications No028_IotConnectionStatus.Disconnectedの状態で呼び出し")]
-    public async void Applications_Case028()
+    public async Task Applications_Case028()
     {
         ApplicationEngine applicationEngine = new();
 
@@ -133,7 +132,7 @@ public class ApplicationEngine_SendMessageAsync
     }
 
     [Fact(DisplayName = "Applications No029_IotConnectionStatus.Disconnected_Retryingの状態で呼び出し")]
-    public async void Applications_Case029()
+    public async Task Applications_Case029()
     {
         ApplicationEngine applicationEngine = new();
 
@@ -153,7 +152,7 @@ public class ApplicationEngine_SendMessageAsync
         {
             await Task.Delay(3000);
             connectionStatus = IotConnectionStatus.Connected;
-        });
+        }, TestContext.Current.CancellationToken);
 
         await applicationEngine.SendMessageAsync("outputName", null);
         moduleClientMock.Verify(x => x.ConnectionStatus, Times.AtLeastOnce);
@@ -162,7 +161,7 @@ public class ApplicationEngine_SendMessageAsync
     }
 
     [Fact(DisplayName = "Applications No031_上記以外の状態で呼び出し")]
-    public async void Applications_Case031()
+    public async Task Applications_Case031()
     {
         ApplicationEngine applicationEngine = new();
 

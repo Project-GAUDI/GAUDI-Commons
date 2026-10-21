@@ -1,5 +1,4 @@
 using Xunit;
-using Xunit.Abstractions;
 using System.Threading.Tasks;
 using Microsoft.Azure.Devices.Client;
 using Moq;
@@ -18,7 +17,7 @@ public class ApplicationEngine_ReceiveMessageAsync
     }
 
     [Fact(DisplayName = "Applications No082_ステータスを実行中状態に設定できない場合")]
-    public async void Applications_Case082()
+    public async Task Applications_Case082()
     {
         ApplicationEngine applicationEngine = new();
         MessageResponse messageResponse = await applicationEngine.ReceiveMessageAsync(null, null);
@@ -26,7 +25,7 @@ public class ApplicationEngine_ReceiveMessageAsync
     }
 
     [Fact(DisplayName = "Applications No084_eventDataがnullではない場合")]
-    public async void Applications_Case084()
+    public async Task Applications_Case084()
     {
         ApplicationEngine applicationEngine = new();
 
@@ -60,7 +59,7 @@ public class ApplicationEngine_ReceiveMessageAsync
     }
 
     [Fact(DisplayName = "Applications No085_eventDataがnullの場合")]
-    public async void Applications_Case085()
+    public async Task Applications_Case085()
     {
         ApplicationEngine applicationEngine = new();
 
@@ -94,7 +93,7 @@ public class ApplicationEngine_ReceiveMessageAsync
     }
 
     [Fact(DisplayName = "Applications No087_すべての処理が正常に終了した場合")]
-    public async void Applications_Case087()
+    public async Task Applications_Case087()
     {
         ApplicationEngine applicationEngine = new();
 

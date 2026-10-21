@@ -1,5 +1,4 @@
 using Xunit;
-using Xunit.Abstractions;
 using Moq;
 
 namespace TICO.GAUDI.Commons.Test.ApplicationsTest;
@@ -15,7 +14,7 @@ public class ApplicationEngine_SetApplicationRunningAsync
     }
 
     [Fact(DisplayName = "Applications No011_ステートの状態を実行状態にできた場合")]
-    public async void Applications_Case011()
+    public async Task Applications_Case011()
     {
         var applicationMainMock = new Mock<IApplicationMain>();
         ApplicationEngine applicationEngine = new();
@@ -30,7 +29,7 @@ public class ApplicationEngine_SetApplicationRunningAsync
     }
 
     [Fact(DisplayName = "Applications No012_ステートの状態を実行状態にできなかった場合")]
-    public async void Applications_Case012()
+    public async Task Applications_Case012()
     {
         var applicationMainMock = new Mock<IApplicationMain>();
         ApplicationEngine applicationEngine = new();

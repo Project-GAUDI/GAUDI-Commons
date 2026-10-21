@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 
 namespace TICO.GAUDI.Commons
@@ -23,16 +24,16 @@ namespace TICO.GAUDI.Commons
         public class RecordInfo
         {
             /// <summary>
-            /// レコードヘッダーリスト
+            /// レコードヘッダーリスト（任意。将来廃止予定）
             /// </summary>
-            [DataMember(Name = "RecordHeader", Order = 0)]
+            [DataMember(Name = "RecordHeader", Order = 0, EmitDefaultValue = false)]
             public List<string> RecordHeader;
 
             /// <summary>
             /// レコードデータリスト
             /// </summary>
             [DataMember(Name = "RecordData", Order = 1)]
-            public List<string> RecordData;
+            public List<object> RecordData;
         }
 
         /// <summary>
@@ -178,6 +179,28 @@ namespace TICO.GAUDI.Commons
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// JsonMessage のバリデーションを行う。
+        /// RecordList および各 RecordInfo.RecordData が null でないことを検証する。
+        /// </summary>
+        /// <param name="message">検証対象の JsonMessage</param>
+        /// <param name="allowEmptyBody">true の場合、message が null でも有効とする（EOF用）</param>
+        /// <returns>有効(true)／無効(false)</returns>
+        public static bool Validate(JsonMessage message, bool allowEmptyBody = false)
+        {
+            if (message == null)
+            {
+                return allowEmptyBody;
+            }
+
+            if (message.RecordList == null)
+            {
+                return false;
+            }
+
+            return message.RecordList.All(record => record?.RecordData != null);
         }
 
     }

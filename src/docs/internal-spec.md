@@ -1,4 +1,4 @@
-# Commons(6.1.1)
+# Commons(7.0.0)
 
 ## 目次
 
@@ -20,17 +20,17 @@ S1-->|null でない|A1
 subgraph "エンジンの初期化"
 A1["アプリケーション状態を <br> 初期化状態に変更 *1"]
 A1-->A2
-A2["アプリケーション初期化処理 *1 <br> IApplicationMain.InitializeAsync"]
+A2["アプリケーション初期化処理*1 <br> IApplicationMain.InitializeAsync"]
 A2-->A3
-A3["通信の初期化 *1 <br> ModuleClientFactory.CreateAsync"]
+A3["通信の初期化*1 <br> ModuleClientFactory.CreateAsync"]
 A3-->A4
-A4["EdgeHub へ接続 *2 <br> IModuleClient.OpenAsync"]
+A4["EdgeHub へ接続*2 <br> IModuleClient.OpenAsync"]
 A4-->A5
-A5["Logger の設定 *1 <br> ILogger.SetModuleClient"]
+A5["Logger の設定*1 <br> ILogger.SetModuleClient"]
 A5-->A7
 A7["DesiredProperties の取得 <br> IModuleClient.GetTwinAsync"]
 A7-->A8
-A8["DesiredProperties 更新コールバック処理 *1 <br> IApplicationMain.OnDesiredPropertiesReceivedAsync"]
+A8["DesiredProperties 更新コールバック処理*1 <br> IApplicationMain.OnDesiredPropertiesReceivedAsync"]
 A8-->A9
 A9["DesiredProperties 更新時コールバックを登録 <br> IModuleClient.SetDesiredPropertyUpdateCallbackAsync"]
 A9-->A10
@@ -38,10 +38,10 @@ A10["ダイレクトメソッドコールバックの設定 <br> IModuleClient.S
 A10-->A11
 A11["通信切断時コールバックの設定 <br> IModuleClient.SetConnectionStatusChangedHandlerAsync"]
 A11-->A12
-A12["アプリケーション起動処理 *1 <br> IApplicationMain.StartAsync"]
+A12["アプリケーション起動処理*1 <br> IApplicationMain.StartAsync"]
 end
 A12-->B1
-B1["アプリケーション状態を <br> 待機状態に変更 *1"]
+B1["アプリケーション状態を <br> 待機状態に変更*1"]
 B1-->LoopStart
 LoopStart[/"アプリケーションループ <br> キャンセル要求がされるまで待機"\]
 LoopStart-->LoopEnd
@@ -150,19 +150,19 @@ C3["ModuleClient を解放"]
 end
 C3-->A1
 subgraph "エンジンの初期化"
-A1["アプリケーション状態を <br> 初期化状態に変更 *1"]
+A1["アプリケーション状態を <br> 初期化状態に変更*1"]
 A1-->A2
-A2["アプリケーション初期化処理 *1 <br> IApplicationMain.InitializeAsync"]
+A2["アプリケーション初期化処理*1 <br> IApplicationMain.InitializeAsync"]
 A2-->A3
-A3["通信の初期化 *1 <br> ModuleClientFactory.CreateAsync"]
+A3["通信の初期化*1 <br> ModuleClientFactory.CreateAsync"]
 A3-->A4
-A4["EdgeHub へ接続 *2 <br> IModuleClient.OpenAsync"]
+A4["EdgeHub へ接続*2 <br> IModuleClient.OpenAsync"]
 A4-->A5
-A5["Logger の設定 *1 <br> ILogger.SetModuleClient"]
+A5["Logger の設定*1 <br> ILogger.SetModuleClient"]
 A5-->A7
 A7["DesiredProperties の取得 <br> IModuleClient.GetTwinAsync"]
 A7-->A8
-A8["DesiredProperties 更新コールバック処理 *1 <br> IApplicationMain.OnDesiredPropertiesReceivedAsync"]
+A8["DesiredProperties 更新コールバック処理*1 <br> IApplicationMain.OnDesiredPropertiesReceivedAsync"]
 A8-->A9
 A9["DesiredProperties 更新時コールバックを登録 <br> IModuleClient.SetDesiredPropertyUpdateCallbackAsync"]
 A9-->A10
@@ -170,10 +170,10 @@ A10["ダイレクトメソッドコールバックの設定 <br> IModuleClient.S
 A10-->A11
 A11["通信切断時コールバックの設定 <br> IModuleClient.SetConnectionStatusChangedHandlerAsync"]
 A11-->A12
-A12["アプリケーション起動処理 *1 <br> IApplicationMain.StartAsync"]
+A12["アプリケーション起動処理*1 <br> IApplicationMain.StartAsync"]
 end
 A12-->B1
-B1["アプリケーション状態を <br> 待機状態に変更 *1"]
+B1["アプリケーション状態を <br> 待機状態に変更*1"]
 B1-->Finish
 Finish(["終了"])
 Exception(["Exception を返す"])

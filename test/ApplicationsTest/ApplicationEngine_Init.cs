@@ -1,6 +1,5 @@
 using System;
 using Xunit;
-using Xunit.Abstractions;
 using Moq;
 
 namespace TICO.GAUDI.Commons.Test.ApplicationsTest;
@@ -16,14 +15,14 @@ public class ApplicationEngine_Init
     }
 
     [Fact(DisplayName = "Applications No036_applicationMainがnullの状態で呼び出し")]
-    public async void Applications_Case036()
+    public async Task Applications_Case036()
     {
         ApplicationEngine applicationEngine = new();
         await Assert.ThrowsAsync<Exception>(applicationEngine.Init);
     }
 
     [Fact(DisplayName = "Applications No037_ステートを初期化状態にできない場合")]
-    public async void Applications_Case037()
+    public async Task Applications_Case037()
     {
         var applicationMainMock = new Mock<IApplicationMain>();
         ApplicationEngine applicationEngine = new();

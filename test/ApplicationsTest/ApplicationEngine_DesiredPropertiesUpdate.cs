@@ -1,5 +1,4 @@
 using Xunit;
-using Xunit.Abstractions;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using System.Reflection;
@@ -41,7 +40,7 @@ public class ApplicationEngine_DesiredPropertiesUpdate
     }
 
     [Fact(DisplayName = "Applications No107_applicationMain.OnDesiredPropertiesReceivedAsyncの結果が失敗で返ってきた場合")]
-    public async void Applications_Case107()
+    public async Task Applications_Case107()
     {
         var twinCollection = new TwinCollection(
             @"{
@@ -66,7 +65,7 @@ public class ApplicationEngine_DesiredPropertiesUpdate
     }
 
     [Fact(DisplayName = "Applications No108_予期せぬエラーが発生した場合")]
-    public async void Applications_Case108()
+    public async Task Applications_Case108()
     {
         var twinCollection = new TwinCollection(
             @"{
@@ -90,7 +89,7 @@ public class ApplicationEngine_DesiredPropertiesUpdate
     }
 
     [Fact(DisplayName = "Applications No109_applicationMain.OnDesiredPropertiesReceivedAsyncの結果が成功で返ってきた場合")]
-    public async void Applications_Case109()
+    public async Task Applications_Case109()
     {
         var twinCollection = new TwinCollection(
             @"{
