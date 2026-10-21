@@ -81,7 +81,7 @@ namespace TICO.GAUDI.Commons
         /// <param name="messageString">メッセージ Body 文字列</param>
         public IotMessage(string messageString)
         {
-            byteData = StringToByates(messageString);
+            byteData = StringToBytes(messageString);
             message = new Message(byteData);
             setContentTypeAndEncoding();
         }
@@ -336,7 +336,7 @@ namespace TICO.GAUDI.Commons
         /// </summary>
         /// <params name="convString">変換する文字列</params>
         /// <returns>変換したバイト配列</returns>
-        public static Byte[] StringToByates(string convString)
+        public static Byte[] StringToBytes(string convString)
         {
             Byte[] retBytes = null;
 

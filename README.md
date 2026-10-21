@@ -1,12 +1,14 @@
 # GAUDI-Commons
 
 ## 目次
+
 * [概要](#概要)
 * [Quick Start](#quick-start)
 * [Deployment 設定値](#deployment-設定値)
   * [環境変数](#環境変数)
 * [利用可能クラス](#利用可能クラス)
   * [Applications](#applications)
+  * [BufferBackup](#bufferbackup)
   * [DirectMethod](#directmethod)
   * [JsonSerializer](#jsonserializer)
   * [Logger](#logger)
@@ -17,6 +19,7 @@
 * [LICENSE](#license)
 
 ## 概要
+
 GAUDI-Commonsは、GAUDI-Projectで利用される共通処理をまとめたレポジトリです。
 
 ## Quick Start
@@ -27,11 +30,11 @@ GAUDI-Commonsは、GAUDI-Projectで利用される共通処理をまとめたレ
 
 #### 環境変数の値
 
-| Key                                   | Type    | Required | Conditions                                    | Default        | Description                                                                                                                                                             |
-| ------------------------------------- | ------- | -------- | --------------------------------------------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| TransportProtocol                     | string  |          | ["Amqp", "Mqtt"]                              | Amqp           | ModuleClient の接続プロトコル。                                                                                                                                         |
-| LogLevel                              | string  |          | ["trace", "debug", "info", "warn", "error"]   | info           | 出力ログレベル。                                                                                                                                                        |
-| IOTEDGE_COMMON_DEFAULT_JSONSERIALIZER | string  |          | ["NEWTONSOFTJSON", "SYSRUNTIMESERIALIZATION"] | NEWTONSOFTJSON | Json化クラスの使用Jsonライブラリのデフォルトを切り替える。<br>NEWTONSOFTJSON：Newtonsoft.Jsonを使用<br>SYSRUNTIMESERIALIZATION：System.Runtime.Serialization.Jsonを使用 |
+| Key                                   | Type   | Required | Conditions                                    | Default        | Description                                                                                                                                                             |
+| ------------------------------------- | ------ | -------- | --------------------------------------------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| TransportProtocol                     | string |          | ["Amqp", "Mqtt"]                              | Amqp           | ModuleClient の接続プロトコル。                                                                                                                                         |
+| LogLevel                              | string |          | ["trace", "debug", "info", "warn", "error"]   | info           | 出力ログレベル。                                                                                                                                                        |
+| IOTEDGE_COMMON_DEFAULT_JSONSERIALIZER | string |          | ["NEWTONSOFTJSON", "SYSRUNTIMESERIALIZATION"] | NEWTONSOFTJSON | Json化クラスの使用Jsonライブラリのデフォルトを切り替える。<br>NEWTONSOFTJSON：Newtonsoft.Jsonを使用<br>SYSRUNTIMESERIALIZATION：System.Runtime.Serialization.Jsonを使用 |
 
 ## 利用可能クラス
 
@@ -80,17 +83,18 @@ IAsyncDisposable を継承している。
 
 ##### Applications-IApplicationEngine-メソッド
 
-| 静的 | 名前                         | 引数（型：説明）                                                                                            | 戻り値（型：説明）                                                | 説明                                                                                 |
-| ---- | ---------------------------- | ----------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-|      | SetApplication               | IApplicationMain：インスタンス                                                                              | void                                                              | 引数で受け取った IApplicationMain インスタンスを内部に保持する。                     |
-|      | RunAsync                     | なし                                                                                                        | Task：タスク                                                      | アプリケーションエンジンを起動する。<br>詳細は internal-spec.md を参照。             |
-|      | SetApplicationRunningAsync   | なし                                                                                                        | Task\<ApplicationStateChangeResult>：アプリケーション状態変更結果 | アプリケーション実行権を獲得する。<br>詳細は internal-spec.md を参照。               |
-|      | UnsetApplicationRunningAsync | なし                                                                                                        | Task\<ApplicationStateChangeResult>：アプリケーション状態変更結果 | アプリケーション実行権を解放する。<br>詳細は internal-spec.md を参照。               |
-|      | SetApplicationRestartAsync   | なし                                                                                                        | Task\<ApplicationStateChangeResult>：アプリケーション状態変更結果 | アプリケーションを再起動する（致命的障害時用）。<br>詳細は internal-spec.md を参照。 |
-|      | IsTerminating                | なし                                                                                                        | bool：終了中(true)、未起動・通常状態(false)                       | アプリケーションが終了中かどうか判定する。                                           |
-|      | AddMessageInputHandlerAsync  | string：インプット名<br>MessageEventHandler：イベントコールバック<br>object：拡張データ（デフォルト：null） | Task：タスク                                                      | メッセージ受信時のイベントハンドラを追加する。                                       |
-|      | SendMessageAsync             | string：アウトプット名<br>IotMessage：送信メッセージ                                                        | Task：タスク                                                      | 指定したアウトプット名でメッセージを送信する。<br>詳細は internal-spec.md を参照。   |
-|      | AddDirectMethodHandlerAsync  | string：メソッド名<br>DirectMethodHandler：イベントコールバック<br>object：拡張データ（デフォルト：null）   | Task：タスク                                                      | ダイレクトメソッド受信時のイベントハンドラを追加する。                               |
+| 静的 | 名前                         | 引数（型：説明）                                                                                            | 戻り値（型：説明）                                                | 説明                                                                                                                                                                                                                                                     |
+| ---- | ---------------------------- | ----------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|      | SetApplication               | IApplicationMain：インスタンス                                                                              | void                                                              | 引数で受け取った IApplicationMain インスタンスを内部に保持する。                                                                                                                                                                                         |
+|      | RunAsync                     | なし                                                                                                        | Task：タスク                                                      | アプリケーションエンジンを起動する。<br>詳細は internal-spec.md を参照。                                                                                                                                                                                 |
+|      | SetApplicationRunningAsync   | なし                                                                                                        | Task\<ApplicationStateChangeResult>：アプリケーション状態変更結果 | アプリケーション実行権を獲得する。<br>詳細は internal-spec.md を参照。                                                                                                                                                                                   |
+|      | UnsetApplicationRunningAsync | なし                                                                                                        | Task\<ApplicationStateChangeResult>：アプリケーション状態変更結果 | アプリケーション実行権を解放する。<br>詳細は internal-spec.md を参照。                                                                                                                                                                                   |
+|      | SetApplicationRestartAsync   | なし                                                                                                        | Task\<ApplicationStateChangeResult>：アプリケーション状態変更結果 | アプリケーションを再起動する（致命的障害時用）。<br>詳細は internal-spec.md を参照。                                                                                                                                                                     |
+|      | IsTerminating                | なし                                                                                                        | bool：終了中(true)、未起動・通常状態(false)                       | アプリケーションが終了中かどうか判定する。                                                                                                                                                                                                               |
+|      | AddMessageInputHandlerAsync  | string：インプット名<br>MessageEventHandler：イベントコールバック<br>object：拡張データ（デフォルト：null） | Task：タスク                                                      | メッセージ受信時のイベントハンドラを追加する。                                                                                                                                                                                                           |
+|      | SendMessageAsync             | string：アウトプット名<br>IotMessage：送信メッセージ                                                        | Task：タスク                                                      | 指定したアウトプット名でメッセージを送信する。<br>詳細は internal-spec.md を参照。                                                                                                                                                                       |
+|      | SendMessageAsync             | string：アウトプット名<br>IotMessage：送信メッセージ<br>CancellationToken：キャンセルトークン               | Task：タスク                                                      | 指定したアウトプット名でメッセージを送信する。<br>ApplicationEngine 実装では、キャンセルされた場合に OperationCanceledException をスローする。<br>既定実装は従来メソッドへ委譲するため、キャンセルは効果を持たない。<br>詳細は internal-spec.md を参照。 |
+|      | AddDirectMethodHandlerAsync  | string：メソッド名<br>DirectMethodHandler：イベントコールバック<br>object：拡張データ（デフォルト：null）   | Task：タスク                                                      | ダイレクトメソッド受信時のイベントハンドラを追加する。                                                                                                                                                                                                   |
 
 #### Applications-ApplicationEngineFactory-クラス
 
@@ -101,6 +105,47 @@ IApplicationEngine インスタンスを取得するためのファクトリー�
 | 静的 | 名前      | 引数（型：説明） | 戻り値（型：説明）               | 説明                                                |
 | ---- | --------- | ---------------- | -------------------------------- | --------------------------------------------------- |
 | ○    | GetEngine | なし             | IApplicationEngine：インスタンス | IApplicationEngine クラスのインスタンスを取得する。 |
+
+---
+
+## BufferBackup
+
+メモリ上に保持している未送信データを、モジュール終了時にディスクへ退避し、起動時に復元するための機能。  
+退避・復元の呼び出しタイミングは利用側モジュールの責任とする（ApplicationEngine のライフサイクルには自動で組み込まれない）。  
+実行中の異常終了（クラッシュ、OOM Kill 等）には対応していない。  
+
+### BufferBackup-IBufferBackupStore-インターフェース
+
+未送信データのディスク退避・復元を提供するインターフェース。  
+入出力の失敗は例外をスローせず、ログ出力のうえ戻り値で通知する（ベストエフォート）。  
+退避ファイルのパスは、キーがある場合は `/app/backupdata/{ModuleId}_{キー}_backup.json`、キーがない場合は `/app/backupdata/{ModuleId}_backup.json` となる。`{ModuleId}` は環境変数 `IOTEDGE_MODULEID` から取得し、未設定の場合は `"default"` を使用する。キーの生成と退避・復元の呼び出しタイミングは利用側モジュールの責任とする。
+
+#### BufferBackup-IBufferBackupStore-メソッド
+
+| 静的 | 名前          | 引数（型：説明）                                                           | 戻り値（型：説明）                                  | 説明                                                                                                                                                                                                                   |
+| ---- | ------------- | -------------------------------------------------------------------------- | --------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|      | Save          | string：キー<br>IEnumerable\<TItem>：退避対象データ                        | bool：成功(true)／失敗(false)                       | 指定したキーでデータをディスクへ退避する。<br>同じキーの退避データが存在する場合は上書きする。<br>退避先ディレクトリが存在しない場合は作成する。<br>退避対象データが null の場合、警告ログを出力して false を返す。    |
+|      | Restore       | string：キー<br>bool：復元後に退避ファイルを削除するか（デフォルト：true） | List\<TItem>：復元したデータ                        | 指定したキーの退避データをディスクから復元する。<br>退避データが存在しない場合、または復元に失敗した場合は null を返す。                                                                                               |
+|      | Exists        | string：キー                                                               | bool：存在する(true)／存在しない(false)             | 指定したキーの退避データが存在するか確認する。                                                                                                                                                                         |
+|      | Delete        | string：キー                                                               | bool：削除した／元から存在しない(true)／失敗(false) | 指定したキーの退避データを削除する。                                                                                                                                                                                   |
+|      | GetBackupKeys | なし                                                                       | List\<string>：退避データを識別するキーの一覧       | 現在のモジュールに保存されている退避データのキー一覧を取得する。<br>キーなしの退避データが存在する場合は空文字列をキーとして含める。<br>退避データが存在しない場合、または一覧の取得に失敗した場合は空のリストを返す。 |
+|      | GetBackupPath | string：キー                                                               | string：退避ファイルのパス                          | 指定したキーに対応する退避ファイルのパスを取得する。                                                                                                                                                                   |
+
+キーがある場合に、パス区切り文字、`..`、ファイル名に使用できない文字を含む場合は ArgumentException をスローする。キーが null または空白の場合は、キーなしとして扱う。
+
+### BufferBackup-BufferBackupStoreFactory-クラス
+
+IBufferBackupStore インスタンスを取得するためのファクトリークラス。  
+
+#### BufferBackup-BufferBackupStoreFactory-メソッド
+
+| 静的 | 名前     | 引数（型：説明）                                                                    | 戻り値（型：説明）               | 説明                                                                                                                                                             |
+| ---- | -------- | ----------------------------------------------------------------------------------- | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ○    | GetStore | bool：派生型を保持して復元するか（デフォルト：false）                               | IBufferBackupStore：インスタンス | IBufferBackupStore クラスのインスタンスを取得する。<br>退避先ディレクトリは "/app/backupdata" を使用する。                                                       |
+| ○    | GetStore | string：退避先ディレクトリ<br>bool：派生型を保持して復元するか（デフォルト：false） | IBufferBackupStore：インスタンス | 退避先ディレクトリを指定して IBufferBackupStore クラスのインスタンスを取得する。<br>退避先ディレクトリが null または空白の場合、ArgumentException をスローする。 |
+
+シリアライズには Newtonsoft.Json を固定で使用する（派生型の保持に型情報が必要なため）。  
+派生型を保持して復元する場合、退避ファイルに型情報（`$type`）を出力する。退避ファイルを改ざんされると意図しない型の生成につながるため、自モジュールのみが書き込み可能なボリュームに退避すること。  
 
 ---
 
@@ -183,6 +228,60 @@ JSON のシリアライザとして、以下の2種類を実装している。
 | - Default                 | - デフォルトのシリアライザタイプ               |
 | - SysRuntimeSerialization | - System.Runtime を使用するシリアライザタイプ  |
 | - NewtonsoftJson          | - Newtonsoft.Json を使用するシリアライザタイプ |
+| JsonNullValueHandling     | null 値のシリアライズ方法                      |
+| - Include                 | - null 値を含める（デフォルト）                |
+| - Ignore                  | - null 値を除外する                            |
+| JsonDefaultValueHandling  | デフォルト値のシリアライズ方法                 |
+| - Include                 | - デフォルト値を含める（デフォルト）           |
+| - Ignore                  | - デフォルト値を除外する                       |
+| - Populate                | - デシリアライズ時にデフォルト値を補完する     |
+| - IgnoreAndPopulate       | - 除外し、デシリアライズ時に補完する           |
+| JsonFormatting            | JSON 出力フォーマット                          |
+| - None                    | - コンパクト出力（デフォルト）                 |
+| - Indented                | - インデント付き出力                           |
+| JsonReferenceLoopHandling | 循環参照の処理方法                             |
+| - Error                   | - 例外をスローする（デフォルト）               |
+| - Ignore                  | - 循環参照を無視する                           |
+| - Serialize               | - 循環参照をシリアライズする                   |
+| JsonDateParseHandling     | 日付文字列の自動パース方式                     |
+| - None                    | - 自動変換しない                               |
+| - DateTime                | - DateTime に自動変換する（デフォルト）        |
+| - DateTimeOffset          | - DateTimeOffset に自動変換する                |
+| JsonDateFormatHandling    | 日付のシリアライズ形式                         |
+| - IsoDateFormat           | - ISO 8601 形式（デフォルト）                  |
+| - MicrosoftDateFormat     | - Microsoft JSON 形式                          |
+| JsonStringEscapeHandling  | 文字列のエスケープ方式                         |
+| - Default                 | - 制御文字・サロゲート文字のみ（デフォルト）   |
+| - EscapeNonAscii          | - 非 ASCII 文字を \uXXXX 形式にエスケープ      |
+| - EscapeHtml              | - HTML 予約文字をエスケープ                    |
+| JsonTypeNameHandling      | 型情報（`$type`）の出力方法                    |
+| - None                    | - 型情報を含めない（デフォルト）               |
+| - Objects                 | - オブジェクトに型情報を含める                 |
+| - Arrays                  | - 配列に型情報を含める                         |
+| - All                     | - オブジェクトと配列の両方に含める             |
+| - Auto                    | - 宣言型と実際の型が異なる場合のみ含める       |
+
+### JsonSerializer-JsonSerializerSettings-クラス
+
+Newtonsoft.Json / System.Runtime のどちらでも使用できる、ライブラリ非依存の JSON シリアライザ設定クラス。  
+Newtonsoft.Json 使用時は全プロパティが有効。  
+System.Runtime 使用時は Formatting（シリアライズ時のみ）のみサポートし、その他の設定は無視される。無視される設定に非デフォルト値が指定されている場合、Trace.TraceWarning で警告を出力する。  
+
+#### JsonSerializer-JsonSerializerSettings-プロパティ
+
+| 名前                    | 型                        | デフォルト    | System.Runtime         | 説明                                                     |
+| ----------------------- | ------------------------- | ------------- | ---------------------- | -------------------------------------------------------- |
+| NullValueHandling       | JsonNullValueHandling     | Include       | 無視                   | null 値の扱い                                            |
+| DefaultValueHandling    | JsonDefaultValueHandling  | Include       | 無視                   | デフォルト値の扱い                                       |
+| Formatting              | JsonFormatting            | None          | シリアライズ時のみ有効 | 出力フォーマット                                         |
+| ReferenceLoopHandling   | JsonReferenceLoopHandling | Error         | 無視                   | 循環参照の処理方法                                       |
+| DateParseHandling       | JsonDateParseHandling     | DateTime      | 無視                   | 日付文字列の自動パース方式                               |
+| DateFormatHandling      | JsonDateFormatHandling    | IsoDateFormat | 無視                   | 日付のシリアライズ形式                                   |
+| StringEscapeHandling    | JsonStringEscapeHandling  | Default       | 無視                   | 文字列のエスケープ方式                                   |
+| ExcludeEmptyCollections | bool                      | false         | 無視                   | 空文字列・空コレクションをシリアライズ対象から除外するか |
+| TypeNameHandling        | JsonTypeNameHandling      | None          | 無視                   | 型情報（`$type`）の出力方法 *1                           |
+
+*1：`None` 以外を指定すると、デシリアライズ時に JSON 内の `$type` で指定された型が生成される。信頼できない入力に対して使用すると意図しない型の生成につながるため、自モジュールが生成した JSON のみを対象にすること。  
 
 #### JsonSerializer-IJsonSerializer-インターフェース
 
@@ -190,12 +289,16 @@ JSON シリアライズ／デシリアライズの共通インターフェース
 
 ##### JsonSerializer-IJsonSerializer-メソッド
 
-| 静的 | 名前           | 引数（型：説明）             | 戻り値（型：説明）                           | 説明                                                |
-| ---- | -------------- | ---------------------------- | -------------------------------------------- | --------------------------------------------------- |
-|      | Serialize      | TargetType：対象オブジェクト | string：シリアライズされた文字列             | オブジェクトを JSON 文字列にシリアライズする。      |
-|      | SerializeBytes | TargetType：対象オブジェクト | byte[]：シリアライズされたバイト配列         | オブジェクトを JSON バイト配列にシリアライズする。  |
-|      | Deserialize    | string：対象 JSON 文字列     | TargetType：デシリアライズされたオブジェクト | JSON 文字列をオブジェクトにデシリアライズする。     |
-|      | Deserialize    | byte[]：対象 JSON バイト配列 | TargetType：デシリアライズされたオブジェクト | JSON バイト配列をオブジェクトにデシリアライズする。 |
+| 静的 | 名前           | 引数（型：説明）                                                           | 戻り値（型：説明）                           | 説明                                                               |
+| ---- | -------------- | -------------------------------------------------------------------------- | -------------------------------------------- | ------------------------------------------------------------------ |
+|      | Serialize      | TargetType：対象オブジェクト                                               | string：シリアライズされた文字列             | オブジェクトを JSON 文字列にシリアライズする。                     |
+|      | Serialize      | TargetType：対象オブジェクト<br>JsonSerializerSettings：シリアライズ設定   | string：シリアライズされた文字列             | 指定した設定でオブジェクトを JSON 文字列にシリアライズする。       |
+|      | SerializeBytes | TargetType：対象オブジェクト                                               | byte[]：シリアライズされたバイト配列         | オブジェクトを JSON バイト配列にシリアライズする。                 |
+|      | SerializeBytes | TargetType：対象オブジェクト<br>JsonSerializerSettings：シリアライズ設定   | byte[]：シリアライズされたバイト配列         | 指定した設定でオブジェクトを JSON バイト配列にシリアライズする。   |
+|      | Deserialize    | string：対象 JSON 文字列                                                   | TargetType：デシリアライズされたオブジェクト | JSON 文字列をオブジェクトにデシリアライズする。                    |
+|      | Deserialize    | string：対象 JSON 文字列<br>JsonSerializerSettings：デシリアライズ設定     | TargetType：デシリアライズされたオブジェクト | 指定した設定で JSON 文字列をオブジェクトにデシリアライズする。     |
+|      | Deserialize    | byte[]：対象 JSON バイト配列                                               | TargetType：デシリアライズされたオブジェクト | JSON バイト配列をオブジェクトにデシリアライズする。                |
+|      | Deserialize    | byte[]：対象 JSON バイト配列<br>JsonSerializerSettings：デシリアライズ設定 | TargetType：デシリアライズされたオブジェクト | 指定した設定で JSON バイト配列をオブジェクトにデシリアライズする。 |
 
 #### JsonSerializer-JsonSerializerFactory-クラス
 
@@ -246,14 +349,28 @@ IJsonSerializer のインスタンスを生成するファクトリクラス。
 
 ##### Logger-ILogger-メソッド
 
-| 静的 | 名前                 | 引数（型：説明）                                                                                    | 戻り値（型：説明）            | 説明                                                                                                                                                                                                                                                               |
-| ---- | -------------------- | --------------------------------------------------------------------------------------------------- | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-|      | SetOutputLogLevel    | string：出力ログレベル                                                                              | void                          | 出力ログレベルを文字列から設定する。<br>指定した出力ログレベルが不正な場合、ArgumentException をスローする。                                                                                                                                                       |
-|      | SetModuleClient      | IModuleClient：モジュールクライアント                                                               | void                          | Loggerで使用するモジュールクライアントをセットする。                                                                                                                                                                                                               |
-|      | SetOutputTextWriter  | TextWriter：出力ストリーム                                                                          | void                          | 出力ストリームを設定する。                                                                                                                                                                                                                                         |
-|      | WriteLog             | LogLevel：出力ログレベル<br>string：ログメッセージ<br>bool：メッセージ送信有無（デフォルト：false） | void                          | 指定した出力ログレベルに応じて、ログメッセージを出力する。<br>メッセージ送信有無が true の場合、ログメッセージをアップロードする。<br>（アップロードには、SetModuleClient によるモジュールクライアントのセットが必要）<br>処理に失敗した場合、警告ログを出力する。 |
-|      | SetMandatoryLogLevel | string：出力ログレベル<br>int：強制レベル設定時の時間定義                                           | void                          | 指定した時間定義に応じて、強制ログレベルを変更する。<br>時間定義が0の場合：解除<br>時間定義が1以上の場合：指定時間（秒）後まで適用<br>時間定義が-1の場合：無制限<br>時間定義が上記以外：ArgumentException をスローする                                             |
-|      | IsLogLevelToOutput   | LogLevel：出力ログレベル                                                                            | bool：有効(true)／無効(false) | 指定した出力ログレベルが有効かチェックする。                                                                                                                                                                                                                       |
+| 静的 | 名前                 | 引数（型：説明）                                                                                                                                                        | 戻り値（型：説明）            | 説明                                                                                                                                                                                                                                                               |
+| ---- | -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+|      | SetOutputLogLevel    | string：出力ログレベル                                                                                                                                                  | void                          | 出力ログレベルを文字列から設定する。<br>指定した出力ログレベルが不正な場合、ArgumentException をスローする。                                                                                                                                                       |
+|      | SetModuleClient      | IModuleClient：モジュールクライアント                                                                                                                                   | void                          | Loggerで使用するモジュールクライアントをセットする。                                                                                                                                                                                                               |
+|      | SetOutputTextWriter  | TextWriter：出力ストリーム                                                                                                                                              | void                          | 出力ストリームを設定する。                                                                                                                                                                                                                                         |
+|      | WriteLog             | LogLevel：出力ログレベル<br>string：ログメッセージ<br>bool：メッセージ送信有無（デフォルト：false）                                                                     | void                          | 指定した出力ログレベルに応じて、ログメッセージを出力する。<br>メッセージ送信有無が true の場合、ログメッセージをアップロードする。<br>（アップロードには、SetModuleClient によるモジュールクライアントのセットが必要）<br>処理に失敗した場合、警告ログを出力する。 |
+|      | SetMandatoryLogLevel | string：出力ログレベル<br>int：強制レベル設定時の時間定義                                                                                                               | void                          | 指定した時間定義に応じて、強制ログレベルを変更する。<br>時間定義が0の場合：解除<br>時間定義が1以上の場合：指定時間（秒）後まで適用<br>時間定義が-1の場合：無制限<br>時間定義が上記以外：ArgumentException をスローする                                             |
+|      | IsLogLevelToOutput   | LogLevel：出力ログレベル                                                                                                                                                | bool：有効(true)／無効(false) | 指定した出力ログレベルが有効かチェックする。                                                                                                                                                                                                                       |
+|      | Trace                | string：ログメッセージ<br>string：呼び出し元メンバー名（デフォルト：呼び出し元メソッド名）<br>bool：メッセージ送信有無（デフォルト：false）                             | void                          | `[メンバー名] メッセージ` の形式で TRACE ログを出力する。                                                                                                                                                                                                          |
+|      | Debug                | string：ログメッセージ<br>string：呼び出し元メンバー名（デフォルト：呼び出し元メソッド名）<br>bool：メッセージ送信有無（デフォルト：false）                             | void                          | `[メンバー名] メッセージ` の形式で DEBUG ログを出力する。                                                                                                                                                                                                          |
+|      | Info                 | string：ログメッセージ<br>string：呼び出し元メンバー名（デフォルト：呼び出し元メソッド名）<br>bool：メッセージ送信有無（デフォルト：false）                             | void                          | `[メンバー名] メッセージ` の形式で INFO ログを出力する。                                                                                                                                                                                                           |
+|      | Warn                 | string：ログメッセージ<br>string：呼び出し元メンバー名（デフォルト：呼び出し元メソッド名）<br>bool：メッセージ送信有無（デフォルト：false）                             | void                          | `[メンバー名] メッセージ` の形式で WARN ログを出力する。                                                                                                                                                                                                           |
+|      | Error                | string：ログメッセージ<br>string：呼び出し元メンバー名（デフォルト：呼び出し元メソッド名）<br>bool：メッセージ送信有無（デフォルト：false）                             | void                          | `[メンバー名] メッセージ` の形式で ERROR ログを出力する。                                                                                                                                                                                                          |
+|      | TraceWithArgs        | string：ログメッセージ<br>object：出力する引数情報<br>string：呼び出し元メンバー名（デフォルト：呼び出し元メソッド名）<br>bool：メッセージ送信有無（デフォルト：false） | void                          | `[メンバー名] メッセージ \| args: { ... }` の形式で TRACE ログを出力する。*1                                                                                                                                                                                       |
+|      | DebugWithArgs        | string：ログメッセージ<br>object：出力する引数情報<br>string：呼び出し元メンバー名（デフォルト：呼び出し元メソッド名）<br>bool：メッセージ送信有無（デフォルト：false） | void                          | `[メンバー名] メッセージ \| args: { ... }` の形式で DEBUG ログを出力する。*1                                                                                                                                                                                       |
+|      | InfoWithArgs         | string：ログメッセージ<br>object：出力する引数情報<br>string：呼び出し元メンバー名（デフォルト：呼び出し元メソッド名）<br>bool：メッセージ送信有無（デフォルト：false） | void                          | `[メンバー名] メッセージ \| args: { ... }` の形式で INFO ログを出力する。*1                                                                                                                                                                                        |
+|      | WarnWithArgs         | string：ログメッセージ<br>object：出力する引数情報<br>string：呼び出し元メンバー名（デフォルト：呼び出し元メソッド名）<br>bool：メッセージ送信有無（デフォルト：false） | void                          | `[メンバー名] メッセージ \| args: { ... }` の形式で WARN ログを出力する。*1                                                                                                                                                                                        |
+|      | ErrorWithArgs        | string：ログメッセージ<br>object：出力する引数情報<br>string：呼び出し元メンバー名（デフォルト：呼び出し元メソッド名）<br>bool：メッセージ送信有無（デフォルト：false） | void                          | `[メンバー名] メッセージ \| args: { ... }` の形式で ERROR ログを出力する。*1                                                                                                                                                                                       |
+|      | TraceMethodEntry     | object：出力する引数情報（デフォルト：null）<br>string：呼び出し元メンバー名（デフォルト：呼び出し元メソッド名）                                                        | void                          | メソッド開始時のログを `[メンバー名] Enter args: { ... }` の形式で TRACE 出力する。<br>TRACE が無効な場合は何も出力しない。*1                                                                                                                                      |
+|      | TraceMethodExit      | object：出力する戻り値情報（デフォルト：null）<br>string：呼び出し元メンバー名（デフォルト：呼び出し元メソッド名）                                                      | void                          | メソッド終了時のログを `[メンバー名] Exit result: { ... }` の形式で TRACE 出力する。<br>TRACE が無効な場合は何も出力しない。*1                                                                                                                                     |
+
+*1：引数情報はプロパティ単位で `{ プロパティ名 = 値, ... }` に整形される。値は改行を半角スペースに置換し、`|`（パイプ）を除去したうえで出力する（ログメッセージ本体は整形対象外）。プロパティ値の取得に失敗した場合は `<error>` を出力する。  
 
 #### Logger-LoggerFactory-クラス
 
@@ -309,7 +426,7 @@ IDisposable を継承している。
 |      | SetProperties         | IDictionary<string, string>：プロパティ辞書<br>PropertySetMode：プロパティ設定モード（デフォルト：AddOrModify）    | bool：全て設定した(true)／一部または全て設定しなかった(false) | 指定したプロパティ設定モードに応じて、複数のプロパティを一括で追加・更新する。          |
 |      | GetProperties         | なし                                                                                                               | IDictionary<string, string>：プロパティ辞書                   | 全プロパティを取得する。<br>プロパティが存在しない場合、null を返す。                   |
 | ○    | BytesToString         | byte[]：変換するバイト配列                                                                                         | string：変換した文字列                                        | バイト配列を文字列に変換する。                                                          |
-| ○    | StringToByates        | string：変換する文字列                                                                                             | byte[]：変換したバイト配列                                    | 文字列をバイト配列に変換する。                                                          |
+| ○    | StringToBytes         | string：変換する文字列                                                                                             | byte[]：変換したバイト配列                                    | 文字列をバイト配列に変換する。                                                          |
 |      | GetMessageId          | なし                                                                                                               | string：MessageId                                             | MessageId プロパティを取得する。                                                        |
 |      | SetMessageId          | string：MessageId                                                                                                  | void                                                          | MessageId プロパティを設定する。                                                        |
 |      | GetContentType        | なし                                                                                                               | string：ContentType                                           | ContentType プロパティを取得する。                                                      |
@@ -351,12 +468,12 @@ GAUDI 標準メッセージは以下の2層構造で構成される：
 
 **バリデーションルール:**
 
-| 項目 | 制約 |
-| --- | --- |
-| RecordList | 必須（null 不可）。空配列 `[]` は許容。 |
-| RecordData | 必須（null 不可）。空配列 `[]` は許容。 |
-| RecordHeader | 任意（将来廃止予定）。null または省略可。 |
-| Body 空許容 | Properties.type="eof" の場合のみ、Body が空または省略されても有効とする。 |
+| 項目         | 制約                                                                      |
+| ------------ | ------------------------------------------------------------------------- |
+| RecordList   | 必須（null 不可）。空配列 `[]` は許容。                                   |
+| RecordData   | 必須（null 不可）。空配列 `[]` は許容。                                   |
+| RecordHeader | 任意（将来廃止予定）。null または省略可。                                 |
+| Body 空許容  | Properties.type="eof" の場合のみ、Body が空または省略されても有効とする。 |
 
 ##### Message-JsonMessage-フィールド
 
@@ -437,17 +554,18 @@ IDisposable を継承している。
 
 ##### ModuleClient-IModuleClient-メソッド
 
-| 静的 | 名前                                   | 引数（型：説明）                                                                                  | 戻り値（型：説明）     | 説明                                                                                                                                                        |
-| ---- | -------------------------------------- | ------------------------------------------------------------------------------------------------- | ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-|      | OpenAsync                              | なし                                                                                              | Task：タスク           | 接続開始処理                                                                                                                                                |
-|      | CloseAsync                             | なし                                                                                              | Task：タスク           | 切断処理                                                                                                                                                    |
-|      | GetTwinAsync                           | なし                                                                                              | Task\<Twin>：Twin 情報 | Twin 情報取得処理                                                                                                                                           |
-|      | SetDesiredPropertyUpdateCallbackAsync  | DesiredPropertyUpdateCallback：Desired プロパティ更新コールバック<br>object：ユーザーコンテキスト | Task：タスク           | Desired プロパティ更新時のコールバックを設定する。                                                                                                          |
-|      | SetInputMessageHandlerAsync            | string：インプット名<br>IotMessageHandler：IoT メッセージハンドラ<br>object：ユーザーコンテキスト | Task：タスク           | 入力メッセージを処理するためのコールバックを設定する。                                                                                                      |
-|      | SetMethodHandlerAsync                  | string：メソッド名<br>MethodCallback：メソッドコールバック<br>object：ユーザーコンテキスト        | Task：タスク           | ダイレクトメソッドを処理するためのコールバックを設定する。                                                                                                  |
-|      | SendEventAsync                         | string：アウトプット名<br>IotMessage：IoT メッセージ                                              | Task：タスク           | 指定したアプトプット名と IoT メッセージを使って、IoT ハブにイベントを送信する。<br>IoT メッセージに メッセージID が設定されていない場合、生成して設定する。 |
-|      | UpdateReportedPropertiesAsync          | TwinCollection：Reported プロパティ                                                               | Task：タスク           | Reported プロパティを更新する。                                                                                                                             |
-|      | SetConnectionStatusChangedHandlerAsync | IotConnectionStatusChangeHandler：Iot 接続状態変更ハンドラ                                        | Task：タスク           | 接続状態の変更通知を処理するためのコールバックを設定する。<br>受信した接続状態は、プロパティ：ConnectionStatus に保存する。                                 |
+| 静的 | 名前                                   | 引数（型：説明）                                                                                  | 戻り値（型：説明）     | 説明                                                                                                                                                                                                                                                                                                                                  |
+| ---- | -------------------------------------- | ------------------------------------------------------------------------------------------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|      | OpenAsync                              | なし                                                                                              | Task：タスク           | 接続開始処理                                                                                                                                                                                                                                                                                                                          |
+|      | CloseAsync                             | なし                                                                                              | Task：タスク           | 切断処理                                                                                                                                                                                                                                                                                                                              |
+|      | GetTwinAsync                           | なし                                                                                              | Task\<Twin>：Twin 情報 | Twin 情報取得処理                                                                                                                                                                                                                                                                                                                     |
+|      | SetDesiredPropertyUpdateCallbackAsync  | DesiredPropertyUpdateCallback：Desired プロパティ更新コールバック<br>object：ユーザーコンテキスト | Task：タスク           | Desired プロパティ更新時のコールバックを設定する。                                                                                                                                                                                                                                                                                    |
+|      | SetInputMessageHandlerAsync            | string：インプット名<br>IotMessageHandler：IoT メッセージハンドラ<br>object：ユーザーコンテキスト | Task：タスク           | 入力メッセージを処理するためのコールバックを設定する。                                                                                                                                                                                                                                                                                |
+|      | SetMethodHandlerAsync                  | string：メソッド名<br>MethodCallback：メソッドコールバック<br>object：ユーザーコンテキスト        | Task：タスク           | ダイレクトメソッドを処理するためのコールバックを設定する。                                                                                                                                                                                                                                                                            |
+|      | SendEventAsync                         | string：アウトプット名<br>IotMessage：IoT メッセージ                                              | Task：タスク           | 指定したアウトプット名と IoT メッセージを使って、IoT ハブにイベントを送信する。<br>IoT メッセージに メッセージID が設定されていない場合、生成して設定する。                                                                                                                                                                           |
+|      | SendEventAsync                         | string：アウトプット名<br>IotMessage：IoT メッセージ<br>CancellationToken：キャンセルトークン     | Task：タスク           | 指定したアウトプット名と IoT メッセージを使って、IoT ハブにイベントを送信する。<br>IoT メッセージに メッセージID が設定されていない場合、生成して設定する。<br>CancellationToken 対応実装では、キャンセルされた場合に OperationCanceledException をスローする。<br>既定実装は従来メソッドへ委譲するため、キャンセルは効果を持たない。 |
+|      | UpdateReportedPropertiesAsync          | TwinCollection：Reported プロパティ                                                               | Task：タスク           | Reported プロパティを更新する。                                                                                                                                                                                                                                                                                                       |
+|      | SetConnectionStatusChangedHandlerAsync | IotConnectionStatusChangeHandler：Iot 接続状態変更ハンドラ                                        | Task：タスク           | 接続状態の変更通知を処理するためのコールバックを設定する。<br>受信した接続状態は、プロパティ：ConnectionStatus に保存する。                                                                                                                                                                                                           |
 
 #### ModuleClient-ModuleClientFactory-クラス
 
