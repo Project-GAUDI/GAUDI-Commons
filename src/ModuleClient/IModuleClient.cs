@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Azure.Devices.Client;
 using Microsoft.Azure.Devices.Shared;
@@ -154,13 +155,25 @@ namespace TICO.GAUDI.Commons
         Task SetMethodHandlerAsync(string methodName, MethodCallback methodHandler, object userContext);
 
         /// <summary>
-        /// 指定したアプトプット名とIoTメッセージを使って、IoTハブにイベントを送信する。
+        /// 指定したアウトプット名とIoTメッセージを使って、IoTハブにイベントを送信する。
         /// IoTメッセージにメッセージIDが設定されていない場合、生成して設定する。
         /// </summary>
         /// <param name="outputName">アウトプット名</param>
         /// <param name="message">IoTメッセージ</param>
         /// <returns>タスク</returns>
         Task SendEventAsync(string outputName, IotMessage message);
+
+        /// <summary>
+        /// 指定したアウトプット名とIoTメッセージを使って、IoTハブにイベントを送信する。
+        /// キャンセルされた場合は OperationCanceledException をスローする。
+        /// </summary>
+        /// <param name="outputName">アウトプット名</param>
+        /// <param name="message">IoTメッセージ</param>
+        /// <param name="cancellationToken">キャンセルトークン</param>
+        /// <returns>タスク</returns>
+        /// 既定実装は従来のメソッドへ委譲するため、キャンセルは効果を持たない
+        Task SendEventAsync(string outputName, IotMessage message, CancellationToken cancellationToken)
+            => SendEventAsync(outputName, message);
 
         /// <summary>
         /// Reportedプロパティを更新する。

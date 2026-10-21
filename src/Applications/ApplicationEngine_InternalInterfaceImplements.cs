@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Azure.Devices.Client;
 using Microsoft.Azure.Devices.Shared;
@@ -46,7 +45,7 @@ namespace TICO.GAUDI.Commons
                 MyLogger.WriteLog(ILogger.LogLevel.WARN, $"Creating Module Client failed. {ex.Message}");
                 status = false;
             }
-            MyLogger.WriteLog(ILogger.LogLevel.INFO, $"ModuelClient created.");
+            MyLogger.WriteLog(ILogger.LogLevel.INFO, $"ModuleClient created.");
 
             // edgeHubへの接続
             while (true == status)
@@ -236,17 +235,15 @@ namespace TICO.GAUDI.Commons
                 // Logger設定をクリア（アップロード無効化）
                 MyLogger.SetModuleClient(null);
                 MyLogger.WriteLog(ILogger.LogLevel.INFO, $"ModuleClient Logger cleared.");
-                
-                messageInputEventData.Keys.Select(async (key) =>
+
+                foreach (var key in messageInputEventData.Keys)
                 {
                     await MyModuleClient.SetInputMessageHandlerAsync(key, null, null);
-                    return key;
-                });
-                methodRequestEventData.Keys.Select(async (key) =>
+                }
+                foreach (var key in methodRequestEventData.Keys)
                 {
                     await MyModuleClient.SetMethodHandlerAsync(key, null, null);
-                    return key;
-                });
+                }
                 messageInputEventData.Clear();
                 methodRequestEventData.Clear();
                 await MyModuleClient.SetDesiredPropertyUpdateCallbackAsync(null, null);
