@@ -280,6 +280,19 @@ namespace TICO.GAUDI.Commons
         public async Task SendMessageAsync(string outputName,
                                             IotMessage sendingMsg)
         {
+            await SendMessageAsync(outputName, sendingMsg, CancellationToken.None).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// メッセージ送信
+        /// </summary>
+        /// <param name="outputName">出力名</param>
+        /// <param name="sendingMsg">送信メッセージ</param>
+        /// <param name="cancellationToken">キャンセルトークン</param>
+        public async Task SendMessageAsync(string outputName,
+                                            IotMessage sendingMsg,
+                                            CancellationToken cancellationToken)
+        {
             MyLogger.WriteLog(ILogger.LogLevel.TRACE, $"Start Method: SendMessageAsync");
 
             bool sendFlag = false;
@@ -302,7 +315,7 @@ namespace TICO.GAUDI.Commons
                     // 切断発生・再接続中・更新不可
                     while (IotConnectionStatus.Disconnected_Retrying == MyModuleClient.ConnectionStatus)
                     {
-                        await Task.Delay(1000);
+                        await Task.Delay(1000, cancellationToken);
                     }
                     if (IotConnectionStatus.Connected == MyModuleClient.ConnectionStatus) {
                         // 接続中になった場合だけ、OK。
@@ -315,7 +328,7 @@ namespace TICO.GAUDI.Commons
 
             if ( true == sendFlag )
             {
-                await MyModuleClient.SendEventAsync(outputName, sendingMsg);
+                await MyModuleClient.SendEventAsync(outputName, sendingMsg, cancellationToken);
             }
             else
             {

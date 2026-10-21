@@ -588,7 +588,7 @@ namespace TICO.GAUDI.Commons
         /// </returns>
         private CallbackProperties GetCallbackProperty(string topic)
         {
-            CallbackProperties retCallbakcProps = null;
+            CallbackProperties retCallbackProps = null;
 
             if (topic.StartsWith(receiveEventMessagePrefix))
             {
@@ -600,11 +600,11 @@ namespace TICO.GAUDI.Commons
                 var inputStr = blocks[blocks.Length - 2];
 
                 // トピック名に該当するコールバックプロパティを取得
-                dictCallbackProps.TryGetValue(inputStr, out retCallbakcProps);
+                dictCallbackProps.TryGetValue(inputStr, out retCallbackProps);
             }
             else if (topic.StartsWith("$iothub"))
             {
-                retCallbakcProps = null;
+                retCallbackProps = null;
             }
             else
             {
@@ -614,14 +614,14 @@ namespace TICO.GAUDI.Commons
                 string mqttTopicName = GetMqttTopicName(topic);
 
                 // トピック名に該当するコールバックプロパティを取得
-                dictCallbackProps.TryGetValue(mqttTopicName, out retCallbakcProps);
+                dictCallbackProps.TryGetValue(mqttTopicName, out retCallbackProps);
 
-                if (null == retCallbakcProps)
+                if (null == retCallbackProps)
                 {
-                    dictCallbackProps.TryGetValue("#", out retCallbakcProps);
+                    dictCallbackProps.TryGetValue("#", out retCallbackProps);
                 }
             }
-            return retCallbakcProps;
+            return retCallbackProps;
         }
 
         /// <summary>

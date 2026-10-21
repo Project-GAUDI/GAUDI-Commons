@@ -85,7 +85,7 @@ namespace TICO.GAUDI.Commons
             }
             else
             {
-                throw new Exception($"Property {key} dose not exist.");
+                throw new Exception($"Property {key} does not exist.");
             }
 
             return ret;

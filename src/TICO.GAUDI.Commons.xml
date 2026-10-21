@@ -149,6 +149,14 @@
             <param name="outputName">出力名</param>
             <param name="sendingMsg">送信メッセージ</param>
         </member>
+        <member name="M:TICO.GAUDI.Commons.ApplicationEngine.SendMessageAsync(System.String,TICO.GAUDI.Commons.IotMessage,System.Threading.CancellationToken)">
+            <summary>
+            メッセージ送信
+            </summary>
+            <param name="outputName">出力名</param>
+            <param name="sendingMsg">送信メッセージ</param>
+            <param name="cancellationToken">キャンセルトークン</param>
+        </member>
         <member name="M:TICO.GAUDI.Commons.ApplicationEngine.AddDirectMethodHandlerAsync(System.String,TICO.GAUDI.Commons.DirectMethodHandler,System.Object)">
             <summary>
             ダイレクトメソッド受信時のイベントコールバック追加
@@ -382,6 +390,17 @@
             <param name="sendingMsg">送信メッセージ</param>
             <returns>タスク</returns>
         </member>
+        <member name="M:TICO.GAUDI.Commons.IApplicationEngine.SendMessageAsync(System.String,TICO.GAUDI.Commons.IotMessage,System.Threading.CancellationToken)">
+            <summary>
+            指定したアウトプット名でメッセージを送信する。
+            キャンセルされた場合は OperationCanceledException をスローする。
+            </summary>
+            <param name="outputName">アウトプット名</param>
+            <param name="sendingMsg">送信メッセージ</param>
+            <param name="cancellationToken">キャンセルトークン</param>
+            <returns>タスク</returns>
+            既定実装は従来のメソッドへ委譲するため、キャンセルは効果を持たない
+        </member>
         <member name="M:TICO.GAUDI.Commons.IApplicationEngine.AddDirectMethodHandlerAsync(System.String,TICO.GAUDI.Commons.DirectMethodHandler,System.Object)">
             <summary>
             ダイレクトメソッド受信時のイベントハンドラを追加する。
@@ -517,6 +536,132 @@
             </summary>
             <param name="desiredProperties">Desired Properties</param>
             <returns>処理成功(true)、処理失敗(false)</returns>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.BufferBackupStore">
+            <summary>
+            ファイルシステムを使用した <see cref="T:TICO.GAUDI.Commons.IBufferBackupStore"/> の実装。
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.BufferBackupStore.GetBackupPath(System.String)">
+            <summary>
+            退避ファイルのパスを取得する。
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.BufferBackupStore.Save``1(System.String,System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            データをディスクへ退避する。
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.BufferBackupStore.Restore``1(System.String,System.Boolean)">
+            <summary>
+            退避データをディスクから復元する。
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.BufferBackupStore.Exists(System.String)">
+            <summary>
+            退避データが存在するか確認する。
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.BufferBackupStore.Delete(System.String)">
+            <summary>
+            退避データを削除する。
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.BufferBackupStore.GetBackupKeys">
+            <summary>
+            現在のモジュールに保存されている退避データのキー一覧を取得する。
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.BufferBackupStore.ValidateKey(System.String,System.String)">
+            <summary>
+            ファイル名の一部として安全に使用できるか検証する。
+            </summary>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.BufferBackupStoreFactory">
+            <summary>
+            IBufferBackupStore インスタンスを取得するためのファクトリークラス。
+            </summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.BufferBackupStoreFactory.BUFFERBACKUP_DIR">
+            <summary>
+            退避先ディレクトリ
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.BufferBackupStoreFactory.GetStore(System.Boolean)">
+            <summary>
+            IBufferBackupStore クラスのインスタンスを取得する。
+            退避先ディレクトリは "/app/backupdata" を使用する。
+            </summary>
+            <param name="preserveDerivedTypes">派生型を保持して復元するか（デフォルト：false）</param>
+            <returns>IBufferBackupStore インスタンス</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.BufferBackupStoreFactory.GetStore(System.String,System.Boolean)">
+            <summary>
+            退避先ディレクトリを指定して IBufferBackupStore クラスのインスタンスを取得する。
+            </summary>
+            <param name="baseDirectory">退避先ディレクトリ</param>
+            <param name="preserveDerivedTypes">派生型を保持して復元するか（デフォルト：false）</param>
+            <returns>IBufferBackupStore インスタンス</returns>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.IBufferBackupStore">
+            <summary>
+            メモリ上の未送信データをディスクへ退避・復元するストアのインターフェース。
+            </summary>
+            <remarks>
+            モジュール終了時に <see cref="M:TICO.GAUDI.Commons.IBufferBackupStore.Save``1(System.String,System.Collections.Generic.IEnumerable{``0})"/> で退避し、起動時に <see cref="M:TICO.GAUDI.Commons.IBufferBackupStore.Restore``1(System.String,System.Boolean)"/> で復元する用途を想定する。
+            入出力の失敗は例外をスローせず、ログ出力のうえ戻り値で通知する（ベストエフォート）。
+            </remarks>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IBufferBackupStore.Save``1(System.String,System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            指定したキーでデータをディスクへ退避する。
+            既に同じキーの退避データが存在する場合は上書きする。
+            </summary>
+            <param name="key">退避データを識別するキー</param>
+            <param name="items">退避対象データ</param>
+            <typeparam name="TItem">退避対象データの要素タイプ</typeparam>
+            <returns>退避に成功した(true)／失敗した(false)</returns>
+            <exception cref="T:System.ArgumentException">キーが空白以外で、ファイル名として使用できない場合</exception>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IBufferBackupStore.Restore``1(System.String,System.Boolean)">
+            <summary>
+            指定したキーの退避データをディスクから復元する。
+            </summary>
+            <param name="key">退避データを識別するキー</param>
+            <param name="deleteAfterRestore">復元後に退避ファイルを削除するか（デフォルト：true）</param>
+            <typeparam name="TItem">復元対象データの要素タイプ</typeparam>
+            <returns>復元したデータ。退避データが存在しない場合、または復元に失敗した場合は null</returns>
+            <exception cref="T:System.ArgumentException">キーが空白以外で、ファイル名として使用できない場合</exception>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IBufferBackupStore.Exists(System.String)">
+            <summary>
+            指定したキーの退避データが存在するか確認する。
+            </summary>
+            <param name="key">退避データを識別するキー</param>
+            <returns>存在する(true)／存在しない(false)</returns>
+            <exception cref="T:System.ArgumentException">キーが空白以外で、ファイル名として使用できない場合</exception>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IBufferBackupStore.Delete(System.String)">
+            <summary>
+            指定したキーの退避データを削除する。
+            </summary>
+            <param name="key">退避データを識別するキー</param>
+            <returns>削除した、または元から存在しなかった(true)／削除に失敗した(false)</returns>
+            <exception cref="T:System.ArgumentException">キーが空白以外で、ファイル名として使用できない場合</exception>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IBufferBackupStore.GetBackupKeys">
+            <summary>
+            現在のモジュールに保存されている退避データのキー一覧を取得する。
+            </summary>
+            <returns>退避データを識別するキーの一覧。退避データが存在しない場合は空のリスト</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IBufferBackupStore.GetBackupPath(System.String)">
+            <summary>
+            指定したキーに対応する退避ファイルのパスを取得する。
+            </summary>
+            <param name="key">退避データを識別するキー</param>
+            <returns>退避ファイルのパス</returns>
+            <exception cref="T:System.ArgumentException">キーが空白以外で、ファイル名として使用できない場合</exception>
         </member>
         <member name="T:TICO.GAUDI.Commons.DirectMethodCaller">
             <summary>
@@ -696,6 +841,42 @@
             <typeparam name="TargetType">デシリアライズ後オブジェクトタイプ</typeparam>
             <returns>デシリアライズされたオブジェクト</returns>
         </member>
+        <member name="M:TICO.GAUDI.Commons.IJsonSerializer.Serialize``1(``0,TICO.GAUDI.Commons.JsonSerializerSettings)">
+            <summary>
+            指定した設定でオブジェクトを JSON 文字列にシリアライズする。
+            </summary>
+            <param name="target">対象オブジェクト</param>
+            <param name="settings">シリアライズ設定</param>
+            <typeparam name="TargetType">対象オブジェクトタイプ</typeparam>
+            <returns>シリアライズされた文字列</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IJsonSerializer.SerializeBytes``1(``0,TICO.GAUDI.Commons.JsonSerializerSettings)">
+            <summary>
+            指定した設定でオブジェクトを JSON バイト配列にシリアライズする。
+            </summary>
+            <param name="target">対象オブジェクト</param>
+            <param name="settings">シリアライズ設定</param>
+            <typeparam name="TargetType">対象オブジェクトタイプ</typeparam>
+            <returns>シリアライズされたバイト配列</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IJsonSerializer.Deserialize``1(System.String,TICO.GAUDI.Commons.JsonSerializerSettings)">
+            <summary>
+            指定した設定で JSON 文字列をオブジェクトにデシリアライズする。
+            </summary>
+            <param name="jsonString">対象 JSON 文字列</param>
+            <param name="settings">デシリアライズ設定</param>
+            <typeparam name="TargetType">デシリアライズ後オブジェクトタイプ</typeparam>
+            <returns>デシリアライズされたオブジェクト</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IJsonSerializer.Deserialize``1(System.Byte[],TICO.GAUDI.Commons.JsonSerializerSettings)">
+            <summary>
+            指定した設定で JSON バイト配列をオブジェクトにデシリアライズする。
+            </summary>
+            <param name="jsonBytes">対象 JSON バイト配列</param>
+            <param name="settings">デシリアライズ設定</param>
+            <typeparam name="TargetType">デシリアライズ後オブジェクトタイプ</typeparam>
+            <returns>デシリアライズされたオブジェクト</returns>
+        </member>
         <member name="T:TICO.GAUDI.Commons.SerializerType">
             <summary>
             シリアライザタイプ
@@ -755,6 +936,208 @@
             </remarks>
             <returns>デフォルトシリアライザタイプ</returns>
         </member>
+        <member name="T:TICO.GAUDI.Commons.JsonNullValueHandling">
+            <summary>null 値のシリアライズ方法。</summary>
+            <remarks>SysRuntimeSerialization 選択時は無視されます。</remarks>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.JsonNullValueHandling.Include">
+            <summary>null 値をシリアライズ対象に含める。</summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.JsonNullValueHandling.Ignore">
+            <summary>null 値をシリアライズ対象から除外する。</summary>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.JsonDefaultValueHandling">
+            <summary>デフォルト値のシリアライズ方法。</summary>
+            <remarks>SysRuntimeSerialization 選択時は無視されます。</remarks>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.JsonDefaultValueHandling.Include">
+            <summary>デフォルト値を含める。</summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.JsonDefaultValueHandling.Ignore">
+            <summary>デフォルト値を除外する。</summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.JsonDefaultValueHandling.Populate">
+            <summary>デシリアライズ時にデフォルト値を補完する。</summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.JsonDefaultValueHandling.IgnoreAndPopulate">
+            <summary>デフォルト値を除外し、デシリアライズ時に補完する。</summary>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.JsonFormatting">
+            <summary>JSON 出力フォーマット。</summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.JsonFormatting.None">
+            <summary>コンパクト出力。</summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.JsonFormatting.Indented">
+            <summary>インデント付き出力。</summary>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.JsonReferenceLoopHandling">
+            <summary>循環参照の処理方法。</summary>
+            <remarks>SysRuntimeSerialization 選択時は無視されます。</remarks>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.JsonReferenceLoopHandling.Error">
+            <summary>循環参照が検出された場合に例外をスローする。</summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.JsonReferenceLoopHandling.Ignore">
+            <summary>循環参照を無視する。</summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.JsonReferenceLoopHandling.Serialize">
+            <summary>循環参照をシリアライズする（無限ループに注意）。</summary>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.JsonDateParseHandling">
+            <summary>日付文字列の自動パース方式。</summary>
+            <remarks>SysRuntimeSerialization 選択時は無視されます。</remarks>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.JsonDateParseHandling.None">
+            <summary>日付文字列を自動変換しない。</summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.JsonDateParseHandling.DateTime">
+            <summary>日付文字列を <see cref="T:System.DateTime"/> に自動変換する。</summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.JsonDateParseHandling.DateTimeOffset">
+            <summary>日付文字列を <see cref="T:System.DateTimeOffset"/> に自動変換する。</summary>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.JsonDateFormatHandling">
+            <summary>日付のシリアライズ形式。</summary>
+            <remarks>SysRuntimeSerialization 選択時は無視されます。</remarks>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.JsonDateFormatHandling.IsoDateFormat">
+            <summary>ISO 8601 形式（例: <c>2025-01-23T12:34:56Z</c>）。</summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.JsonDateFormatHandling.MicrosoftDateFormat">
+            <summary>Microsoft JSON 形式（例: <c>\/Date(1234567890000)\/</c>）。</summary>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.JsonStringEscapeHandling">
+            <summary>文字列のエスケープ方式。</summary>
+            <remarks>SysRuntimeSerialization 選択時は無視されます。</remarks>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.JsonStringEscapeHandling.Default">
+            <summary>ASCII 制御文字と Unicode サロゲート文字のみエスケープする。</summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.JsonStringEscapeHandling.EscapeNonAscii">
+            <summary>非 ASCII 文字をすべて <c>\uXXXX</c> 形式にエスケープする。</summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.JsonStringEscapeHandling.EscapeHtml">
+            <summary>HTML 予約文字（<c>&lt;</c>, <c>&gt;</c>, <c>&amp;</c> など）をエスケープする。</summary>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.JsonTypeNameHandling">
+            <summary>型情報（<c>$type</c>）を JSON に含めるかどうかの指定。</summary>
+            <remarks>
+            <para>SysRuntimeSerialization 選択時は無視されます。</para>
+            <para>
+            <c>None</c> 以外を指定すると、デシリアライズ時に JSON 内の <c>$type</c> で指定された型が生成されます。
+            信頼できない入力に対して使用すると意図しない型の生成につながるため、
+            自モジュールが生成した JSON のみを対象にしてください。
+            </para>
+            </remarks>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.JsonTypeNameHandling.None">
+            <summary>型情報を含めない。</summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.JsonTypeNameHandling.Objects">
+            <summary>オブジェクトに型情報を含める。</summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.JsonTypeNameHandling.Arrays">
+            <summary>配列に型情報を含める。</summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.JsonTypeNameHandling.All">
+            <summary>オブジェクトと配列の両方に型情報を含める。</summary>
+        </member>
+        <member name="F:TICO.GAUDI.Commons.JsonTypeNameHandling.Auto">
+            <summary>宣言型と実際の型が異なる場合のみ型情報を含める。</summary>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.JsonSerializerSettings">
+            <summary>
+            Newtonsoft.Json / SysRuntimeSerialization 両方で使用できる、
+            ライブラリ非依存の JSON シリアライザ設定クラス。
+            </summary>
+            <remarks>
+            <para>
+            Newtonsoft.Json が選択されている場合、すべてのプロパティが有効です。
+            </para>
+            <para>
+            SysRuntimeSerialization (<see cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>)
+            が選択されている場合、<see cref="P:TICO.GAUDI.Commons.JsonSerializerSettings.Formatting"/> プロパティ（シリアライズ時のみ）がサポートされます。
+            それ以外の設定はサポートされておらず無視されます。
+            非デフォルト値が指定されているプロパティは
+            シリアライズ/デシリアライズ実行時に <see cref="M:System.Diagnostics.Trace.TraceWarning(System.String)"/>
+            で警告が出力されます。
+            </para>
+            </remarks>
+        </member>
+        <member name="P:TICO.GAUDI.Commons.JsonSerializerSettings.NullValueHandling">
+            <summary>null 値の扱い。デフォルト: <see cref="F:TICO.GAUDI.Commons.JsonNullValueHandling.Include"/>。</summary>
+            <remarks>SysRuntimeSerialization 選択時は無視されます。</remarks>
+        </member>
+        <member name="P:TICO.GAUDI.Commons.JsonSerializerSettings.DefaultValueHandling">
+            <summary>
+            デフォルト値の扱い。デフォルト: <see cref="F:TICO.GAUDI.Commons.JsonDefaultValueHandling.Include"/>。
+            </summary>
+            <remarks>SysRuntimeSerialization 選択時は無視されます。</remarks>
+        </member>
+        <member name="P:TICO.GAUDI.Commons.JsonSerializerSettings.Formatting">
+            <summary>
+            出力フォーマット。デフォルト: <see cref="F:TICO.GAUDI.Commons.JsonFormatting.None"/>。
+            </summary>
+            <remarks>SysRuntimeSerialization 選択時はシリアライズで有効、デシリアライズでは無視されます。</remarks>
+        </member>
+        <member name="P:TICO.GAUDI.Commons.JsonSerializerSettings.ReferenceLoopHandling">
+            <summary>
+            循環参照の処理方法。デフォルト: <see cref="F:TICO.GAUDI.Commons.JsonReferenceLoopHandling.Error"/>。
+            </summary>
+            <remarks>SysRuntimeSerialization 選択時は無視されます。</remarks>
+        </member>
+        <member name="P:TICO.GAUDI.Commons.JsonSerializerSettings.DateParseHandling">
+            <summary>
+            日付文字列の自動パース方式。デフォルト: <see cref="F:TICO.GAUDI.Commons.JsonDateParseHandling.DateTime"/>。
+            </summary>
+            <remarks>SysRuntimeSerialization 選択時は無視されます。</remarks>
+        </member>
+        <member name="P:TICO.GAUDI.Commons.JsonSerializerSettings.DateFormatHandling">
+            <summary>
+            日付のシリアライズ形式。デフォルト: <see cref="F:TICO.GAUDI.Commons.JsonDateFormatHandling.IsoDateFormat"/>。
+            </summary>
+            <remarks>SysRuntimeSerialization 選択時は無視されます。</remarks>
+        </member>
+        <member name="P:TICO.GAUDI.Commons.JsonSerializerSettings.StringEscapeHandling">
+            <summary>
+            文字列のエスケープ方式。デフォルト: <see cref="F:TICO.GAUDI.Commons.JsonStringEscapeHandling.Default"/>。
+            </summary>
+            <remarks>SysRuntimeSerialization 選択時は無視されます。</remarks>
+        </member>
+        <member name="P:TICO.GAUDI.Commons.JsonSerializerSettings.ExcludeEmptyCollections">
+            <summary>
+            空文字列・空コレクション（Dictionary, List 等）をシリアライズ対象から除外する。
+            デフォルト: <c>false</c>（除外しない）。
+            </summary>
+            <remarks>SysRuntimeSerialization 選択時は無視されます。</remarks>
+        </member>
+        <member name="P:TICO.GAUDI.Commons.JsonSerializerSettings.TypeNameHandling">
+            <summary>
+            型情報（<c>$type</c>）の出力方法。デフォルト: <see cref="F:TICO.GAUDI.Commons.JsonTypeNameHandling.None"/>。
+            </summary>
+            <remarks>
+            <para>SysRuntimeSerialization 選択時は無視されます。</para>
+            <para>信頼できない JSON のデシリアライズに <c>None</c> 以外を使用しないでください。</para>
+            </remarks>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.JsonSerializerSettingsConverter">
+            <summary>
+            <see cref="T:TICO.GAUDI.Commons.JsonSerializerSettings"/> を Newtonsoft.Json の
+            <see cref="T:Newtonsoft.Json.JsonSerializerSettings"/> へ変換する内部ユーティリティ。
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.JsonSerializerSettingsConverter.ToNewtonsoftSettings(TICO.GAUDI.Commons.JsonSerializerSettings)">
+            <summary>
+            <see cref="T:TICO.GAUDI.Commons.JsonSerializerSettings"/> を <see cref="T:Newtonsoft.Json.JsonSerializerSettings"/> に変換する。
+            </summary>
+        </member>
+        <member name="T:TICO.GAUDI.Commons.ExcludeEmptyContractResolver">
+            <summary>
+            空文字列・空コレクションをシリアライズ対象から除外する ContractResolver。
+            <see cref="P:TICO.GAUDI.Commons.JsonSerializerSettings.ExcludeEmptyCollections"/> が <c>true</c> の場合に使用される。
+            </summary>
+        </member>
         <member name="T:TICO.GAUDI.Commons.NewtonsoftJsonSerializer">
             <summary>
             Newtonsoft.Json のシリアライザのラッパークラス
@@ -796,6 +1179,26 @@
             <typeparam name="TargetType">デシリアライズ後オブジェクトタイプ</typeparam>
             <returns>デシリアライズされたオブジェクト</returns>
         </member>
+        <member name="M:TICO.GAUDI.Commons.NewtonsoftJsonSerializer.Serialize``1(``0,TICO.GAUDI.Commons.JsonSerializerSettings)">
+            <summary>
+            指定した設定でシリアライズ
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.NewtonsoftJsonSerializer.SerializeBytes``1(``0,TICO.GAUDI.Commons.JsonSerializerSettings)">
+            <summary>
+            指定した設定でバイト列シリアライズ
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.NewtonsoftJsonSerializer.Deserialize``1(System.String,TICO.GAUDI.Commons.JsonSerializerSettings)">
+            <summary>
+            指定した設定で文字列からデシリアライズ
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.NewtonsoftJsonSerializer.Deserialize``1(System.Byte[],TICO.GAUDI.Commons.JsonSerializerSettings)">
+            <summary>
+            指定した設定でバイト列からデシリアライズ
+            </summary>
+        </member>
         <member name="T:TICO.GAUDI.Commons.SysRuntimeJsonSerializer">
             <summary>
             System.Runtime のシリアライザのラッパークラス
@@ -836,6 +1239,33 @@
             <param name="jsonBytes">対象JSONバイトデータ列</param>
             <typeparam name="TargetType">デシリアライズ後オブジェクトタイプ</typeparam>
             <returns>デシリアライズされたオブジェクト</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.SysRuntimeJsonSerializer.Serialize``1(``0,TICO.GAUDI.Commons.JsonSerializerSettings)">
+            <summary>
+            指定した設定でシリアライズ（Formatting をサポート、その他は警告して無視）
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.SysRuntimeJsonSerializer.SerializeBytes``1(``0,TICO.GAUDI.Commons.JsonSerializerSettings)">
+            <summary>
+            指定した設定でバイト列シリアライズ（Formatting をサポート、その他は警告して無視）
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.SysRuntimeJsonSerializer.Deserialize``1(System.String,TICO.GAUDI.Commons.JsonSerializerSettings)">
+            <summary>
+            指定した設定で文字列からデシリアライズ（非対応設定は警告して無視）
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.SysRuntimeJsonSerializer.Deserialize``1(System.Byte[],TICO.GAUDI.Commons.JsonSerializerSettings)">
+            <summary>
+            指定した設定でバイト列からデシリアライズ（非対応設定は警告して無視）
+            </summary>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.SysRuntimeJsonSerializer.WarnUnsupportedSettings(TICO.GAUDI.Commons.JsonSerializerSettings)">
+            <summary>
+            デフォルト値と異なる設定項目を列挙して警告を出力する。
+            すべてデフォルト値の場合は警告しない。
+            Formatting はサポートされているため警告対象外。
+            </summary>
         </member>
         <member name="T:TICO.GAUDI.Commons.ILogger">
             <summary>
@@ -959,40 +1389,258 @@
             <param name="level">出力ログレベル</param>
             <returns>有効(true)／無効(false)</returns>
         </member>
+        <member name="M:TICO.GAUDI.Commons.ILogger.Trace(System.String,System.String,System.Boolean)">
+            <summary>
+            TRACEログを出力する。
+            </summary>
+            <param name="message">ログメッセージ</param>
+            <param name="memberName">呼び出し元メンバー名（デフォルト：呼び出し元メソッド名）</param>
+            <param name="isUpload">メッセージ送信有無（デフォルト：false）</param>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.ILogger.Debug(System.String,System.String,System.Boolean)">
+            <summary>
+            DEBUGログを出力する。
+            </summary>
+            <param name="message">ログメッセージ</param>
+            <param name="memberName">呼び出し元メンバー名（デフォルト：呼び出し元メソッド名）</param>
+            <param name="isUpload">メッセージ送信有無（デフォルト：false）</param>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.ILogger.Info(System.String,System.String,System.Boolean)">
+            <summary>
+            INFOログを出力する。
+            </summary>
+            <param name="message">ログメッセージ</param>
+            <param name="memberName">呼び出し元メンバー名（デフォルト：呼び出し元メソッド名）</param>
+            <param name="isUpload">メッセージ送信有無（デフォルト：false）</param>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.ILogger.Warn(System.String,System.String,System.Boolean)">
+            <summary>
+            WARNログを出力する。
+            </summary>
+            <param name="message">ログメッセージ</param>
+            <param name="memberName">呼び出し元メンバー名（デフォルト：呼び出し元メソッド名）</param>
+            <param name="isUpload">メッセージ送信有無（デフォルト：false）</param>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.ILogger.Error(System.String,System.String,System.Boolean)">
+            <summary>
+            ERRORログを出力する。
+            </summary>
+            <param name="message">ログメッセージ</param>
+            <param name="memberName">呼び出し元メンバー名（デフォルト：呼び出し元メソッド名）</param>
+            <param name="isUpload">メッセージ送信有無（デフォルト：false）</param>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.ILogger.TraceWithArgs(System.String,System.Object,System.String,System.Boolean)">
+            <summary>
+            引数情報を含めてTRACEログを出力する。
+            </summary>
+            <param name="message">ログメッセージ</param>
+            <param name="args">出力する引数情報</param>
+            <param name="memberName">呼び出し元メンバー名（デフォルト：呼び出し元メソッド名）</param>
+            <param name="isUpload">メッセージ送信有無（デフォルト：false）</param>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.ILogger.DebugWithArgs(System.String,System.Object,System.String,System.Boolean)">
+            <summary>
+            引数情報を含めてDEBUGログを出力する。
+            </summary>
+            <param name="message">ログメッセージ</param>
+            <param name="args">出力する引数情報</param>
+            <param name="memberName">呼び出し元メンバー名（デフォルト：呼び出し元メソッド名）</param>
+            <param name="isUpload">メッセージ送信有無（デフォルト：false）</param>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.ILogger.InfoWithArgs(System.String,System.Object,System.String,System.Boolean)">
+            <summary>
+            引数情報を含めてINFOログを出力する。
+            </summary>
+            <param name="message">ログメッセージ</param>
+            <param name="args">出力する引数情報</param>
+            <param name="memberName">呼び出し元メンバー名（デフォルト：呼び出し元メソッド名）</param>
+            <param name="isUpload">メッセージ送信有無（デフォルト：false）</param>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.ILogger.WarnWithArgs(System.String,System.Object,System.String,System.Boolean)">
+            <summary>
+            引数情報を含めてWARNログを出力する。
+            </summary>
+            <param name="message">ログメッセージ</param>
+            <param name="args">出力する引数情報</param>
+            <param name="memberName">呼び出し元メンバー名（デフォルト：呼び出し元メソッド名）</param>
+            <param name="isUpload">メッセージ送信有無（デフォルト：false）</param>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.ILogger.ErrorWithArgs(System.String,System.Object,System.String,System.Boolean)">
+            <summary>
+            引数情報を含めてERRORログを出力する。
+            </summary>
+            <param name="message">ログメッセージ</param>
+            <param name="args">出力する引数情報</param>
+            <param name="memberName">呼び出し元メンバー名（デフォルト：呼び出し元メソッド名）</param>
+            <param name="isUpload">メッセージ送信有無（デフォルト：false）</param>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.ILogger.TraceMethodEntry(System.Object,System.String)">
+            <summary>
+            メソッド開始時のTRACEログを出力する。
+            </summary>
+            <param name="args">出力する引数情報（デフォルト：null）</param>
+            <param name="memberName">呼び出し元メンバー名（デフォルト：呼び出し元メソッド名）</param>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.ILogger.TraceMethodExit(System.Object,System.String)">
+            <summary>
+            メソッド終了時のTRACEログを出力する。
+            </summary>
+            <param name="result">出力する戻り値情報（デフォルト：null）</param>
+            <param name="memberName">呼び出し元メンバー名（デフォルト：呼び出し元メソッド名）</param>
+        </member>
         <member name="M:TICO.GAUDI.Commons.Logger.GetLogger(System.Type)">
             <summary>
-            Loggerインスタンスの取得
+            指定した型名で Logger インスタンスを取得する。
             </summary>
+            <param name="type">ロガー名に使用する型情報</param>
+            <returns>Logger インスタンス</returns>
         </member>
         <member name="M:TICO.GAUDI.Commons.Logger.SetOutputLogLevel(System.String)">
             <summary>
-            出力ログレベルを文字列から設定
+            出力ログレベルを文字列から設定する。
+            指定した出力ログレベルが不正な場合、ArgumentException をスローする。
             </summary>
+            <param name="logLevel">出力ログレベル</param>
         </member>
         <member name="M:TICO.GAUDI.Commons.Logger.SetModuleClient(TICO.GAUDI.Commons.IModuleClient)">
             <summary>
-            Loggerで使用するモジュールクライアントをセット
+            Loggerで使用するモジュールクライアントをセットする。
             </summary>
+            <param name="moduleClient">モジュールクライアント</param>
         </member>
         <member name="M:TICO.GAUDI.Commons.Logger.SetOutputTextWriter(System.IO.TextWriter)">
             <summary>
-            出力ストリーム設定
+            出力ストリームを設定する。
+            指定値が null の場合は設定を変更しない。
             </summary>
+            <param name="textwriter">出力ストリーム</param>
         </member>
         <member name="M:TICO.GAUDI.Commons.Logger.WriteLog(TICO.GAUDI.Commons.ILogger.LogLevel,System.String,System.Boolean)">
             <summary>
-            ログの出力
+            指定した出力ログレベルに応じて、ログメッセージを出力する。
+            メッセージ送信有無が true の場合、ログメッセージをアップロードする。
+            処理に失敗した場合、警告ログを出力する。
             </summary>
+            <param name="level">出力ログレベル</param>
+            <param name="message">ログメッセージ</param>
+            <param name="isUpload">メッセージ送信有無（デフォルト：false）</param>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.Logger.Trace(System.String,System.String,System.Boolean)">
+            <summary>
+            TRACEログを出力する。
+            </summary>
+            <param name="message">ログメッセージ</param>
+            <param name="memberName">呼び出し元メンバー名（デフォルト：呼び出し元メソッド名）</param>
+            <param name="isUpload">メッセージ送信有無（デフォルト：false）</param>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.Logger.Debug(System.String,System.String,System.Boolean)">
+            <summary>
+            DEBUGログを出力する。
+            </summary>
+            <param name="message">ログメッセージ</param>
+            <param name="memberName">呼び出し元メンバー名（デフォルト：呼び出し元メソッド名）</param>
+            <param name="isUpload">メッセージ送信有無（デフォルト：false）</param>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.Logger.Info(System.String,System.String,System.Boolean)">
+            <summary>
+            INFOログを出力する。
+            </summary>
+            <param name="message">ログメッセージ</param>
+            <param name="memberName">呼び出し元メンバー名（デフォルト：呼び出し元メソッド名）</param>
+            <param name="isUpload">メッセージ送信有無（デフォルト：false）</param>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.Logger.Warn(System.String,System.String,System.Boolean)">
+            <summary>
+            WARNログを出力する。
+            </summary>
+            <param name="message">ログメッセージ</param>
+            <param name="memberName">呼び出し元メンバー名（デフォルト：呼び出し元メソッド名）</param>
+            <param name="isUpload">メッセージ送信有無（デフォルト：false）</param>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.Logger.Error(System.String,System.String,System.Boolean)">
+            <summary>
+            ERRORログを出力する。
+            </summary>
+            <param name="message">ログメッセージ</param>
+            <param name="memberName">呼び出し元メンバー名（デフォルト：呼び出し元メソッド名）</param>
+            <param name="isUpload">メッセージ送信有無（デフォルト：false）</param>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.Logger.TraceWithArgs(System.String,System.Object,System.String,System.Boolean)">
+            <summary>
+            引数情報を含めてTRACEログを出力する。
+            </summary>
+            <param name="message">ログメッセージ</param>
+            <param name="args">出力する引数情報</param>
+            <param name="memberName">呼び出し元メンバー名（デフォルト：呼び出し元メソッド名）</param>
+            <param name="isUpload">メッセージ送信有無（デフォルト：false）</param>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.Logger.DebugWithArgs(System.String,System.Object,System.String,System.Boolean)">
+            <summary>
+            引数情報を含めてDEBUGログを出力する。
+            </summary>
+            <param name="message">ログメッセージ</param>
+            <param name="args">出力する引数情報</param>
+            <param name="memberName">呼び出し元メンバー名（デフォルト：呼び出し元メソッド名）</param>
+            <param name="isUpload">メッセージ送信有無（デフォルト：false）</param>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.Logger.InfoWithArgs(System.String,System.Object,System.String,System.Boolean)">
+            <summary>
+            引数情報を含めてINFOログを出力する。
+            </summary>
+            <param name="message">ログメッセージ</param>
+            <param name="args">出力する引数情報</param>
+            <param name="memberName">呼び出し元メンバー名（デフォルト：呼び出し元メソッド名）</param>
+            <param name="isUpload">メッセージ送信有無（デフォルト：false）</param>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.Logger.WarnWithArgs(System.String,System.Object,System.String,System.Boolean)">
+            <summary>
+            引数情報を含めてWARNログを出力する。
+            </summary>
+            <param name="message">ログメッセージ</param>
+            <param name="args">出力する引数情報</param>
+            <param name="memberName">呼び出し元メンバー名（デフォルト：呼び出し元メソッド名）</param>
+            <param name="isUpload">メッセージ送信有無（デフォルト：false）</param>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.Logger.ErrorWithArgs(System.String,System.Object,System.String,System.Boolean)">
+            <summary>
+            引数情報を含めてERRORログを出力する。
+            </summary>
+            <param name="message">ログメッセージ</param>
+            <param name="args">出力する引数情報</param>
+            <param name="memberName">呼び出し元メンバー名（デフォルト：呼び出し元メソッド名）</param>
+            <param name="isUpload">メッセージ送信有無（デフォルト：false）</param>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.Logger.TraceMethodEntry(System.Object,System.String)">
+            <summary>
+            メソッド開始時のTRACEログを出力する。
+            </summary>
+            <param name="args">出力する引数情報（デフォルト：null）</param>
+            <param name="memberName">呼び出し元メンバー名（デフォルト：呼び出し元メソッド名）</param>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.Logger.TraceMethodExit(System.Object,System.String)">
+            <summary>
+            メソッド終了時のTRACEログを出力する。
+            </summary>
+            <param name="result">出力する戻り値情報（デフォルト：null）</param>
+            <param name="memberName">呼び出し元メンバー名（デフォルト：呼び出し元メソッド名）</param>
         </member>
         <member name="M:TICO.GAUDI.Commons.Logger.SetMandatoryLogLevel(System.String,System.Int32)">
             <summary>
-            強制ログレベル変更
+            指定した時間定義に応じて、強制ログレベルを変更する。
+            時間定義が0の場合：解除
+            時間定義が1以上の場合：指定時間（秒）後まで適用
+            時間定義が-1の場合：無制限
+            時間定義が上記以外：ArgumentException をスローする
             </summary>
+            <param name="level">出力ログレベル</param>
+            <param name="seconds">強制レベル設定時の時間定義</param>
         </member>
         <member name="M:TICO.GAUDI.Commons.Logger.IsLogLevelToOutput(TICO.GAUDI.Commons.ILogger.LogLevel)">
             <summary>
-            指定したログレベルが有効かチェック
+            指定した出力ログレベルが有効かチェックする。
             </summary>
+            <param name="level">出力ログレベル</param>
+            <returns>有効(true)／無効(false)</returns>
         </member>
         <member name="T:TICO.GAUDI.Commons.LoggerFactory">
             <summary>
@@ -1166,7 +1814,7 @@
             <params name="byteArray">変換するバイト配列</params>
             <returns>変換した文字列</returns>
         </member>
-        <member name="M:TICO.GAUDI.Commons.IotMessage.StringToByates(System.String)">
+        <member name="M:TICO.GAUDI.Commons.IotMessage.StringToBytes(System.String)">
             <summary>
             文字列をバイト配列に変換する。
             </summary>
@@ -1484,12 +2132,23 @@
         </member>
         <member name="M:TICO.GAUDI.Commons.IModuleClient.SendEventAsync(System.String,TICO.GAUDI.Commons.IotMessage)">
             <summary>
-            指定したアプトプット名とIoTメッセージを使って、IoTハブにイベントを送信する。
+            指定したアウトプット名とIoTメッセージを使って、IoTハブにイベントを送信する。
             IoTメッセージにメッセージIDが設定されていない場合、生成して設定する。
             </summary>
             <param name="outputName">アウトプット名</param>
             <param name="message">IoTメッセージ</param>
             <returns>タスク</returns>
+        </member>
+        <member name="M:TICO.GAUDI.Commons.IModuleClient.SendEventAsync(System.String,TICO.GAUDI.Commons.IotMessage,System.Threading.CancellationToken)">
+            <summary>
+            指定したアウトプット名とIoTメッセージを使って、IoTハブにイベントを送信する。
+            キャンセルされた場合は OperationCanceledException をスローする。
+            </summary>
+            <param name="outputName">アウトプット名</param>
+            <param name="message">IoTメッセージ</param>
+            <param name="cancellationToken">キャンセルトークン</param>
+            <returns>タスク</returns>
+            既定実装は従来のメソッドへ委譲するため、キャンセルは効果を持たない
         </member>
         <member name="M:TICO.GAUDI.Commons.IModuleClient.UpdateReportedPropertiesAsync(Microsoft.Azure.Devices.Shared.TwinCollection)">
             <summary>

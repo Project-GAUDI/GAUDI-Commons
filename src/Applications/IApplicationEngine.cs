@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace TICO.GAUDI.Commons
@@ -81,6 +82,20 @@ namespace TICO.GAUDI.Commons
         /// <returns>タスク</returns>
         public Task SendMessageAsync(string outputName,
                                         IotMessage sendingMsg);
+
+        /// <summary>
+        /// 指定したアウトプット名でメッセージを送信する。
+        /// キャンセルされた場合は OperationCanceledException をスローする。
+        /// </summary>
+        /// <param name="outputName">アウトプット名</param>
+        /// <param name="sendingMsg">送信メッセージ</param>
+        /// <param name="cancellationToken">キャンセルトークン</param>
+        /// <returns>タスク</returns>
+        /// 既定実装は従来のメソッドへ委譲するため、キャンセルは効果を持たない
+        public Task SendMessageAsync(string outputName,
+                                        IotMessage sendingMsg,
+                                        CancellationToken cancellationToken)
+            => SendMessageAsync(outputName, sendingMsg);
 
         /// <summary>
         /// ダイレクトメソッド受信時のイベントハンドラを追加する。

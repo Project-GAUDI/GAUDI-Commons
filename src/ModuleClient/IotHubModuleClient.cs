@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Azure.Devices.Client;
 using Microsoft.Azure.Devices.Shared;
@@ -78,10 +79,20 @@ namespace TICO.GAUDI.Commons
 
         public async Task SendEventAsync(string outputName, IotMessage message)
         {
-            await SendEventAsync(outputName, message, defaultSendTopic).ConfigureAwait(false);
+            await SendEventAsync(outputName, message, defaultSendTopic, CancellationToken.None).ConfigureAwait(false);
+        }
+
+        public async Task SendEventAsync(string outputName, IotMessage message, CancellationToken cancellationToken)
+        {
+            await SendEventAsync(outputName, message, defaultSendTopic, cancellationToken).ConfigureAwait(false);
         }
 
         protected async Task SendEventAsync(string outputName, IotMessage message, TransportTopic transportTopic)
+        {
+            await SendEventAsync(outputName, message, transportTopic, CancellationToken.None).ConfigureAwait(false);
+        }
+
+        protected async Task SendEventAsync(string outputName, IotMessage message, TransportTopic transportTopic, CancellationToken cancellationToken)
         {
             MyLogger.WriteLog(ILogger.LogLevel.TRACE, $"Start Method: SendEventAsync");
 
@@ -92,7 +103,7 @@ namespace TICO.GAUDI.Commons
                     message.SetMessageId(Util.GetMessageId());
                 }
 
-                await MyModuleClient.SendEventAsync(outputName, message.GetMessage()).ConfigureAwait(false);
+                await MyModuleClient.SendEventAsync(outputName, message.GetMessage(), cancellationToken).ConfigureAwait(false);
             }
             else if (transportTopic == TransportTopic.Mqtt)
             {
