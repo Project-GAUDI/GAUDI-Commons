@@ -1,5 +1,4 @@
 using Xunit;
-using Xunit.Abstractions;
 using Microsoft.Azure.Devices.Client;
 using Moq;
 
@@ -16,7 +15,7 @@ public class ApplicationEngine_ReceiveMethodAsync
     }
 
     [Fact(DisplayName = "Applications No090_ReceiveMethodAsyncを呼び出し")]
-    public async void Applications_Case090()
+    public async Task Applications_Case090()
     {
         var applicationMainMock = new Mock<IApplicationMain>();
         ApplicationEngine applicationEngine = new();
@@ -39,7 +38,7 @@ public class ApplicationEngine_ReceiveMethodAsync
     }
 
     [Fact(DisplayName = "Applications No095_userContextに基づいてメソッドハンドラデータを取得する際に予期せぬエラーが発生した場合")]
-    public async void Applications_Case095()
+    public async Task Applications_Case095()
     {
         var applicationMainMock = new Mock<IApplicationMain>();
         ApplicationEngine applicationEngine = new();

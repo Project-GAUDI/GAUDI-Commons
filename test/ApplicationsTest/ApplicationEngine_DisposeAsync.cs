@@ -1,5 +1,4 @@
 using Xunit;
-using Xunit.Abstractions;
 using Moq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -385,7 +384,7 @@ public class ApplicationEngine_DisposeAsync
         // TerminateAsyncが開始されるまで待機
         while (!terminateStarted)
         {
-            await Task.Delay(10);
+            await Task.Delay(10, TestContext.Current.CancellationToken);
         }
         
         Assert.True(terminateStarted);

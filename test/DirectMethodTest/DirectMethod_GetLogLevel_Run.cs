@@ -1,13 +1,12 @@
 using System;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace TICO.GAUDI.Commons.Test.DirectMethodTest;
 
 // Loggerのテストと競合するため、Collectionを指定
 [Trait("LoggerTest", "true")]
 [Collection(nameof(LoggerTest))]
-public class DirectMethod_GetLogLevel_Run
+public class DirectMethod_GetLogLevel_Run : IDisposable
 {
     private static ILogger _logger = LoggerFactory.GetLogger(typeof(DirectMethod_GetLogLevel_Run));
 
@@ -18,8 +17,12 @@ public class DirectMethod_GetLogLevel_Run
         _output = output;
     }
 
+    public void Dispose(){
+        _logger.SetMandatoryLogLevel("INFO", 0);
+    }
+
     [Fact(DisplayName = "DirectMethod Case004_関数内で呼び出される")]
-    public async void DirectMethod_Case004()
+    public async Task DirectMethod_Case004()
     {
         _logger.SetMandatoryLogLevel("DEBUG", -1);
         var getLogLevel = new DirectMethod_GetLogLevel();

@@ -1,5 +1,4 @@
 using Xunit;
-using Xunit.Abstractions;
 using Moq;
 
 namespace TICO.GAUDI.Commons.Test.ApplicationsTest;
@@ -15,7 +14,7 @@ public class ApplicationEngine_SetApplicationRestartAsync
     }
 
     [Fact(DisplayName = "Applications No015_呼び出し後、Restart()を呼び出し、再起動に成功した場合", Skip = "MyModuleClientがnullのためRestartできないためスキップ")]
-    public async void Applications_Case015()
+    public async Task Applications_Case015()
     {
         var applicationMainMock = new Mock<IApplicationMain>();
         ApplicationEngine applicationEngine = new();
@@ -30,7 +29,7 @@ public class ApplicationEngine_SetApplicationRestartAsync
     }
 
     [Fact(DisplayName = "Applications No016_呼び出し後、Restart()を呼び出し、再起動に失敗した場合")]
-    public async void Applications_Case016()
+    public async Task Applications_Case016()
     {
         var applicationMainMock = new Mock<IApplicationMain>();
         ApplicationEngine applicationEngine = new();

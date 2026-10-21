@@ -1,5 +1,4 @@
 using Xunit;
-using Xunit.Abstractions;
 using TICO.GAUDI.Commons;
 /*
 namespace TICO.GAUDI.Commons.Test
@@ -21,7 +20,7 @@ namespace TICO.GAUDI.Commons.Test
 
 
         [Fact(DisplayName = "正常系：正常構成")]
-        public async void NormalInput_TrueReturned()
+        public async Task NormalInput_TrueReturned()
         {
             Environment.SetEnvironmentVariable("LogLevel", null);
             DirectMethod_GetLogLevel target = new DirectMethod_GetLogLevel();

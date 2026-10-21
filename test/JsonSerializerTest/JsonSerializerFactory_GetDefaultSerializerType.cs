@@ -1,16 +1,16 @@
 using System.Reflection;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace TICO.GAUDI.Commons.Test.JsonSerializerTest;
 
-[Collection(nameof(JsonSerializerFactory_GetDefaultSerializerType))]
+[Collection("JsonSerializerFactory")]
 public class JsonSerializerFactory_GetDefaultSerializerType
 {
     private readonly ITestOutputHelper _output;
 
     public JsonSerializerFactory_GetDefaultSerializerType(ITestOutputHelper output)
     {
+        System.Environment.SetEnvironmentVariable("IOTEDGE_COMMON_DEFAULT_JSONSERIALIZER", null);
         _output = output;
     }
 

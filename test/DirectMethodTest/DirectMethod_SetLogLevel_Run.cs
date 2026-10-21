@@ -1,18 +1,23 @@
 using Xunit;
-using Xunit.Abstractions;
 
 namespace TICO.GAUDI.Commons.Test.DirectMethodTest;
 
 // Loggerのテストと競合するため、Collectionを指定
 [Trait("LoggerTest", "true")]
 [Collection(nameof(LoggerTest))]
-public class DirectMethod_SetLogLevel_Run
+public class DirectMethod_SetLogLevel_Run : IDisposable
 {
     private readonly ITestOutputHelper _output;
+    private static ILogger _logger = LoggerFactory.GetLogger(typeof(DirectMethod_SetLogLevel_Run));
 
     public DirectMethod_SetLogLevel_Run(ITestOutputHelper output)
     {
         _output = output;
+    }
+
+    public void Dispose()
+    {
+        _logger?.SetMandatoryLogLevel("INFO", 0);
     }
 
     [Fact(DisplayName = "DirectMethod Case017_関数内で呼び出される LoggerFactory.GetLogger が例外をスローする", Skip = "予期せぬエラーが起こせない(EnableSec=-2としたがValidateとRunでエラーが起こり、別の予期せぬエラーが発生する)ためスキップ")]
@@ -40,7 +45,7 @@ public class DirectMethod_SetLogLevel_Run
     }
 
     [Fact(DisplayName = "DirectMethod Case023_メソッドを呼び出す")]
-    public async void DirectMethod_Case023()
+    public async Task DirectMethod_Case023()
     {
         DirectMethod_SetLogLevel setLogLevel = new();
 

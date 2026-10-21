@@ -1,5 +1,4 @@
 using Xunit;
-using Xunit.Abstractions;
 
 namespace TICO.GAUDI.Commons.Test.DirectMethodTest;
 
@@ -16,7 +15,7 @@ public class DirectMethod_GetLogLevel_ParseRequest
     }
 
     [Fact(DisplayName = "DirectMethod Case002_メソッドを呼び出す")]
-    public async void DirectMethod_Case002()
+    public async Task DirectMethod_Case002()
     {
         try
         {

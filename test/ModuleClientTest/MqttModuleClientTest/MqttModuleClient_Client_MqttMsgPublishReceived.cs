@@ -2,7 +2,6 @@ using Microsoft.Azure.Devices.Client;
 using Microsoft.Azure.Devices.Shared;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using NuGet.Frameworks;
 using System.Reflection;
 using System.Text;
 using uPLibrary.Networking.M2Mqtt.Messages;

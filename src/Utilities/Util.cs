@@ -205,7 +205,7 @@ namespace TICO.GAUDI.Commons
         {            
             var value = Environment.GetEnvironmentVariable(name);
 
-            if (value == null)
+            if (String.IsNullOrEmpty(value))
             {
                 if (isRequired)
                 {
